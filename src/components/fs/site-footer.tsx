@@ -24,7 +24,7 @@ export function SiteFooter({ lang }: { lang: Locale }) {
 
         <div className="flex flex-col gap-2">
           <Eyebrow tone="dark">{t.footer.boxOffice}</Eyebrow>
-          <p className="type-meta whitespace-pre-line text-on-dark-muted">{lang === "pl" ? visit.boxOffice.hours : t.footer.boxOfficeHours}</p>
+          <p className="type-meta whitespace-pre-line text-on-dark-muted">{t.footerPages.contact.hours}</p>
           <a
             href={`tel:${visit.boxOffice.phone.replaceAll(" ", "")}`}
             className="flex min-h-11 w-fit items-center font-semibold underline underline-offset-4"

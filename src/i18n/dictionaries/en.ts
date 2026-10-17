@@ -38,6 +38,62 @@ export const en: Dictionary = {
     account: "Account",
   },
 
+  footerPages: {
+  "partners": {
+    "title": "Partners and business",
+    "eyebrow": "Working with the Philharmonic",
+    "lead": "The Philharmonic welcomes long-term partnerships and collaboration on individual events.",
+    "links": [
+      "Partnership opportunities",
+      "Partnership enquiries"
+    ]
+  },
+  "media": {
+    "title": "Media",
+    "eyebrow": "Resources and information",
+    "lead": "Downloads and contact details for the Philharmonic team are available on the official website.",
+    "links": [
+      "Downloads",
+      "Contact the Philharmonic",
+      "Artists",
+      "Orchestra"
+    ]
+  },
+  "about": {
+    "title": "About us",
+    "eyebrow": "Szczecin Philharmonic",
+    "lead": "Discover the Mieczysław Karłowicz Philharmonic in Szczecin: its orchestra, history and building.",
+    "links": [
+      "Orchestra",
+      "History",
+      "Building",
+      "Management — official Philharmonic website"
+    ]
+  },
+  "accessibility": {
+    "title": "Accessibility statement",
+    "eyebrow": "Website and visitor accessibility",
+    "lead": "This prototype was created for the WUD 2026 hackathon. Its compliance with WCAG 2.2 AA has not yet been confirmed by a full audit. The Philharmonic’s official accessibility statement applies to its own website.",
+    "links": [
+      "Official Philharmonic accessibility statement",
+      "Accessibility during your visit",
+      "Contact and assistance"
+    ]
+  },
+  "contact": {
+    "title": "Contact",
+    "eyebrow": "We are here to help",
+    "lead": "Questions about tickets, seating or your visit? Contact the Philharmonic box office.",
+    "links": [],
+    "boxOffice": "Box office",
+    "location": "Where to find us",
+    "institution": "Mieczysław Karłowicz Philharmonic in Szczecin",
+    "directions": "Directions, parking and accessibility",
+    "otherContacts": "Other contacts — official Philharmonic website",
+    "hours": "Tue–Thu 13:00–18:00, Fri 13:00–20:00, Sat 12:00–16:00, and one hour before every ticketed event organised by the Philharmonic"
+  }
+},
+
   footer: {
     boxOffice: "Box office",
     boxOfficeHours: "Tue–Fri 12:00–18:00, Sat 12:00–16:00\nand one hour before every ticketed event",

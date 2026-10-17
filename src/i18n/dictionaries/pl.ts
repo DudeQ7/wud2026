@@ -41,6 +41,62 @@ export const pl = {
     account: "Konto",
   },
 
+  footerPages: {
+  "partners": {
+    "title": "Partnerzy i biznes",
+    "eyebrow": "Współpraca z Filharmonią",
+    "lead": "Filharmonia zaprasza do długoterminowej współpracy oraz wspólnego tworzenia pojedynczych wydarzeń.",
+    "links": [
+      "Oferta partnerstwa",
+      "Kontakt w sprawie współpracy"
+    ]
+  },
+  "media": {
+    "title": "Strefa mediów",
+    "eyebrow": "Materiały i informacje",
+    "lead": "Materiały do pobrania i kontakty do zespołu Filharmonii znajdziesz w oficjalnym serwisie.",
+    "links": [
+      "Materiały do pobrania",
+      "Kontakt z Filharmonią",
+      "Artyści",
+      "Orkiestra"
+    ]
+  },
+  "about": {
+    "title": "O instytucji",
+    "eyebrow": "Filharmonia w Szczecinie",
+    "lead": "Poznaj Filharmonię im. Mieczysława Karłowicza w Szczecinie: jej orkiestrę, historię i budynek.",
+    "links": [
+      "Orkiestra",
+      "Historia",
+      "Budynek",
+      "Dyrekcja — oficjalny serwis FS"
+    ]
+  },
+  "accessibility": {
+    "title": "Deklaracja dostępności",
+    "eyebrow": "Dostępność serwisu i wizyty",
+    "lead": "To prototyp przygotowany na hackathon WUD 2026. Jego zgodność z WCAG 2.2 AA nie została jeszcze potwierdzona pełnym audytem. Oficjalna deklaracja Filharmonii dotyczy jej własnego serwisu.",
+    "links": [
+      "Oficjalna deklaracja dostępności FS",
+      "Dostępność podczas wizyty",
+      "Kontakt i pomoc"
+    ]
+  },
+  "contact": {
+    "title": "Kontakt",
+    "eyebrow": "Jesteśmy do Twojej dyspozycji",
+    "lead": "Pytania o bilety, miejsca lub wizytę? Skontaktuj się z kasą Filharmonii.",
+    "links": [],
+    "boxOffice": "Kasa biletowa",
+    "location": "Gdzie nas znajdziesz",
+    "institution": "Filharmonia im. Mieczysława Karłowicza w Szczecinie",
+    "directions": "Dojazd, parking i dostępność",
+    "otherContacts": "Pozostałe kontakty — oficjalny serwis FS",
+    "hours": "wt–czw 13:00–18:00, pt 13:00–20:00, sob 12:00–16:00 oraz godzinę przed każdym biletowanym wydarzeniem organizowanym przez Filharmonię"
+  }
+},
+
   footer: {
     boxOffice: "Kasa biletowa",
     boxOfficeHours: "wt–pt 12:00–18:00, sob 12:00–16:00\noraz godzinę przed każdym biletowanym wydarzeniem",

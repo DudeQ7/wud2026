@@ -39,6 +39,62 @@ export const de: Dictionary = {
     account: "Konto",
   },
 
+  footerPages: {
+  "partners": {
+    "title": "Partner und Wirtschaft",
+    "eyebrow": "Zusammenarbeit mit der Philharmonie",
+    "lead": "Die Philharmonie lädt zu langfristigen Partnerschaften und zur Zusammenarbeit bei einzelnen Veranstaltungen ein.",
+    "links": [
+      "Partnerschaftsmöglichkeiten",
+      "Kontakt für Partnerschaften"
+    ]
+  },
+  "media": {
+    "title": "Pressebereich",
+    "eyebrow": "Materialien und Informationen",
+    "lead": "Downloads und Kontaktdaten des Teams der Philharmonie finden Sie auf der offiziellen Website.",
+    "links": [
+      "Downloads",
+      "Kontakt zur Philharmonie",
+      "Künstler",
+      "Orchester"
+    ]
+  },
+  "about": {
+    "title": "Über uns",
+    "eyebrow": "Philharmonie Stettin",
+    "lead": "Entdecken Sie die Mieczysław-Karłowicz-Philharmonie in Stettin: ihr Orchester, ihre Geschichte und ihr Gebäude.",
+    "links": [
+      "Orchester",
+      "Geschichte",
+      "Gebäude",
+      "Direktion — offizielle Website der Philharmonie"
+    ]
+  },
+  "accessibility": {
+    "title": "Erklärung zur Barrierefreiheit",
+    "eyebrow": "Barrierefreiheit der Website und Ihres Besuchs",
+    "lead": "Dieser Prototyp wurde für den Hackathon WUD 2026 entwickelt. Seine Konformität mit WCAG 2.2 AA wurde noch nicht durch eine vollständige Prüfung bestätigt. Die offizielle Erklärung der Philharmonie zur Barrierefreiheit gilt für deren eigene Website.",
+    "links": [
+      "Offizielle Erklärung der Philharmonie zur Barrierefreiheit",
+      "Barrierefreiheit bei Ihrem Besuch",
+      "Kontakt und Unterstützung"
+    ]
+  },
+  "contact": {
+    "title": "Kontakt",
+    "eyebrow": "Wir helfen Ihnen gerne",
+    "lead": "Fragen zu Tickets, Sitzplätzen oder Ihrem Besuch? Wenden Sie sich an die Kasse der Philharmonie.",
+    "links": [],
+    "boxOffice": "Kasse",
+    "location": "Hier finden Sie uns",
+    "institution": "Mieczysław-Karłowicz-Philharmonie in Stettin",
+    "directions": "Anreise, Parken und Barrierefreiheit",
+    "otherContacts": "Weitere Kontakte — offizielle Website der Philharmonie",
+    "hours": "Di–Do 13:00–18:00, Fr 13:00–20:00, Sa 12:00–16:00 sowie eine Stunde vor jeder kostenpflichtigen Veranstaltung der Philharmonie"
+  }
+},
+
   footer: {
     boxOffice: "Kasse",
     boxOfficeHours: "Di–Fr 12:00–18:00, Sa 12:00–16:00\nsowie eine Stunde vor jeder Veranstaltung mit Eintritt",

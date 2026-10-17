@@ -1,22 +1,26 @@
 import type { Metadata } from "next"
 import Link from "next/link"
-import { localizedPath } from "@/i18n"
+import { getDictionary, localizedPath } from "@/i18n"
 import { getLang } from "@/i18n/server"
 import { ArrowRight } from "lucide-react"
 import { SimplePage } from "@/components/fs/simple-page"
 import { iconProps } from "@/components/fs/icons"
 
-export const metadata: Metadata = { title: "O instytucji – Filharmonia w Szczecinie" }
+export async function generateMetadata(): Promise<Metadata> {
+  const t = getDictionary(await getLang()).footerPages.about
+  return { title: t.title, description: t.lead }
+}
 
 export default async function Page() {
   const lang = await getLang()
+  const t = getDictionary(lang).footerPages.about
   return (
-    <SimplePage eyebrow="Filharmonia w Szczecinie" title="O instytucji" lead="Poznaj Filharmonię im. Mieczysława Karłowicza w Szczecinie: jej orkiestrę, historię i budynek.">
+    <SimplePage eyebrow={t.eyebrow} title={t.title} lead={t.lead}>
       <ul className="mt-8 border-t border-line">
-          <li><Link href={localizedPath(lang, "/orkiestra")}  className="flex min-h-12 cursor-pointer items-center justify-between gap-4 border-b border-line py-3 font-semibold hover:bg-bg-subtle hover:underline hover:underline-offset-4">Orkiestra<ArrowRight {...iconProps} className="size-5 shrink-0" /></Link></li>
-          <li><Link href={localizedPath(lang, "/historia")}  className="flex min-h-12 cursor-pointer items-center justify-between gap-4 border-b border-line py-3 font-semibold hover:bg-bg-subtle hover:underline hover:underline-offset-4">Historia<ArrowRight {...iconProps} className="size-5 shrink-0" /></Link></li>
-          <li><Link href={localizedPath(lang, "/budynek")}  className="flex min-h-12 cursor-pointer items-center justify-between gap-4 border-b border-line py-3 font-semibold hover:bg-bg-subtle hover:underline hover:underline-offset-4">Budynek<ArrowRight {...iconProps} className="size-5 shrink-0" /></Link></li>
-          <li><Link href="https://filharmonia.szczecin.pl/grupy/57-Dyrekcja" className="flex min-h-12 cursor-pointer items-center justify-between gap-4 border-b border-line py-3 font-semibold hover:bg-bg-subtle hover:underline hover:underline-offset-4">Dyrekcja — oficjalny serwis FS<ArrowRight {...iconProps} className="size-5 shrink-0" /></Link></li>
+          <li><Link href={localizedPath(lang, "/orkiestra")}  className="flex min-h-12 cursor-pointer items-center justify-between gap-4 border-b border-line py-3 font-semibold hover:bg-bg-subtle hover:underline hover:underline-offset-4">{t.links[0]}<ArrowRight {...iconProps} className="size-5 shrink-0" /></Link></li>
+          <li><Link href={localizedPath(lang, "/historia")}  className="flex min-h-12 cursor-pointer items-center justify-between gap-4 border-b border-line py-3 font-semibold hover:bg-bg-subtle hover:underline hover:underline-offset-4">{t.links[1]}<ArrowRight {...iconProps} className="size-5 shrink-0" /></Link></li>
+          <li><Link href={localizedPath(lang, "/budynek")}  className="flex min-h-12 cursor-pointer items-center justify-between gap-4 border-b border-line py-3 font-semibold hover:bg-bg-subtle hover:underline hover:underline-offset-4">{t.links[2]}<ArrowRight {...iconProps} className="size-5 shrink-0" /></Link></li>
+          <li><Link href="https://filharmonia.szczecin.pl/grupy/57-Dyrekcja" className="flex min-h-12 cursor-pointer items-center justify-between gap-4 border-b border-line py-3 font-semibold hover:bg-bg-subtle hover:underline hover:underline-offset-4">{t.links[3]}<ArrowRight {...iconProps} className="size-5 shrink-0" /></Link></li>
       </ul>
     </SimplePage>
   )
