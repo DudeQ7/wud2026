@@ -12,7 +12,6 @@ import { buildingAccess, firstVisit } from "@/content/event"
 import { address, boxOffice } from "@/content/home"
 import { venueInfo } from "@/lib/events"
 import visit from "@/data/visit.json"
-import { cn } from "@/lib/utils"
 
 export const metadata: Metadata = {
   title: "Planuj wizytę – Filharmonia w Szczecinie",
@@ -22,7 +21,7 @@ export const metadata: Metadata = {
 const phone = boxOffice.phone.replaceAll(" ", "")
 const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`Filharmonia Szczecin, ${address}`)}`
 
-const link = "font-semibold text-text underline decoration-[1.5px] underline-offset-[3px]"
+const link = "inline-flex min-h-11 items-center font-semibold text-text underline decoration-[1.5px] underline-offset-[3px]"
 
 /** Odpowiedź w akordeonie (§7.3): <details>, cel dotyku 56 px, bez JS */
 function Answer({ title, open, children }: { title: string; open?: boolean; children: React.ReactNode }) {
@@ -82,11 +81,9 @@ export default function PlanVisitPage() {
             <Answer title="Jak dojechać">
               <p>{visit.publicTransport.bus}</p>
               <p>{visit.publicTransport.tram}</p>
-              <p>
-                <a href="https://zditm.szczecin.pl/" className={link}>
-                  Rozkłady jazdy ZDiTM
-                </a>
-              </p>
+              <a href="https://zditm.szczecin.pl/" className={link}>
+                Rozkłady jazdy ZDiTM
+              </a>
               <a href={mapsUrl} className={link}>
                 Nawiguj do Filharmonii ({address})
               </a>
@@ -98,17 +95,14 @@ export default function PlanVisitPage() {
 
             <Answer title="Kasa">
               <p className="whitespace-pre-line">{boxOffice.summary}</p>
-              <p>
-                Telefon:{" "}
+              <div className="flex flex-col">
                 <a href={`tel:${phone}`} className={link}>
-                  {boxOffice.phone}
+                  Telefon: {boxOffice.phone}
                 </a>
-                <br />
-                E-mail:{" "}
                 <a href={`mailto:${boxOffice.email}`} className={link}>
-                  {boxOffice.email}
+                  E-mail: {boxOffice.email}
                 </a>
-              </p>
+              </div>
               <p>Infolinia: {visit.infoline}</p>
             </Answer>
 
@@ -146,7 +140,10 @@ export default function PlanVisitPage() {
           </div>
 
           <p className="mt-8 type-meta text-text-muted">
-            Źródło: <a href={visit.source} className={cn(link, "font-normal")}>strona Filharmonii „Zaplanuj swoją wizytę”</a>.
+            Źródło:{" "}
+            <a href={visit.source} className="underline underline-offset-[3px]">
+              strona Filharmonii „Zaplanuj swoją wizytę”
+            </a>
           </p>
         </Container>
       </main>
