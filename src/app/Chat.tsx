@@ -3,6 +3,7 @@
 import { parse } from "partial-json";
 import { useEffect, useRef, useState, useTransition } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import locales from "@/data/locales.json";
 import type { ChatMessage, EventCard, Lang, Reply, Venue } from "@/lib/assistant";
 import { toggleFavorite, getFavoriteEventIds } from "@/app/actions/panel";
@@ -20,6 +21,7 @@ type Props = {
 const nextDate = (dates: string[]) => dates.find((date) => new Date(date) >= new Date()) ?? dates.at(-1)!;
 
 export default function Chat({ lang, events, venue }: Props) {
+  const router = useRouter();
   const [entries, setEntries] = useState<Entry[]>([]);
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
@@ -86,7 +88,7 @@ export default function Chat({ lang, events, venue }: Props) {
 
   function handleToggleFavorite(eventId: number) {
     if (!userEmail) {
-      window.location.href = "/auth/login";
+      router.push("/auth/login");
       return;
     }
 

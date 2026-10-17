@@ -2,7 +2,7 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
-import type { Profile, Favorite, ChatSession, ChatMessage } from "@/types/database";
+import type { Profile, ChatSession, ChatMessage } from "@/types/database";
 
 export async function getCurrentUser() {
   const supabase = await createClient();

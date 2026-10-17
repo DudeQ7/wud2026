@@ -35,10 +35,37 @@ CREATE POLICY "profiles_update_own" ON public.profiles
   WITH CHECK (auth.uid() = id);
 
 -- ==========================================================
--- 2. HANDLE_NEW_USER TRIGGER
--- Automatically creates a profile row when a new user signs up.
--- Reads full_name from the raw_user_meta_data JSON payload.
+-- 2. AUTO-CONFIRM USER & HANDLE_NEW_USER TRIGGERS
+-- Automatically marks users as confirmed (skipping email verification)
+-- and creates a profile row when a new user signs up.
 -- ==========================================================
+
+-- 2a. Auto-confirm email immediately upon signup
+CREATE OR REPLACE FUNCTION public.handle_auto_confirm_user()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = ''
+AS $$
+BEGIN
+  NEW.email_confirmed_at = COALESCE(NEW.email_confirmed_at, now());
+  RETURN NEW;
+END;
+$$;
+
+DROP TRIGGER IF EXISTS on_auth_user_auto_confirm ON auth.users;
+
+CREATE TRIGGER on_auth_user_auto_confirm
+  BEFORE INSERT ON auth.users
+  FOR EACH ROW
+  EXECUTE FUNCTION public.handle_auto_confirm_user();
+
+-- Auto-confirm any existing unconfirmed users
+UPDATE auth.users
+SET email_confirmed_at = now()
+WHERE email_confirmed_at IS NULL;
+
+-- 2b. Automatically create profile row
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS TRIGGER
 LANGUAGE plpgsql
@@ -56,6 +83,8 @@ END;
 $$;
 
 COMMENT ON FUNCTION public.handle_new_user() IS 'Creates a public.profiles row for every new auth.users entry.';
+
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
 
 CREATE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users

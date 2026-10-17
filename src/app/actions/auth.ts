@@ -71,11 +71,16 @@ export async function register(prevState: AuthState | null, formData: FormData):
     return { error: error.message || "Błąd podczas rejestracji." };
   }
 
-  // Jeśli włączone jest potwierdzenie e-mail w Supabase i brak aktywnej sesji
+  // Jeśli w Supabase brak sesji od razu po rejestracji (np. przy włączonym potwierdzaniu w panelu),
+  // logujemy użytkownika od razu bez oczekiwania na e-mail weryfikacyjny
   if (data?.user && !data.session) {
-    return {
-      message: "Konto zostało utworzone. Sprawdź swoją skrzynkę e-mail, aby potwierdzić rejestrację.",
-    };
+    const { error: signInError } = await supabase.auth.signInWithPassword({
+      email: parsed.data.email,
+      password: parsed.data.password,
+    });
+    if (signInError) {
+      return { error: signInError.message };
+    }
   }
 
   redirect("/panel");
