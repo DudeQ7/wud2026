@@ -1,5 +1,8 @@
+import { randomUUID } from "node:crypto";
+import { OpenAI as PostHogOpenAI } from "@posthog/ai/openai";
 import OpenAI from "openai";
 import { zodTextFormat } from "openai/helpers/zod";
+import { PostHog } from "posthog-node";
 import { z } from "zod";
 import locales from "@/data/locales.json";
 import koncerty from "@/data/koncerty.json";
@@ -7,6 +10,30 @@ import visit from "@/data/visit.json";
 
 const MODEL = "gpt-6-luna";
 const HISTORY_LIMIT = 10;
+const posthogProjectToken = process.env.NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN;
+const posthogHost = process.env.NEXT_PUBLIC_POSTHOG_HOST;
+const openaiApiKey = process.env.OPENAI_API_KEY;
+
+if (!posthogProjectToken && process.env.NODE_ENV === "development") {
+  throw new Error("NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN variable required by PostHog is missing or un-configured, this causes events to be silently missed. This error stops appearing once NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN is configured");
+}
+
+if (!posthogHost && process.env.NODE_ENV === "development") {
+  throw new Error("NEXT_PUBLIC_POSTHOG_HOST variable required by PostHog is missing or un-configured, this causes events to be silently missed. This error stops appearing once NEXT_PUBLIC_POSTHOG_HOST is configured");
+}
+
+const posthog = posthogProjectToken && posthogHost
+  ? new PostHog(posthogProjectToken, {
+      host: posthogHost,
+      privacyMode: false,
+      enableExceptionAutocapture: true,
+      flushAt: 1,
+      flushInterval: 0,
+    })
+  : null;
+const observedOpenAI = posthog && openaiApiKey
+  ? new PostHogOpenAI({ apiKey: openaiApiKey, posthog })
+  : null;
 
 const { meta, events } = koncerty;
 
@@ -35,6 +62,7 @@ export type ChatMessage = z.infer<typeof messageSchema>;
 export const chatRequestSchema = z.object({
   messages: z.array(messageSchema).min(1).max(100),
   lang: langSchema,
+  sessionId: z.string().uuid(),
 });
 export type ChatRequest = z.infer<typeof chatRequestSchema>;
 
@@ -77,22 +105,38 @@ Pola odpowiedzi:
 DANE:
 ${JSON.stringify(knowledge)}`;
 
-export async function streamReply({ messages, lang }: ChatRequest): Promise<ReadableStream<Uint8Array>> {
+export async function streamReply(
+  { messages, lang, sessionId }: ChatRequest,
+  distinctId?: string,
+): Promise<ReadableStream<Uint8Array>> {
   const now = new Intl.DateTimeFormat("pl-PL", {
     dateStyle: "full",
     timeStyle: "short",
     timeZone: "Europe/Warsaw",
   }).format(new Date());
 
-  const stream = await new OpenAI().responses.create({
-    model: MODEL,
-    instructions: `${INSTRUCTIONS}\n\nTeraz jest: ${now} (czas w Szczecinie).\nJĘZYK INTERFEJSU: ${LANG_NAMES[lang]} (${lang}).`,
-    input: messages.slice(-HISTORY_LIMIT),
-    text: { format: zodTextFormat(replySchema, "reply") },
-    reasoning: { effort: "low" },
-    prompt_cache_key: "filharmonia-assistant",
-    stream: true,
-  });
+  const stream = observedOpenAI
+    ? await observedOpenAI.responses.create({
+        model: MODEL,
+        instructions: `${INSTRUCTIONS}\n\nTeraz jest: ${now} (czas w Szczecinie).\nJĘZYK INTERFEJSU: ${LANG_NAMES[lang]} (${lang}).`,
+        input: messages.slice(-HISTORY_LIMIT),
+        text: { format: zodTextFormat(replySchema, "reply") },
+        reasoning: { effort: "low" },
+        prompt_cache_key: "filharmonia-assistant",
+        stream: true,
+        posthogDistinctId: distinctId,
+        posthogTraceId: randomUUID(),
+        posthogProperties: { $ai_session_id: sessionId },
+      })
+    : await new OpenAI().responses.create({
+        model: MODEL,
+        instructions: `${INSTRUCTIONS}\n\nTeraz jest: ${now} (czas w Szczecinie).\nJĘZYK INTERFEJSU: ${LANG_NAMES[lang]} (${lang}).`,
+        input: messages.slice(-HISTORY_LIMIT),
+        text: { format: zodTextFormat(replySchema, "reply") },
+        reasoning: { effort: "low" },
+        prompt_cache_key: "filharmonia-assistant",
+        stream: true,
+      });
 
   const encoder = new TextEncoder();
   return new ReadableStream({
@@ -104,6 +148,12 @@ export async function streamReply({ messages, lang }: ChatRequest): Promise<Read
         controller.close();
       } catch (error) {
         controller.error(error);
+      } finally {
+        try {
+          await posthog?.flush();
+        } catch {
+          // AI observability delivery must not interrupt the assistant response.
+        }
       }
     },
     cancel: () => stream.controller.abort(),

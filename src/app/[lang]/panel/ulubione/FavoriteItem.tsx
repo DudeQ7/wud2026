@@ -1,6 +1,7 @@
 "use client";
 
 import { useTransition } from "react";
+import posthog from "posthog-js";
 import { toggleFavorite } from "@/app/actions/panel";
 import { type Locale, getDictionary } from "@/i18n";
 
@@ -26,7 +27,10 @@ export function FavoriteItem({ lang, event }: FavoriteItemProps) {
 
   const handleRemove = () => {
     startTransition(async () => {
-      await toggleFavorite(event.id, lang);
+      const result = await toggleFavorite(event.id, lang);
+      if ("isFavorite" in result && result.isFavorite === false) {
+        posthog.capture("favorite_removed", { event_id: event.id });
+      }
     });
   };
 

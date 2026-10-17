@@ -1,12 +1,15 @@
 "use client";
 
+import { useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import posthog from "posthog-js";
 import { logout } from "@/app/actions/auth";
 import { type Locale, getDictionary, localizedPath, stripLocale } from "@/i18n";
 
 interface PanelNavProps {
   lang: Locale;
+  userId: string;
   userEmail: string;
   userName?: string | null;
 }
@@ -18,10 +21,17 @@ const navItems = [
   { href: "/panel/profil", key: "profile", icon: "👤" },
 ] as const;
 
-export function PanelNav({ lang, userEmail, userName }: PanelNavProps) {
+export function PanelNav({ lang, userId, userEmail, userName }: PanelNavProps) {
   const t = getDictionary(lang).panel;
   // Adres bez prefiksu języka – „/en/panel” i „/panel” to ta sama pozycja menu
   const pathname = stripLocale(usePathname());
+
+  useEffect(() => {
+    posthog.identify(userId, {
+      ...(userEmail ? { email: userEmail } : {}),
+      ...(userName ? { name: userName } : {}),
+    });
+  }, [userEmail, userId, userName]);
 
   return (
     <aside className="w-full shrink-0 border-b border-border bg-background md:w-64 md:border-r md:border-b-0">
@@ -73,6 +83,12 @@ export function PanelNav({ lang, userEmail, userName }: PanelNavProps) {
 
           <form action={logout}>
             <input type="hidden" name="uiLang" value={lang} />
+          <form
+            action={logout}
+            onSubmit={() => {
+              posthog.reset();
+            }}
+          >
             <button
               type="submit"
               className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-left text-sm text-red-500 transition-colors hover:bg-red-500/10 dark:text-red-400"

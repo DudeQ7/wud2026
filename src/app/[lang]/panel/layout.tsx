@@ -21,6 +21,7 @@ export default async function PanelLayout({ children, params }: LayoutProps<"/[l
     <div className="flex min-h-dvh flex-col bg-background text-foreground md:flex-row">
       <PanelNav
         lang={lang}
+        userId={user.id}
         userEmail={user.email || ""}
         userName={profile?.full_name || user.user_metadata?.full_name}
       />

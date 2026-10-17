@@ -1,6 +1,7 @@
 "use client"
 
 import { useId, useState } from "react"
+import posthog from "posthog-js"
 
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -27,7 +28,11 @@ export function NewsletterForm({ lang }: { lang: Locale }) {
       consent: consent ? undefined : t.consentError,
     }
     setErrors(next)
-    setSent(!next.email && !next.consent)
+    const isValid = !next.email && !next.consent
+    setSent(isValid)
+    if (isValid) {
+      posthog.capture("newsletter_signup_completed")
+    }
   }
 
   if (sent) {

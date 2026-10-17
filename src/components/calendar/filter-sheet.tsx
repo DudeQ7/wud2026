@@ -3,6 +3,7 @@
 import { ChevronDown, X } from "lucide-react"
 import * as React from "react"
 import { useRef, useState } from "react"
+import posthog from "posthog-js"
 
 import { iconProps } from "@/components/fs/icons"
 import { Button } from "@/components/ui/button"
@@ -48,6 +49,19 @@ export function FilterSheet({ events, series, filters, today, t, activeCount, on
   }
 
   function apply() {
+    const selectedFilterCount =
+      Number(Boolean(draft.kiedy || draft.od || draft.do)) +
+      draft.rodzaj.length +
+      draft.dlaKogo.length +
+      Number(Boolean(draft.wiek)) +
+      draft.nastroj.length +
+      draft.miejsce.length +
+      Number(Boolean(draft.czas)) +
+      Number(Boolean(draft.cykl))
+    posthog.capture("calendar_filters_applied", {
+      result_count: count,
+      selected_filter_count: selectedFilterCount,
+    })
     onApply(draft)
     close()
   }
