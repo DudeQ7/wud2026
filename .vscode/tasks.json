@@ -1,0 +1,20 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Next.js: dev",
+      "type": "npm",
+      "script": "dev",
+      "isBackground": true,
+      "group": { "kind": "build", "isDefault": true },
+      "problemMatcher": {
+        "owner": "nextjs",
+        "pattern": { "regexp": "^x^" },
+        "background": {
+          "beginsPattern":"^\\s*▲ Next\\.js",
+          "endsPattern": "Ready in"
+        }
+      }
+    }
+  ]
+}
