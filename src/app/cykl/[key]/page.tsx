@@ -11,6 +11,7 @@ import { Container, Eyebrow } from "@/components/fs/layout"
 import { SiteFooter } from "@/components/fs/site-footer"
 import { SiteHeader } from "@/components/fs/site-header"
 import { buttonVariants } from "@/components/ui/button"
+import cykle from "@/data/cykle.json"
 import { plural, seriesKey } from "@/lib/calendar"
 import {
   eventDetails,
@@ -87,6 +88,7 @@ async function SeriesView({ seriesKeyValue }: { seriesKeyValue: string }) {
   const artists = [...new Set(group.flatMap((e) => eventDetails(e.id).artists.map((a) => a.name)))].sort((a, b) =>
     a.localeCompare(b, "pl")
   )
+  const about = (cykle as Record<string, { description: string[]; image?: string }>)[group[0].series!]
   const last = group.map((e) => lastDate(e)!).sort().at(-1)!
 
   return (
@@ -97,6 +99,18 @@ async function SeriesView({ seriesKeyValue }: { seriesKeyValue: string }) {
         {group.length} {plural(group.length, "wydarzenie", "wydarzenia", "wydarzeń")}
         {items.length > 0 && <>, najbliższe {formatShortDate(items[0].date)}</>}. Ostatni termin: {formatShortDate(last)}.
       </p>
+      {about?.image && (
+        // Grafika cyklu ma napisy, więc pokazujemy ją w całości, bez kadrowania do 3:2 (§5.6)
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={about.image} alt={name} className="mt-6 -mx-4 h-auto w-[calc(100%+2rem)] max-w-none sm:mx-0 sm:w-full" />
+      )}
+      {about && about.description.length > 0 && (
+        <div className="mt-6 flex max-w-[68ch] flex-col gap-4 type-body text-text">
+          {about.description.map((p) => (
+            <p key={p}>{p}</p>
+          ))}
+        </div>
+      )}
       <Link
         href={`/repertuar?cykl=${seriesKeyValue}`}
         className={`${buttonVariants({ variant: "secondary", block: true })} mt-4 sm:w-fit`}
