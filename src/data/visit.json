@@ -1,0 +1,21 @@
+{
+  "source": "https://filharmonia.szczecin.pl/zaplanuj_swoja_wizyte",
+  "address": "ul. Małopolska 48, 70-515 Szczecin",
+  "publicTransport": {
+    "bus": "Linia 70 (przystanek Filharmonia) i linia 90 (przystanek Starzyńskiego) – oba tuż obok Filharmonii. Ok. 5 minut pieszo: linie 107, A, B, C, 59 i 68 (przystanek Plac Rodła).",
+    "tram": "Linie 1 i 4 (przystanek Filharmonia) – tuż obok. Ok. 5 minut pieszo: linie 2, 3, 5, 10 i 11 (przystanek Plac Rodła).",
+    "timetables": "Rozkłady jazdy i połączenia: https://zditm.szczecin.pl/"
+  },
+  "parking": "Dwupoziomowy parking podziemny na 154 miejsca, w tym po 2 miejsca dla osób z niepełnosprawnościami na każdym poziomie. Wjazd od ul. Małopolskiej 48. Otwierany godzinę przed koncertem lub innym wydarzeniem. Bezpłatny dla gości z biletem. Z parkingu winda prowadzi wprost do holu.",
+  "tours": "Zwiedzanie z przewodnikiem po polsku, angielsku i niemiecku, w piątki, ok. 40 minut: historia budynku, sala symfoniczna i kameralna, hol, foyer, kręcone schody, Galeria Poziom 4. Terminy w repertuarze.",
+  "accessibility": "Główne wejście bez barier, z poziomu chodnika. Windy na wszystkie kondygnacje (obie sale, Galeria Poziom 4., parking). Toaleta dla osób na wózku. Osoby z niepełnosprawnością ruchową przed zakupem biletu powinny skontaktować się z kasą – kasa dobierze dostosowane miejsce i zapewni asystenta podczas koncertu.",
+  "accessibilityTickets": "Dzieci do 16. roku życia z orzeczeniem o niepełnosprawności: bilet 10 zł. Od 16. roku życia: lekki lub umiarkowany stopień – bilet ulgowy, znaczny stopień – bilet 10 zł. Osoba towarzysząca – bilet ulgowy.",
+  "cafes": "Symfonia Cafe w holu: wt–pt 10:00–18:00, sob–nd 12:00–18:00, w dni koncertowe do ostatniego gościa. Kawiarnia koncertowa na 3. piętrze (przy wejściu na balkon sali symfonicznej): czynna godzinę przed koncertem z przerwą, do jego końca. Na salę nie wnosi się napojów ani przekąsek.",
+  "boxOffice": {
+    "phone": "+48 91 431 07 20",
+    "email": "kasa@filharmonia.szczecin.pl",
+    "hours": "wt–czw 13:00–18:00, pt 13:00–20:00, sob 12:00–16:00 oraz godzinę przed każdym biletowanym wydarzeniem organizowanym przez Filharmonię"
+  },
+  "infoline": "+48 539 949 454, wt–czw 10:00–16:00",
+  "firstVisit": "Na stronie Filharmonii jest „Przewodnik dla nowych słuchaczy” z odpowiedziami na częste pytania osób, które przychodzą pierwszy raz."
+}

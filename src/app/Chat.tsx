@@ -3,16 +3,16 @@
 import { parse } from "partial-json";
 import { useEffect, useRef, useState } from "react";
 import locales from "@/data/locales.json";
-import type { ChatMessage, EventCard, Lang, Reply } from "@/lib/assistant";
+import type { ChatMessage, EventCard, Lang, Reply, Venue } from "@/lib/assistant";
 
 type Entry = ChatMessage & Partial<Reply>;
 
 // Język ustawia front (props) – czat nie ma własnego przełącznika.
-type Props = { lang: Lang; events: EventCard[] };
+type Props = { lang: Lang; events: EventCard[]; venue: Venue };
 
 const nextDate = (dates: string[]) => dates.find((date) => new Date(date) >= new Date()) ?? dates.at(-1)!;
 
-export default function Chat({ lang, events }: Props) {
+export default function Chat({ lang, events, venue }: Props) {
   const [entries, setEntries] = useState<Entry[]>([]);
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
@@ -110,6 +110,21 @@ export default function Chat({ lang, events }: Props) {
                 </article>
               );
             })}
+
+            {entry.showMap && (
+              <article className="rounded-xl border border-border p-4">
+                <h2 className="font-semibold">{venue.name}</h2>
+                <p className="text-sm text-muted-foreground">{venue.address}</p>
+                <a
+                  href={venue.mapsUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-2 inline-block text-sm font-medium underline underline-offset-4"
+                >
+                  {t.directions}
+                </a>
+              </article>
+            )}
           </div>
         ))}
         <div ref={endRef} />

@@ -1,4 +1,4 @@
-// Buduje ../Data/koncerty.json z ../pages/wydarzenia__*.md (tylko nadchodzące)
+// Buduje src/data/koncerty.json (dane chatbota) z ../pages/wydarzenia__*.md (tylko nadchodzące)
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -140,5 +140,5 @@ const out = {
   },
   events,
 };
-fs.writeFileSync(path.resolve(here, '../Data/koncerty.json'), JSON.stringify(out, null, 2), 'utf8');
+fs.writeFileSync(path.resolve(here, '../../src/data/koncerty.json'), JSON.stringify(out, null, 2), 'utf8');
 console.log(`Zapisano ${events.length} wydarzeń`);

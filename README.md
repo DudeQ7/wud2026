@@ -21,7 +21,8 @@ cp .env.example .env   # wpisz swój OPENAI_API_KEY
 pnpm dev
 ```
 
-- `ScrappedData/Data/koncerty.json` – baza wiedzy asystenta (wydarzenia ze strony Filharmonii)
+- `src/data/koncerty.json` – baza wiedzy asystenta (wydarzenia ze strony Filharmonii, odświeżanie: `node ScrappedData/scraper/build-json.mjs`)
+- `src/data/visit.json` – informacje praktyczne: dojazd, parking, dostępność, kawiarnie, kasa (ręcznie, ze strony „Zaplanuj swoją wizytę”)
 - `src/data/locales.json` – teksty UI i pytania startowe (pl/en/de); język przekazuje front przez prop `lang` w `<Chat>` (na razie `pl`)
 - `src/lib/assistant.ts` – prompt, schemat odpowiedzi, wywołanie OpenAI
 - `src/app/api/chat/route.ts` – endpoint streamujący

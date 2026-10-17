@@ -6,12 +6,13 @@
     "send": "Wyślij",
     "details": "Szczegóły",
     "tickets": "Bilety",
+    "directions": "Wyznacz trasę w Google Maps",
     "error": "Coś poszło nie tak. Spróbuj ponownie za chwilę.",
     "suggestions": [
       "Co gra w ten weekend?",
       "Koncert dla dziecka 5+",
       "Kiedy można zwiedzać budynek?",
-      "Jakie są zniżki na bilety?"
+      "Jak dojechać i gdzie zaparkować?"
     ]
   },
   "en": {
@@ -21,12 +22,13 @@
     "send": "Send",
     "details": "Details",
     "tickets": "Tickets",
+    "directions": "Get directions in Google Maps",
     "error": "Something went wrong. Please try again in a moment.",
     "suggestions": [
       "What's on this weekend?",
       "Are there tours in English?",
       "Concerts for kids?",
-      "Box office opening hours?"
+      "How do I get there?"
     ]
   },
   "de": {
@@ -36,12 +38,13 @@
     "send": "Senden",
     "details": "Details",
     "tickets": "Tickets",
+    "directions": "Route in Google Maps planen",
     "error": "Etwas ist schiefgelaufen. Bitte versuche es gleich noch einmal.",
     "suggestions": [
       "Was läuft am Wochenende?",
       "Gibt es Führungen auf Deutsch?",
       "Konzerte für Kinder?",
-      "Öffnungszeiten der Kasse?"
+      "Wie komme ich hin?"
     ]
   }
 }
