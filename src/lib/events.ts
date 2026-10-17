@@ -1,4 +1,7 @@
 import koncerty from "@/data/koncerty.json"
+import { type Locale, locales } from "@/i18n/config"
+import titlesDe from "@/i18n/events/de.json"
+import titlesEn from "@/i18n/events/en.json"
 import { type FsEvent, addDays, datesOn, nextDate } from "@/lib/event-format"
 
 // Dane wydarzeń z koncerty.json. Ten moduł importuje cały plik danych, więc używamy go tylko
@@ -42,18 +45,21 @@ function durationFrom(description?: string | null) {
   return minutes ? Number(minutes) : undefined
 }
 
-function toEvent(raw: RawEvent): FsEvent {
-  const title = cleanTitle(raw.title)
+/** „Artysta | Projekt” → nagłówek (artysta) i podtytuł (projekt) */
+function splitTitle(raw: string) {
+  const title = cleanTitle(raw)
   const [headline, ...rest] = title.split(" | ")
+  return { title, headline, subtitle: rest.length ? rest.join(" | ") : undefined }
+}
+
+function toEvent(raw: RawEvent): FsEvent {
   const images = raw.images ?? []
   const card = images.find((src) => src.includes("_midi")) ?? images[0]
   const large = images.find((src) => src.includes("_maxi")) ?? card
 
   return {
     id: raw.id,
-    title,
-    headline,
-    subtitle: rest.length ? rest.join(" | ") : undefined,
+    ...splitTitle(raw.title),
     type: raw.type,
     kind: kindLabel(raw),
     kindLabel: raw.kind_label ?? undefined,
@@ -75,12 +81,32 @@ function toEvent(raw: RawEvent): FsEvent {
   }
 }
 
+/** Wydarzenia z polskimi tytułami – źródło dla filtrów, wyszukiwania, API i .ics */
 export const events: FsEvent[] = koncerty.events.map(toEvent)
+
+// Tłumaczenia tytułów (src/i18n/events/*.json, klucz = id). Wydarzenie bez tłumaczenia zostaje z tytułem z danych,
+// więc nowe wydarzenia po odświeżeniu koncerty.json pokazują się po polsku, dopóki ktoś nie doda tłumaczenia.
+const TITLES: Record<Exclude<Locale, "pl">, Record<string, string>> = { en: titlesEn, de: titlesDe }
+
+/** Wydarzenie z tytułem w danym języku */
+export function localizeEvent<T extends FsEvent>(event: T, lang: Locale): T {
+  const title = lang === "pl" ? undefined : TITLES[lang][String(event.id)]
+  return title ? { ...event, ...splitTitle(title) } : event
+}
+
+const eventsByLang = Object.fromEntries(
+  locales.map((lang) => [lang, events.map((event) => localizeEvent(event, lang))])
+) as Record<Locale, FsEvent[]>
 
 export const venueInfo = koncerty.meta.venue_info
 
-export function getEvent(id: number) {
-  const event = events.find((e) => e.id === id)
+/** Wydarzenie po id albo undefined, gdy zniknęło z danych (np. zapisane w ulubionych, a już po terminie) */
+export function findEvent(id: number, lang: Locale = "pl") {
+  return eventsByLang[lang].find((e) => e.id === id)
+}
+
+export function getEvent(id: number, lang: Locale = "pl") {
+  const event = eventsByLang[lang].find((e) => e.id === id)
   if (!event) throw new Error(`Brak wydarzenia ${id} w koncerty.json`)
   return event
 }
@@ -88,8 +114,8 @@ export function getEvent(id: number) {
 // ——— Selekcja ———
 
 /** Wiersze dnia: wydarzenie z jego godzinami w danym dniu, posortowane po pierwszej godzinie */
-export function eventsOnDay(dayKey: string) {
-  return events
+export function eventsOnDay(dayKey: string, lang: Locale = "pl") {
+  return eventsByLang[lang]
     .map((event) => ({ event, times: datesOn(event, dayKey) }))
     .filter(({ times }) => times.length > 0)
     .sort((a, b) => a.times[0].localeCompare(b.times[0]))
@@ -98,8 +124,8 @@ export function eventsOnDay(dayKey: string) {
 const CONCERT_TYPES = new Set(["koncert", "edukacja/rodzinne"])
 
 /** Najbliższy koncert od teraz – otwarcie strony głównej */
-export function nextConcert(fromKey: string) {
-  return events
+export function nextConcert(fromKey: string, lang: Locale = "pl") {
+  return eventsByLang[lang]
     .filter((e) => e.type === "koncert")
     .map((event) => ({ event, date: nextDate(event, fromKey) }))
     .filter((x): x is { event: FsEvent; date: string } => Boolean(x.date))
@@ -107,8 +133,8 @@ export function nextConcert(fromKey: string) {
 }
 
 /** Najbliższe koncerty po podanym dniu (bez wystaw i zwiedzania), z pominięciem wskazanych id */
-export function upcomingConcerts(afterDayKey: string, limit: number, excludeIds: number[] = []) {
-  return events
+export function upcomingConcerts(afterDayKey: string, limit: number, excludeIds: number[] = [], lang: Locale = "pl") {
+  return eventsByLang[lang]
     .filter((e) => CONCERT_TYPES.has(e.type) && !excludeIds.includes(e.id))
     .map((event) => ({ event, date: nextDate(event, `${addDays(afterDayKey, 1)}T00:00`) }))
     .filter((x): x is { event: FsEvent; date: string } => Boolean(x.date))

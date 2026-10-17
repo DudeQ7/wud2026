@@ -9,6 +9,10 @@
     "tickets": "Bilety",
     "directions": "Wyznacz trasę w Google Maps",
     "error": "Coś poszło nie tak. Spróbuj ponownie za chwilę.",
+    "panel": "Mój Panel",
+    "login": "Zaloguj się",
+    "favAdd": "Zapisz w ulubionych",
+    "favRemove": "Usuń z ulubionych",
     "suggestions": [
       "Co gra w ten weekend?",
       "Koncert dla dziecka 5+",
@@ -26,6 +30,10 @@
     "tickets": "Tickets",
     "directions": "Get directions in Google Maps",
     "error": "Something went wrong. Please try again in a moment.",
+    "panel": "My account",
+    "login": "Log in",
+    "favAdd": "Save to favourites",
+    "favRemove": "Remove from favourites",
     "suggestions": [
       "What's on this weekend?",
       "Are there tours in English?",
@@ -43,6 +51,10 @@
     "tickets": "Tickets",
     "directions": "Route in Google Maps planen",
     "error": "Etwas ist schiefgelaufen. Bitte versuche es gleich noch einmal.",
+    "panel": "Mein Konto",
+    "login": "Anmelden",
+    "favAdd": "Zu Favoriten hinzufügen",
+    "favRemove": "Aus den Favoriten entfernen",
     "suggestions": [
       "Was läuft am Wochenende?",
       "Gibt es Führungen auf Deutsch?",

@@ -3,12 +3,14 @@ import Image from "next/image"
 import { FactList } from "@/components/fs/event-meta"
 import { Container, Eyebrow } from "@/components/fs/layout"
 import { buttonVariants } from "@/components/ui/button"
-import { type FsEvent, formatLineup, formatSeries, formatShortDate, formatTime } from "@/lib/event-format"
+import { type Locale, getDictionary, kindLabel, seriesLabel, venueLabel } from "@/i18n"
+import { type FsEvent, formatLineup, formatShortDate, formatTime } from "@/lib/event-format"
 import { cn } from "@/lib/utils"
 
 type HeroProps = {
   event: FsEvent
   date: string
+  lang: Locale
   /** Kadrowanie zdjęcia na twarz (object-position) – bez edycji pliku */
   photoPosition?: string
 }
@@ -16,11 +18,13 @@ type HeroProps = {
 /**
  * Otwarcie strony głównej (§6.5): jedno zdjęcie w oryginale + najbliższe wydarzenie.
  * Tekst nie leży na zdjęciu – stoi na białym panelu ze ściętym narożnikiem.
+ * Zdanie „dlaczego warto” pochodzi z polskiego opisu, więc w EN/DE go nie pokazujemy.
  */
-export function Hero({ event, date, photoPosition = "50% 30%" }: HeroProps) {
-  const when = `${formatShortDate(date)} · ${formatTime(date)}`
-  const lineup = formatLineup(event)
-  const series = formatSeries(event.series)
+export function Hero({ event, date, lang, photoPosition = "50% 30%" }: HeroProps) {
+  const t = getDictionary(lang)
+  const when = `${formatShortDate(date, t)} · ${formatTime(date)}`
+  const lineup = formatLineup(event, t)
+  const series = seriesLabel(t, event.series)
 
   return (
     <section aria-labelledby="hero-title">
@@ -28,7 +32,7 @@ export function Hero({ event, date, photoPosition = "50% 30%" }: HeroProps) {
         {event.image && (
           <Image
             src={event.image.large}
-            alt={`${event.headline} – zdjęcie artysty`}
+            alt={t.event.photoAlt(event.headline)}
             fill
             priority
             sizes="100vw"
@@ -41,7 +45,7 @@ export function Hero({ event, date, photoPosition = "50% 30%" }: HeroProps) {
           <Container className="px-0 sm:px-6 lg:px-8">
             <div className="chamfer-tr flex flex-col gap-1 bg-background px-4 pt-5 pb-8 sm:max-w-xl sm:px-6 lg:px-8 lg:pt-8">
               <Eyebrow>
-                {event.kind} · {when}
+                {kindLabel(t, event.kind)} · {when}
               </Eyebrow>
               <h1 id="hero-title" className="type-h1 text-gold">
                 {event.headline}
@@ -49,10 +53,10 @@ export function Hero({ event, date, photoPosition = "50% 30%" }: HeroProps) {
               {event.subtitle && <p className="font-heading text-xl font-semibold text-text">{event.subtitle}</p>}
               <div className="mt-4 grid grid-cols-2 gap-2">
                 <a href={event.ticketsUrl} className={cn(buttonVariants({ variant: "primary" }))}>
-                  Kup bilet
+                  {t.event.buyTicket}
                 </a>
                 <a href={event.url} className={cn(buttonVariants({ variant: "secondary" }))}>
-                  Zobacz
+                  {t.event.see}
                 </a>
               </div>
             </div>
@@ -62,14 +66,14 @@ export function Hero({ event, date, photoPosition = "50% 30%" }: HeroProps) {
 
       <Container>
         <div className="flex max-w-xl flex-col gap-6 pt-2 pb-16">
-          {event.lead && <p className="type-body text-text">{event.lead}</p>}
+          {lang === "pl" && event.lead && <p className="type-body text-text">{event.lead}</p>}
           <FactList
             facts={[
-              { label: "Kiedy", value: when },
-              { label: "Gdzie", value: event.venue },
-              ...(lineup ? [{ label: "Skład", value: lineup }] : []),
+              { label: t.event.facts.when, value: when },
+              { label: t.event.facts.where, value: venueLabel(t, event.venue) },
+              ...(lineup ? [{ label: t.event.facts.lineup, value: lineup }] : []),
               // Podstron cykli jeszcze nie ma – nazwa cyklu bez linku
-              ...(series ? [{ label: "Cykl", value: series }] : []),
+              ...(series ? [{ label: t.event.facts.series, value: series }] : []),
             ]}
           />
         </div>

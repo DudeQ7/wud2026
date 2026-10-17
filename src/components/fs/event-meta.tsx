@@ -3,7 +3,8 @@ import * as React from "react"
 
 import { iconProps } from "@/components/fs/icons"
 import { Badge } from "@/components/ui/badge"
-import { type FsEvent, formatDayMonth, galleryInfo, isExhibition, lastDate } from "@/lib/event-format"
+import type { Dictionary } from "@/i18n"
+import { type FsEvent, formatDayMonth, isExhibition, lastDate } from "@/lib/event-format"
 import { cn } from "@/lib/utils"
 
 /** Metadane w jednej linii: „Sala Symfoniczna · bilet 10 zł · 1 h 40 min” (§3.2 meta) */
@@ -17,19 +18,19 @@ export function MetaLine({ items, className }: { items: (string | undefined)[]; 
  * Znacznik informacyjny przy wydarzeniu – zawsze słowem, bez koloru (§6.8).
  * Wystawy: „Otwarta do 22.11”, wydarzenia dla dzieci: „Wiek 5+”.
  */
-export function EventInfoBadge({ event }: { event: FsEvent }) {
+export function EventInfoBadge({ event, t }: { event: FsEvent; t: Dictionary }) {
   if (isExhibition(event)) {
     const end = lastDate(event)
-    return end ? <Badge>Otwarta do {formatDayMonth(end)}</Badge> : null
+    return end ? <Badge>{t.event.openUntil(formatDayMonth(end, t))}</Badge> : null
   }
-  if (event.age) return <Badge>Wiek {event.age}</Badge>
+  if (event.age) return <Badge>{t.event.age(event.age)}</Badge>
   return null
 }
 
 /** Cena do metadanych: z danych, a dla wystaw – cena biletu do galerii */
-export function eventPrice(event: FsEvent) {
+export function eventPrice(event: FsEvent, t: Dictionary) {
   if (event.prices.length) return event.prices.join(", ")
-  if (isExhibition(event)) return galleryInfo.price
+  if (isExhibition(event)) return t.event.galleryPrice
   return undefined
 }
 
@@ -37,11 +38,11 @@ export function eventPrice(event: FsEvent) {
  * Znacznik dostępności (§6.9). Wszystkie sale FS mają wejście bez barier i windy (visit.json),
  * więc „Dostęp dla wózków · winda” dotyczy każdego wydarzenia w budynku.
  */
-export function AccessibilityNote({ className }: { className?: string }) {
+export function AccessibilityNote({ t, className }: { t: Dictionary; className?: string }) {
   return (
     <p className={cn("flex items-center gap-1.5 type-meta text-text", className)}>
       <Accessibility {...iconProps} className="size-5 shrink-0" />
-      Dostęp dla wózków · winda
+      {t.event.wheelchair}
     </p>
   )
 }

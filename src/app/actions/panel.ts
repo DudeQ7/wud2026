@@ -1,7 +1,11 @@
 "use server";
 
+import { type Locale, getDictionary, hasLocale } from "@/i18n";
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
+
+// Panel jest w każdej wersji językowej – odświeżamy cały segment /[lang]/panel
+const revalidatePanel = () => revalidatePath("/[lang]/panel", "layout");
 import type { Profile, ChatSession, ChatMessage } from "@/types/database";
 
 export async function getCurrentUser() {
@@ -31,13 +35,16 @@ export async function getProfile(): Promise<Profile | null> {
 }
 
 export async function updateProfile(formData: FormData) {
+  // „uiLang” – język interfejsu (komunikaty); „lang” niżej to preferowany język kontaktu z profilu
+  const ui = String(formData.get("uiLang") ?? "");
+  const t = getDictionary(hasLocale(ui) ? ui : "pl").panel.profile;
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return { error: "Musisz być zalogowany" };
+    return { error: t.notLoggedIn };
   }
 
   const fullName = formData.get("fullName") as string;
@@ -55,12 +62,11 @@ export async function updateProfile(formData: FormData) {
     });
 
   if (error) {
-    return { error: "Nie udało się zaktualizować profilu" };
+    return { error: t.updateFailed };
   }
 
-  revalidatePath("/panel");
-  revalidatePath("/panel/profil");
-  return { success: true, message: "Profil został zaktualizowany" };
+  revalidatePanel();
+  return { success: true, message: t.updated };
 }
 
 export async function getFavoriteEventIds(): Promise<number[]> {
@@ -80,14 +86,14 @@ export async function getFavoriteEventIds(): Promise<number[]> {
   return (data || []).map((row) => row.event_id);
 }
 
-export async function toggleFavorite(eventId: number) {
+export async function toggleFavorite(eventId: number, lang: Locale = "pl") {
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return { error: "Zaloguj się, aby dodawać koncerty do ulubionych" };
+    return { error: getDictionary(lang).panel.favorites.loginRequired };
   }
 
   // Check if exists
@@ -100,16 +106,14 @@ export async function toggleFavorite(eventId: number) {
 
   if (existing) {
     await supabase.from("favorites").delete().eq("id", existing.id);
-    revalidatePath("/panel");
-    revalidatePath("/panel/ulubione");
+    revalidatePanel();
     return { isFavorite: false };
   } else {
     await supabase.from("favorites").insert({
       user_id: user.id,
       event_id: eventId,
     });
-    revalidatePath("/panel");
-    revalidatePath("/panel/ulubione");
+    revalidatePanel();
     return { isFavorite: true };
   }
 }

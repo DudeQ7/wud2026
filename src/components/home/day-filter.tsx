@@ -4,6 +4,7 @@ import { useState } from "react"
 
 import { EventRow } from "@/components/fs/event-row"
 import { Toggle } from "@/components/ui/toggle"
+import { type Locale, getDictionary } from "@/i18n"
 import type { FsEvent } from "@/lib/event-format"
 
 export type DayGroup = {
@@ -30,7 +31,8 @@ export type DayTab = {
  * „Dziś w Filharmonii” z szybkim wyborem dnia (§6.6): Dziś / Jutro / Ten weekend.
  * Przy jednym dniu lista bez nagłówka dnia; przy weekendzie – nagłówki dni (h3, §6.7).
  */
-export function DayFilter({ tabs, headingId }: { tabs: DayTab[]; headingId: string }) {
+export function DayFilter({ tabs, headingId, lang }: { tabs: DayTab[]; headingId: string; lang: Locale }) {
+  const t = getDictionary(lang).home.today
   const [active, setActive] = useState<DayTab["key"]>(tabs[0].key)
   const tab = tabs.find((t) => t.key === active) ?? tabs[0]
   const multiDay = tab.groups.length > 1
@@ -44,7 +46,7 @@ export function DayFilter({ tabs, headingId }: { tabs: DayTab[]; headingId: stri
         <p className="type-meta whitespace-pre-line text-text-muted">{tab.meta}</p>
       </div>
 
-      <div role="group" aria-label="Wybierz dzień" className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:px-0">
+      <div role="group" aria-label={t.chooseDay} className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:px-0">
         {tabs.map((t) => (
           <Toggle
             key={t.key}
@@ -60,7 +62,7 @@ export function DayFilter({ tabs, headingId }: { tabs: DayTab[]; headingId: stri
       <div id={`${headingId}-list`} aria-live="polite" className="mt-6">
         {tab.groups.every((g) => g.rows.length === 0) ? (
           <p className="type-body border-y border-line py-4 text-text">
-            Tego dnia nie ma wydarzeń. Zajrzyj do pełnego kalendarza.
+            {t.empty}
           </p>
         ) : (
           tab.groups.map((group) =>
@@ -73,7 +75,7 @@ export function DayFilter({ tabs, headingId }: { tabs: DayTab[]; headingId: stri
                 )}
                 <div className="grid lg:grid-cols-2 lg:gap-x-8">
                   {group.rows.map(({ event, times }) => (
-                    <EventRow key={`${group.day}-${event.id}`} event={event} times={times} />
+                    <EventRow key={`${group.day}-${event.id}`} event={event} times={times} lang={lang} />
                   ))}
                 </div>
               </div>

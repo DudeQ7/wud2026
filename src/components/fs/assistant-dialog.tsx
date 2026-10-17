@@ -2,7 +2,7 @@
 
 import { useRef, useState } from "react"
 
-import Chat from "@/app/asystent/Chat"
+import Chat from "@/app/[lang]/asystent/Chat"
 import type { EventCard, Lang, Venue } from "@/lib/assistant"
 import { cn } from "@/lib/utils"
 

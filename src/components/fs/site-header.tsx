@@ -1,21 +1,23 @@
 "use client"
 
 import { Menu } from "lucide-react"
-import Link from "next/link"
 import { useEffect, useState } from "react"
 
 import { iconProps } from "@/components/fs/icons"
+import { LanguageSwitcher } from "@/components/fs/language-switcher"
 import { Container } from "@/components/fs/layout"
 import { Logo } from "@/components/fs/wordmark"
+import { type Locale, getDictionary } from "@/i18n"
 import { cn } from "@/lib/utils"
 
 type SiteHeaderProps = {
+  lang: Locale
   /** Nagłówek leży na zdjęciu otwarcia: przezroczysty, po przewinięciu biały z linią (§6.5) */
   overlay?: boolean
 }
 
 /** Górny pasek mobile (§6.4): logo, PL | EN | DE, Menu. Przyklejony, 56 px. */
-export function SiteHeader({ overlay = false }: SiteHeaderProps) {
+export function SiteHeader({ lang, overlay = false }: SiteHeaderProps) {
   const [scrolled, setScrolled] = useState(false)
 
   useEffect(() => {
@@ -37,22 +39,12 @@ export function SiteHeader({ overlay = false }: SiteHeaderProps) {
       )}
     >
       <Container className="flex h-full items-center justify-between gap-4">
-        <Logo className="h-14" priority />
-        <div className="flex items-center gap-1">
-          <nav aria-label="Język">
-            <Link
-              href="/"
-              lang="pl"
-              hrefLang="pl"
-              aria-current="true"
-              className="flex size-11 items-center justify-center text-sm font-bold text-ink"
-            >
-              PL
-            </Link>
-          </nav>
+        <Logo lang={lang} className="h-14" priority />
+        <div className="flex items-center gap-2">
+          <LanguageSwitcher lang={lang} />
           <button
             type="button"
-            aria-label="Menu"
+            aria-label={getDictionary(lang).common.menu}
             className="flex size-11 cursor-pointer items-center justify-center text-ink hover:bg-bg-subtle"
           >
             <Menu {...iconProps} className="size-7" />

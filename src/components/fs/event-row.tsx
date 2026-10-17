@@ -1,4 +1,5 @@
 import { AccessibilityNote, EventInfoBadge, MetaLine, eventPrice } from "@/components/fs/event-meta"
+import { type Locale, getDictionary, kindLabel, venueLabel } from "@/i18n"
 import { type FsEvent, formatDuration, formatTime, galleryInfo, isExhibition } from "@/lib/event-format"
 import { cn } from "@/lib/utils"
 
@@ -6,6 +7,7 @@ type EventRowProps = {
   event: FsEvent
   /** Godziny wydarzenia w danym dniu (YYYY-MM-DDTHH:mm) */
   times: string[]
+  lang: Locale
   className?: string
 }
 
@@ -13,7 +15,8 @@ type EventRowProps = {
  * Wiersz kalendarza (§6.7): kolumna godziny 56 px + tytuł, meta, rodzaj, znacznik, dostępność.
  * Cały wiersz jest linkiem (rozciągnięty link na tytule). Bez kolorowych pasków i kropek (D5).
  */
-export function EventRow({ event, times, className }: EventRowProps) {
+export function EventRow({ event, times, lang, className }: EventRowProps) {
+  const t = getDictionary(lang)
   const start = times[0]
   const exhibition = isExhibition(event)
   const until = exhibition ? `–${galleryInfo.closes}` : times.slice(1).map(formatTime).join(", ")
@@ -34,12 +37,12 @@ export function EventRow({ event, times, className }: EventRowProps) {
             {event.title}
           </a>
         </h3>
-        <MetaLine items={[event.venue, eventPrice(event), formatDuration(event.durationMin)]} />
+        <MetaLine items={[venueLabel(t, event.venue), eventPrice(event, t), formatDuration(event.durationMin)]} />
         <div className="flex flex-wrap items-center gap-2">
-          <span className="type-label text-text-muted">{exhibition ? "Wystawa" : event.kind}</span>
-          <EventInfoBadge event={event} />
+          <span className="type-label text-text-muted">{exhibition ? t.event.exhibition : kindLabel(t, event.kind)}</span>
+          <EventInfoBadge event={event} t={t} />
         </div>
-        <AccessibilityNote className="mt-0.5" />
+        <AccessibilityNote t={t} className="mt-0.5" />
       </div>
     </article>
   )

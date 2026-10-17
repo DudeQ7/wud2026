@@ -1,19 +1,28 @@
 "use server";
 
+import { type Dictionary, getDictionary, hasLocale, localizedPath } from "@/i18n";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 
-const loginSchema = z.object({
-  email: z.string().trim().email("Nieprawidłowy adres email"),
-  password: z.string().min(6, "Hasło musi mieć co najmniej 6 znaków"),
-});
+// Akcje serwera nie znają parametrów trasy – język interfejsu przychodzi w ukrytym polu „uiLang”
+function uiLang(formData: FormData) {
+  const value = String(formData.get("uiLang") ?? "");
+  return hasLocale(value) ? value : "pl";
+}
 
-const registerSchema = z.object({
-  fullName: z.string().trim().min(2, "Imię i nazwisko musi mieć co najmniej 2 znaki"),
-  email: z.string().trim().email("Nieprawidłowy adres email"),
-  password: z.string().min(8, "Hasło musi mieć co najmniej 8 znaków"),
-});
+const loginSchema = (t: Dictionary["auth"]["errors"]) =>
+  z.object({
+    email: z.string().trim().email(t.invalidEmail),
+    password: z.string().min(6, t.passwordMin(6)),
+  });
+
+const registerSchema = (t: Dictionary["auth"]["errors"]) =>
+  z.object({
+    fullName: z.string().trim().min(2, t.nameMin),
+    email: z.string().trim().email(t.invalidEmail),
+    password: z.string().min(8, t.passwordMin(8)),
+  });
 
 export type AuthState = {
   error?: string | null;
@@ -21,14 +30,16 @@ export type AuthState = {
 };
 
 export async function login(prevState: AuthState | null, formData: FormData): Promise<AuthState> {
+  const lang = uiLang(formData);
+  const t = getDictionary(lang).auth.errors;
   const rawData = {
     email: formData.get("email"),
     password: formData.get("password"),
   };
 
-  const parsed = loginSchema.safeParse(rawData);
+  const parsed = loginSchema(t).safeParse(rawData);
   if (!parsed.success) {
-    return { error: parsed.error.issues[0]?.message || "Błędne dane logowania" };
+    return { error: parsed.error.issues[0]?.message || t.invalidLoginData };
   }
 
   const supabase = await createClient();
@@ -38,22 +49,24 @@ export async function login(prevState: AuthState | null, formData: FormData): Pr
   });
 
   if (error) {
-    return { error: "Nieprawidłowy login lub hasło." };
+    return { error: t.wrongCredentials };
   }
 
-  redirect("/panel");
+  redirect(localizedPath(lang, "/panel"));
 }
 
 export async function register(prevState: AuthState | null, formData: FormData): Promise<AuthState> {
+  const lang = uiLang(formData);
+  const t = getDictionary(lang).auth.errors;
   const rawData = {
     fullName: formData.get("fullName"),
     email: formData.get("email"),
     password: formData.get("password"),
   };
 
-  const parsed = registerSchema.safeParse(rawData);
+  const parsed = registerSchema(t).safeParse(rawData);
   if (!parsed.success) {
-    return { error: parsed.error.issues[0]?.message || "Błędne dane rejestracji" };
+    return { error: parsed.error.issues[0]?.message || t.invalidRegisterData };
   }
 
   const supabase = await createClient();
@@ -68,14 +81,12 @@ export async function register(prevState: AuthState | null, formData: FormData):
   });
 
   if (error) {
-    return { error: error.message || "Błąd podczas rejestracji." };
+    return { error: error.message || t.registerFailed };
   }
 
   // Supabase zwraca pustą tablicę identities, jeśli użytkownik o tym mailu już istnieje
   if (data?.user && (!data.user.identities || data.user.identities.length === 0)) {
-    return {
-      error: "Konto z tym adresem e-mail już istnieje. Przejdź do strony logowania lub podaj inny e-mail.",
-    };
+    return { error: t.accountExists };
   }
 
   // Jeśli brak sesji (np. włączone potwierdzanie w panelu Supabase), logujemy użytkownika
@@ -88,17 +99,17 @@ export async function register(prevState: AuthState | null, formData: FormData):
       return {
         error:
           signInError.message === "Invalid login credentials"
-            ? "Nieprawidłowe dane logowania lub konto już istnieje z innym hasłem."
+            ? t.credentialsMismatch
             : signInError.message,
       };
     }
   }
 
-  redirect("/panel");
+  redirect(localizedPath(lang, "/panel"));
 }
 
-export async function logout(): Promise<void> {
+export async function logout(formData: FormData): Promise<void> {
   const supabase = await createClient();
   await supabase.auth.signOut();
-  redirect("/auth/login");
+  redirect(localizedPath(uiLang(formData), "/auth/login"));
 }

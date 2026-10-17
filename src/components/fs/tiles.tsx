@@ -57,17 +57,19 @@ type DiscoverTileProps = {
   description: string
   href: string
   image?: string
+  /** Tekst w miejscu brakującego zdjęcia */
+  placeholder: string
   className?: string
 }
 
 /** Kafel „Odkryj Filharmonię” (§6.18): zdjęcie 3:2 + nazwa (h3) + 1 linia opisu */
-export function DiscoverTile({ title, description, href, image, className }: DiscoverTileProps) {
+export function DiscoverTile({ title, description, href, image, placeholder, className }: DiscoverTileProps) {
   return (
     <article className={cn("group relative flex flex-col gap-2", className)}>
       <Photo
         src={image}
         alt=""
-        placeholder="Zdjęcie do pozyskania od FS"
+        placeholder={placeholder}
         sizes="(min-width: 1024px) 33vw, 50vw"
       />
       <h3 className="font-heading text-lg leading-tight font-semibold text-text">

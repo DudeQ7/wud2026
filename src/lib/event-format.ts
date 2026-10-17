@@ -2,6 +2,9 @@
 // więc mogą trafić do komponentów klienckich bez dociągania całych danych do paczki JS.
 // Daty są zapisane jako czas lokalny Szczecina („2026-10-19T19:00”), więc porównujemy je
 // jako tekst (YYYY-MM-DD), bez konwersji stref – działa niezależnie od strefy serwera.
+// Funkcje z tekstem dla użytkownika biorą słownik języka (`t`) – formaty dat i łączniki z niego.
+
+import type { Dictionary } from "@/i18n"
 
 export type FsEvent = {
   id: number
@@ -74,32 +77,29 @@ export function weekendKeys(dayKey: string) {
   return [saturday, addDays(saturday, 1)]
 }
 
-const dateFmt = (options: Intl.DateTimeFormatOptions) =>
-  new Intl.DateTimeFormat("pl-PL", { ...options, timeZone: "UTC" })
+const dateFmt = (t: Dictionary, options: Intl.DateTimeFormatOptions) =>
+  new Intl.DateTimeFormat(t.intl, { ...options, timeZone: "UTC" })
 
 const asUtc = (key: string) => new Date(`${key.slice(0, 10)}T12:00:00Z`)
 
-// Skróty dni jak w kalendarzu FS: „pon 19.10”, „nd 22.11”
-const WEEKDAYS_SHORT = ["nd", "pon", "wt", "śr", "czw", "pt", "sob"]
-
 /** „PON 19.10” – znacznik daty na zdjęciu */
-export function formatDateBadge(dateTime: string) {
-  return formatShortDate(dateTime).toUpperCase()
+export function formatDateBadge(dateTime: string, t: Dictionary) {
+  return formatShortDate(dateTime, t).toUpperCase()
 }
 
-/** „19.10” */
-export function formatDayMonth(dateTime: string) {
-  return dateFmt({ day: "2-digit", month: "2-digit" }).format(asUtc(dateTime))
+/** „19.10” (EN: „19/10”) */
+export function formatDayMonth(dateTime: string, t: Dictionary) {
+  return dateFmt(t, { day: "2-digit", month: "2-digit" }).format(asUtc(dateTime))
 }
 
-/** „pon 19.10” */
-export function formatShortDate(dateTime: string) {
-  return `${WEEKDAYS_SHORT[asUtc(dateTime).getUTCDay()]} ${formatDayMonth(dateTime)}`
+/** „pon 19.10” – skróty dni jak w kalendarzu FS */
+export function formatShortDate(dateTime: string, t: Dictionary) {
+  return `${t.weekdaysShort[asUtc(dateTime).getUTCDay()]} ${formatDayMonth(dateTime, t)}`
 }
 
 /** „Sobota, 17 października” */
-export function formatLongDate(dayKey: string) {
-  const text = dateFmt({ weekday: "long", day: "numeric", month: "long" }).format(asUtc(dayKey))
+export function formatLongDate(dayKey: string, t: Dictionary) {
+  const text = dateFmt(t, { weekday: "long", day: "numeric", month: "long" }).format(asUtc(dayKey))
   return text.charAt(0).toUpperCase() + text.slice(1)
 }
 
@@ -146,9 +146,9 @@ export function isExhibition(event: FsEvent) {
 }
 
 /** Etykieta składu: „Paulina Przybysz i 5 muzyków” */
-export function formatLineup(event: FsEvent) {
+export function formatLineup(event: FsEvent, t: Dictionary) {
   const [first, ...others] = event.artists.map((a) => a.split(" - ")[0].trim())
   if (!first) return undefined
   if (!others.length) return first
-  return others.length === 1 ? `${first} i ${others[0]}` : `${first} i ${others.length} muzyków`
+  return others.length === 1 ? t.event.lineupPair(first, others[0]) : t.event.lineupMany(first, others.length)
 }

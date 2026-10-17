@@ -6,6 +6,7 @@ import { NewsletterForm } from "@/components/fs/newsletter-form"
 import { CtaTile, DiscoverTile, LinkTile } from "@/components/fs/tiles"
 import { buttonVariants } from "@/components/ui/button"
 import { boxOffice, buildingHours, discoverTiles, moodTiles, recommended } from "@/content/home"
+import { type Dictionary, type Locale, getDictionary, localizedPath } from "@/i18n"
 import {
   type FsEvent,
   addDays,
@@ -22,50 +23,53 @@ import { type DayGroup, type DayTab, DayFilter } from "./day-filter"
 
 const weekdayOf = (dayKey: string) => new Date(`${dayKey}T12:00:00Z`).getUTCDay()
 
-function dayGroup(day: string): DayGroup {
-  return { day, label: formatLongDate(day), rows: eventsOnDay(day) }
+function dayGroup(day: string, t: Dictionary): DayGroup {
+  return { day, label: formatLongDate(day, t), rows: eventsOnDay(day, t.lang) }
 }
 
-function buildingLine(day: string) {
+function buildingLine(day: string, t: Dictionary) {
   const hours = buildingHours.hoursByWeekday[weekdayOf(day)]
-  return hours ? `Budynek otwarty ${hours}` : "Budynek otwarty godzinę przed wydarzeniem"
+  return hours ? t.home.today.buildingOpen(hours) : t.home.today.buildingBeforeEvent
 }
 
-function boxOfficeLine(day: string, when: string) {
+function boxOfficeLine(day: string, when: string, t: Dictionary) {
   const hours = boxOffice.hoursByWeekday[weekdayOf(day)]
-  const open = hours ? `Kasa ${when} ${hours}` : `Kasa ${when}: godzinę przed biletowanym wydarzeniem`
-  return `${open} · tel. ${boxOffice.phone}`
+  const open = hours ? t.home.today.boxOfficeOpen(when, hours) : t.home.today.boxOfficeBeforeEvent(when)
+  return `${open} · ${t.home.today.phone(boxOffice.phone)}`
 }
 
 /** 2. Dziś w Filharmonii (§7.1) */
-export function TodaySection({ today }: { today: string }) {
+export function TodaySection({ today, lang }: { today: string; lang: Locale }) {
+  const t = getDictionary(lang)
+  const { tabs: labels } = t.home.today
   const tomorrow = addDays(today, 1)
   const weekend = weekendKeys(today)
 
   const tabs: DayTab[] = [
     {
       key: "today",
-      label: "Dziś",
-      heading: "Dziś w Filharmonii",
-      meta: `${formatLongDate(today)}\n${buildingLine(today)}`,
-      boxOffice: boxOfficeLine(today, "dziś"),
-      groups: [dayGroup(today)],
+      label: labels.today.label,
+      heading: labels.today.heading,
+      meta: `${formatLongDate(today, t)}\n${buildingLine(today, t)}`,
+      boxOffice: boxOfficeLine(today, labels.today.when, t),
+      groups: [dayGroup(today, t)],
     },
     {
       key: "tomorrow",
-      label: "Jutro",
-      heading: "Jutro w Filharmonii",
-      meta: `${formatLongDate(tomorrow)}\n${buildingLine(tomorrow)}`,
-      boxOffice: boxOfficeLine(tomorrow, "jutro"),
-      groups: [dayGroup(tomorrow)],
+      label: labels.tomorrow.label,
+      heading: labels.tomorrow.heading,
+      meta: `${formatLongDate(tomorrow, t)}\n${buildingLine(tomorrow, t)}`,
+      boxOffice: boxOfficeLine(tomorrow, labels.tomorrow.when, t),
+      groups: [dayGroup(tomorrow, t)],
     },
     {
       key: "weekend",
-      label: "Ten weekend",
-      heading: "Weekend w Filharmonii",
-      meta: weekend.map(formatLongDate).join(" – "),
-      boxOffice: `Kasa w sobotę 12:00–16:00 · tel. ${boxOffice.phone}`,
-      groups: weekend.map(dayGroup),
+      label: labels.weekend.label,
+      heading: labels.weekend.heading,
+      meta: weekend.map((day) => formatLongDate(day, t)).join(" – "),
+      // Kasa w weekend działa tylko w sobotę (getUTCDay() = 6)
+      boxOffice: `${t.home.today.boxOfficeOpen(labels.weekend.when, boxOffice.hoursByWeekday[6])} · ${t.home.today.phone(boxOffice.phone)}`,
+      groups: weekend.map((day) => dayGroup(day, t)),
     },
   ]
 
@@ -74,28 +78,32 @@ export function TodaySection({ today }: { today: string }) {
 
   return (
     <Section aria-labelledby="dzis">
-      <DayFilter tabs={tabs} headingId="dzis" />
-      <Link href="/repertuar" className={cn(buttonVariants({ variant: "link" }), "mt-2")}>
-        Cały dzień w kalendarzu →
+      <DayFilter tabs={tabs} headingId="dzis" lang={lang} />
+      <Link href={localizedPath(lang, "/repertuar")} className={cn(buttonVariants({ variant: "link" }), "mt-2")}>
+        {t.home.today.fullDay}
       </Link>
     </Section>
   )
 }
 
 /** 3. Najbliższe wydarzenia (§7.1): 3–6 kart + „Pełny repertuar” */
-export function UpcomingSection({ today, excludeIds }: { today: string; excludeIds: number[] }) {
-  const items = upcomingConcerts(addDays(today, 1), 4, excludeIds)
+export function UpcomingSection({ today, excludeIds, lang }: { today: string; excludeIds: number[]; lang: Locale }) {
+  const t = getDictionary(lang).home.upcoming
+  const items = upcomingConcerts(addDays(today, 1), 4, excludeIds, lang)
 
   return (
     <Section aria-labelledby="najblizsze">
-      <SectionHeading id="najblizsze" title="Najbliższe wydarzenia" />
+      <SectionHeading id="najblizsze" title={t.title} />
       <div className="grid gap-10 sm:grid-cols-2 sm:gap-x-4 lg:grid-cols-3 lg:gap-x-6">
         {items.map(({ event, date }) => (
-          <EventCard key={event.id} event={event} date={date} />
+          <EventCard key={event.id} event={event} date={date} lang={lang} />
         ))}
       </div>
-      <Link href="/repertuar" className={cn(buttonVariants({ variant: "secondary", block: true }), "mt-10 sm:w-fit")}>
-        Pełny repertuar →
+      <Link
+        href={localizedPath(lang, "/repertuar")}
+        className={cn(buttonVariants({ variant: "secondary", block: true }), "mt-10 sm:w-fit")}
+      >
+        {t.all}
       </Link>
     </Section>
   )
@@ -106,18 +114,19 @@ function withDate(event: FsEvent, today: string) {
 }
 
 /** 4. Polecamy (§7.1): 1 kafel wyróżniony (ścięty narożnik) + 2 mniejsze */
-export function RecommendedSection({ today }: { today: string }) {
-  const featured = withDate(getEvent(recommended.featuredId), today)
-  const others = recommended.otherIds.map((id) => withDate(getEvent(id), today))
+export function RecommendedSection({ today, lang }: { today: string; lang: Locale }) {
+  const t = getDictionary(lang).home.recommended
+  const featured = withDate(getEvent(recommended.featuredId, lang), today)
+  const others = recommended.otherIds.map((id) => withDate(getEvent(id, lang), today))
 
   return (
     <Section aria-labelledby="polecamy">
-      <SectionHeading id="polecamy" title="Polecamy" />
+      <SectionHeading id="polecamy" title={t.title} />
       <div className="grid gap-10 lg:grid-cols-[2fr_1fr] lg:gap-6">
-        <EventCard event={featured.event} date={featured.date} variant="featured" lead={recommended.featuredLead} />
+        <EventCard event={featured.event} date={featured.date} lang={lang} variant="featured" lead={t.featuredLead} />
         <div className="grid grid-cols-2 gap-4 lg:grid-cols-1 lg:gap-6">
           {others.map(({ event, date }) => (
-            <EventCard key={event.id} event={event} date={date} variant="compact" />
+            <EventCard key={event.id} event={event} date={date} lang={lang} variant="compact" />
           ))}
         </div>
       </div>
@@ -126,25 +135,22 @@ export function RecommendedSection({ today }: { today: string }) {
 }
 
 /** 5. Dla Ciebie (§6.18): „Pomóż mi wybrać” + kafle nastrojów */
-export function ForYouSection() {
+export function ForYouSection({ lang }: { lang: Locale }) {
+  const t = getDictionary(lang).home.forYou
   return (
     <Section aria-labelledby="dla-ciebie">
-      <SectionHeading
-        id="dla-ciebie"
-        title="Dla Ciebie"
-        lead="Nie musisz znać muzyki klasycznej. Wybierz, na co masz ochotę."
-      />
+      <SectionHeading id="dla-ciebie" title={t.title} lead={t.lead} />
       <div className="grid gap-6 lg:grid-cols-[1fr_2fr]">
         <CtaTile
-          eyebrow="5 pytań · 3–5 propozycji"
-          title="Pomóż mi wybrać"
-          description="Powiedz, z kim, kiedy i w jakim nastroju chcesz przyjść. Podpowiemy konkretne wydarzenia."
-          action={{ label: "Zaczynamy", href: "/pomoz-mi-wybrac" }}
+          eyebrow={t.cta.eyebrow}
+          title={t.cta.title}
+          description={t.cta.description}
+          action={{ label: t.cta.action, href: localizedPath(lang, "/pomoz-mi-wybrac") }}
         />
         <ul className="grid grid-cols-2 gap-4 lg:grid-cols-3">
-          {moodTiles.map((tile) => (
-            <li key={tile.title} className="flex">
-              <LinkTile {...tile} className="flex-1" />
+          {moodTiles.map(({ key, href }) => (
+            <li key={key} className="flex">
+              <LinkTile {...t.tiles[key]} href={localizedPath(lang, href)} className="flex-1" />
             </li>
           ))}
         </ul>
@@ -154,18 +160,20 @@ export function ForYouSection() {
 }
 
 /** 6. Odkryj Filharmonię (§6.18): 6 kafli, 2 × 3 na mobile, 3 × 2 na desktopie */
-export function DiscoverSection() {
+export function DiscoverSection({ lang }: { lang: Locale }) {
+  const t = getDictionary(lang)
   return (
     <Section aria-labelledby="odkryj">
-      <SectionHeading
-        id="odkryj"
-        title="Odkryj Filharmonię"
-        lead="Wejdź nie tylko na koncert: orkiestra, budynek, wystawy i 78 lat historii."
-      />
+      <SectionHeading id="odkryj" title={t.home.discover.title} lead={t.home.discover.lead} />
       <ul className="grid grid-cols-2 gap-x-4 gap-y-6 lg:grid-cols-3 lg:gap-x-6">
-        {discoverTiles.map(({ imageFromEventId, ...tile }) => (
-          <li key={tile.title}>
-            <DiscoverTile {...tile} image={imageFromEventId ? getEvent(imageFromEventId).image?.card : undefined} />
+        {discoverTiles.map(({ key, href, imageFromEventId }) => (
+          <li key={key}>
+            <DiscoverTile
+              {...t.home.discover.tiles[key]}
+              href={localizedPath(lang, href)}
+              image={imageFromEventId ? getEvent(imageFromEventId).image?.card : undefined}
+              placeholder={t.event.photoPlaceholder}
+            />
           </li>
         ))}
       </ul>
@@ -174,15 +182,12 @@ export function DiscoverSection() {
 }
 
 /** 7a. Newsletter (§7.1): 1 pole + zgoda RODO */
-export function NewsletterSection() {
+export function NewsletterSection({ lang }: { lang: Locale }) {
+  const t = getDictionary(lang).home.newsletter
   return (
     <Section aria-labelledby="newsletter" className="pb-12">
-      <SectionHeading
-        id="newsletter"
-        title="Bądź na bieżąco"
-        lead="Nowe koncerty i start sprzedaży biletów prosto na Twój e-mail."
-      />
-      <NewsletterForm />
+      <SectionHeading id="newsletter" title={t.title} lead={t.lead} />
+      <NewsletterForm lang={lang} />
     </Section>
   )
 }
@@ -191,22 +196,23 @@ export function NewsletterSection() {
  * 7b. Partnerzy (§7.1): logotypy w szarości z linkiem do narracji partnerstwa.
  * Plików logo partnerów nie ma w repo – pola zastępcze z przerywaną ramką.
  */
-export function PartnersSection() {
+export function PartnersSection({ lang }: { lang: Locale }) {
+  const t = getDictionary(lang).home.partners
   return (
     <Section aria-labelledby="partnerzy" className="border-t border-line pb-12">
-      <SectionHeading id="partnerzy" title="Partnerzy" as="h3" />
+      <SectionHeading id="partnerzy" title={t.title} as="h3" />
       <ul className="grid grid-cols-2 gap-4 sm:grid-cols-4">
         {Array.from({ length: 4 }, (_, i) => (
           <li
             key={i}
             className="flex h-16 items-center justify-center border border-dashed border-line type-meta text-text-muted"
           >
-            logo partnera
+            {t.logo}
           </li>
         ))}
       </ul>
-      <Link href="/partnerzy" className={cn(buttonVariants({ variant: "link" }), "mt-4")}>
-        Partnerzy i biznes →
+      <Link href={localizedPath(lang, "/partnerzy")} className={cn(buttonVariants({ variant: "link" }), "mt-4")}>
+        {t.link}
       </Link>
     </Section>
   )

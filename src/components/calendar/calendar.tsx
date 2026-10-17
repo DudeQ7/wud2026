@@ -10,6 +10,7 @@ import { iconProps } from "@/components/fs/icons"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Toggle } from "@/components/ui/toggle"
+import { type Dictionary, type Locale, getDictionary } from "@/i18n"
 import {
   type ActiveFilter,
   type CalendarDay,
@@ -21,7 +22,6 @@ import {
   countRows,
   emptyFilters,
   parseFilters,
-  plural,
   toQuery,
 } from "@/lib/calendar"
 import { todayKey } from "@/lib/event-format"
@@ -31,6 +31,7 @@ const PAGE_SIZE = 30
 type CalendarProps = {
   events: CalendarEvent[]
   series: { key: string; label: string }[]
+  lang: Locale
 }
 
 /**
@@ -38,15 +39,16 @@ type CalendarProps = {
  * a „wstecz” z karty wydarzenia wraca do tych samych wyników. Wyniki liczymy w przeglądarce,
  * więc licznik i lista zmieniają się od razu, bez zapytania do serwera.
  */
-export function Calendar({ events, series }: CalendarProps) {
+export function Calendar({ events, series, lang }: CalendarProps) {
+  const t = getDictionary(lang)
   const searchParams = useSearchParams()
   const filters = useMemo(() => parseFilters(searchParams), [searchParams])
   const [today] = useState(() => todayKey(new Date()))
 
   const seriesLabels = useMemo(() => Object.fromEntries(series.map((s) => [s.key, s.label])), [series])
-  const days = useMemo(() => calendarDays(events, filters, today), [events, filters, today])
+  const days = useMemo(() => calendarDays(events, filters, today, t), [events, filters, today, t])
   const count = countRows(days)
-  const active = activeFilters(filters, seriesLabels)
+  const active = activeFilters(filters, seriesLabels, t)
 
   const [limit, setLimit] = useState(PAGE_SIZE)
   const query = toQuery(filters)
@@ -64,7 +66,7 @@ export function Calendar({ events, series }: CalendarProps) {
   }
 
   // Licznik dla czytników ekranu z opóźnieniem ~300 ms, żeby nie ogłaszać każdego znaku (§6.6)
-  const countText = `${count} ${plural(count, "wydarzenie", "wydarzenia", "wydarzeń")}`
+  const countText = t.calendar.count(count)
   const [announced, setAnnounced] = useState(countText)
   useEffect(() => {
     const t = setTimeout(() => setAnnounced(countText), 300)
@@ -75,27 +77,27 @@ export function Calendar({ events, series }: CalendarProps) {
 
   const quick: { label: string; on: boolean; toggle: (on: boolean) => Filters }[] = [
     {
-      label: "Dziś",
+      label: t.calendar.quick.today,
       on: filters.kiedy === "dzis",
       toggle: (on) => ({ ...filters, kiedy: on ? "dzis" : undefined, od: undefined, do: undefined }),
     },
     {
-      label: "Ten weekend",
+      label: t.calendar.quick.weekend,
       on: filters.kiedy === "weekend",
       toggle: (on) => ({ ...filters, kiedy: on ? "weekend" : undefined, od: undefined, do: undefined }),
     },
     {
-      label: "Dla dzieci",
+      label: t.calendar.quick.kids,
       on: filters.dlaKogo.includes("dzieci"),
       toggle: (on) => ({ ...filters, dlaKogo: toggled(filters.dlaKogo, "dzieci", on) }),
     },
     {
-      label: "Jazz",
+      label: t.calendar.quick.jazz,
       on: filters.rodzaj.includes("jazz"),
       toggle: (on) => ({ ...filters, rodzaj: toggled(filters.rodzaj, "jazz", on) }),
     },
     {
-      label: "Wystawy",
+      label: t.calendar.quick.exhibitions,
       on: filters.rodzaj.includes("wystawa"),
       toggle: (on) => ({ ...filters, rodzaj: toggled(filters.rodzaj, "wystawa", on) }),
     },
@@ -103,11 +105,11 @@ export function Calendar({ events, series }: CalendarProps) {
 
   return (
     <>
-      <SearchField value={filters.q} onCommit={(q) => navigate({ ...filters, q })} />
+      <SearchField value={filters.q} onCommit={(q) => navigate({ ...filters, q })} t={t} />
 
       <div
         role="group"
-        aria-label="Szybkie filtry"
+        aria-label={t.calendar.quickFilters}
         className="-mx-4 mt-4 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0"
       >
         {quick.map((q) => (
@@ -120,6 +122,7 @@ export function Calendar({ events, series }: CalendarProps) {
           series={series}
           filters={filters}
           today={today}
+          t={t}
           activeCount={active.length}
           onApply={navigate}
         />
@@ -132,15 +135,16 @@ export function Calendar({ events, series }: CalendarProps) {
         <p className="sr-only" aria-live="polite">
           {announced}
         </p>
-        {active.length > 0 && <ActiveFilterList filters={active} current={filters} onChange={navigate} />}
+        {active.length > 0 && <ActiveFilterList filters={active} current={filters} onChange={navigate} t={t} />}
       </div>
 
       <div id="repertuar-lista">
         {count === 0 ? (
           <EmptyState
-            options={alternatives(events, filters, today, seriesLabels)}
+            options={alternatives(events, filters, today, seriesLabels, t)}
             onChange={navigate}
             onClear={() => navigate(emptyFilters)}
+            t={t}
           />
         ) : (
           <>
@@ -154,18 +158,16 @@ export function Calendar({ events, series }: CalendarProps) {
                 </h2>
                 <div className="grid lg:grid-cols-2 lg:gap-x-8">
                   {group.rows.map(({ event, times }) => (
-                    <EventRow key={event.id} event={event} times={times} />
+                    <EventRow key={event.id} event={event} times={times} lang={lang} />
                   ))}
                 </div>
               </section>
             ))}
             {count > limit && (
               <div className="mt-8 flex flex-col items-start gap-2">
-                <p className="type-meta text-text-muted">
-                  Widzisz {limit} z {count}
-                </p>
+                <p className="type-meta text-text-muted">{t.calendar.shown(limit, count)}</p>
                 <Button variant="secondary" block className="sm:w-fit" onClick={() => setLimit((l) => l + PAGE_SIZE)}>
-                  Pokaż kolejne wydarzenia
+                  {t.calendar.showMore}
                 </Button>
               </div>
             )}
@@ -194,7 +196,7 @@ function toggled<T>(values: T[], value: T, on: boolean) {
 }
 
 /** Pole wyszukiwania w kalendarzu (§7.2): wykonawca, kompozytor, tytuł, cykl. URL zmienia się po 300 ms. */
-function SearchField({ value, onCommit }: { value?: string; onCommit: (q?: string) => void }) {
+function SearchField({ value, onCommit, t }: { value?: string; onCommit: (q?: string) => void; t: Dictionary }) {
   const [text, setText] = useState(value ?? "")
   const [seen, setSeen] = useState(value)
 
@@ -213,7 +215,7 @@ function SearchField({ value, onCommit }: { value?: string; onCommit: (q?: strin
   return (
     <div role="search" className="flex flex-col gap-2">
       <label htmlFor="repertuar-szukaj" className="text-[0.9375rem] font-semibold text-text">
-        Szukaj wykonawcy, kompozytora lub tytułu
+        {t.calendar.searchLabel}
       </label>
       <div className="relative">
         <Search {...iconProps} className="pointer-events-none absolute top-1/2 left-4 size-5 -translate-y-1/2 text-text" />
@@ -222,7 +224,7 @@ function SearchField({ value, onCommit }: { value?: string; onCommit: (q?: strin
           type="search"
           enterKeyHint="search"
           autoComplete="off"
-          placeholder="np. Karłowicz, Mendelssohn, jazz"
+          placeholder={t.calendar.searchPlaceholder}
           value={text}
           onChange={(e) => setText(e.target.value)}
           className="pr-12 pl-12 [&::-webkit-search-cancel-button]:hidden"
@@ -230,7 +232,7 @@ function SearchField({ value, onCommit }: { value?: string; onCommit: (q?: strin
         {text && (
           <Button
             variant="icon"
-            aria-label="Wyczyść wyszukiwanie"
+            aria-label={t.calendar.clearSearch}
             onClick={() => setText("")}
             className="absolute top-1/2 right-1 -translate-y-1/2"
           >
@@ -246,19 +248,21 @@ function ActiveFilterList({
   filters,
   current,
   onChange,
+  t,
 }: {
   filters: ActiveFilter[]
   current: Filters
   onChange: (f: Filters) => void
+  t: Dictionary
 }) {
   return (
-    <ul aria-label="Aktywne filtry" className="flex flex-wrap gap-2">
+    <ul aria-label={t.calendar.activeFilters} className="flex flex-wrap gap-2">
       {filters.map((f) => (
         <li key={f.id}>
           <button
             type="button"
             onClick={() => onChange(f.remove(current))}
-            aria-label={`Usuń filtr: ${f.label}`}
+            aria-label={t.calendar.removeFilter(f.label)}
             className="inline-flex min-h-11 cursor-pointer items-center gap-1 border-[1.5px] border-line-strong px-3 text-[0.9375rem] font-semibold text-text hover:bg-bg-subtle"
           >
             {f.label}
@@ -269,7 +273,7 @@ function ActiveFilterList({
       {filters.length > 1 && (
         <li>
           <Button variant="link" onClick={() => onChange({ ...emptyFilters })}>
-            Wyczyść wszystkie
+            {t.calendar.clearAll}
           </Button>
         </li>
       )}
@@ -282,17 +286,19 @@ function EmptyState({
   options,
   onChange,
   onClear,
+  t,
 }: {
   options: ReturnType<typeof alternatives>
   onChange: (f: Filters) => void
   onClear: () => void
+  t: Dictionary
 }) {
   return (
     <div className="py-8">
-      <h2 className="type-h3 text-gold">Nic nie pasuje do tych filtrów</h2>
+      <h2 className="type-h3 text-gold">{t.calendar.emptyTitle}</h2>
       {options.length > 0 && (
         <>
-          <p className="mt-3 type-body text-text">Spróbuj bez jednego z nich:</p>
+          <p className="mt-3 type-body text-text">{t.calendar.tryWithout}</p>
           <ul className="mt-4 flex flex-col border-t border-line">
             {options.map(({ filter, relaxed, count }) => (
               <li key={filter.id} className="border-b border-line">
@@ -301,10 +307,8 @@ function EmptyState({
                   onClick={() => onChange(relaxed)}
                   className="flex min-h-14 w-full cursor-pointer items-center justify-between gap-4 py-2 text-left hover:bg-bg-subtle"
                 >
-                  <span className="type-ui text-text">Bez filtra „{filter.label}”</span>
-                  <span className="type-meta whitespace-nowrap text-text-muted">
-                    {count} {plural(count, "wydarzenie", "wydarzenia", "wydarzeń")} →
-                  </span>
+                  <span className="type-ui text-text">{t.calendar.withoutFilter(filter.label)}</span>
+                  <span className="type-meta whitespace-nowrap text-text-muted">{t.calendar.count(count)} →</span>
                 </button>
               </li>
             ))}
@@ -312,7 +316,7 @@ function EmptyState({
         </>
       )}
       <Button variant="link" onClick={onClear} className="mt-4">
-        Wyczyść filtry
+        {t.calendar.clearFilters}
       </Button>
     </div>
   )

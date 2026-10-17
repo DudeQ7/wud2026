@@ -8,20 +8,8 @@ import { iconProps } from "@/components/fs/icons"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Toggle } from "@/components/ui/toggle"
-import {
-  AUDIENCES,
-  type CalendarEvent,
-  DURATIONS,
-  type Filters,
-  MOODS,
-  PLACES,
-  TYPES,
-  WHEN,
-  calendarDays,
-  countRows,
-  emptyFilters,
-  plural,
-} from "@/lib/calendar"
+import type { Dictionary } from "@/i18n"
+import { type CalendarEvent, type Filters, calendarDays, countRows, emptyFilters } from "@/lib/calendar"
 import { cn } from "@/lib/utils"
 
 type FilterSheetProps = {
@@ -29,6 +17,7 @@ type FilterSheetProps = {
   series: { key: string; label: string }[]
   filters: Filters
   today: string
+  t: Dictionary
   /** Liczba aktywnych filtrów – na przycisku „Wszystkie filtry (n)” */
   activeCount: number
   onApply: (filters: Filters) => void
@@ -39,12 +28,14 @@ type FilterSheetProps = {
  * Zmiany są szkicem – licznik w stopce liczy wyniki na żywo, a lista zmienia się dopiero po „Pokaż”.
  * Natywny <dialog> daje aria-modal, pułapkę fokusu, Esc i powrót fokusu na przycisk otwierający.
  */
-export function FilterSheet({ events, series, filters, today, activeCount, onApply }: FilterSheetProps) {
+export function FilterSheet({ events, series, filters, today, t, activeCount, onApply }: FilterSheetProps) {
+  const labels = t.calendar
+  const s = labels.sheet
   const dialogRef = useRef<HTMLDialogElement>(null)
   const [draft, setDraft] = useState(filters)
   const [open, setOpen] = useState(false)
 
-  const count = open ? countRows(calendarDays(events, draft, today)) : 0
+  const count = open ? countRows(calendarDays(events, draft, today, t)) : 0
 
   function show() {
     setDraft(filters)
@@ -73,7 +64,8 @@ export function FilterSheet({ events, series, filters, today, activeCount, onApp
   return (
     <>
       <Button variant="secondary" size="sm" onClick={show} aria-haspopup="dialog" aria-expanded={open}>
-        Wszystkie filtry{activeCount > 0 && ` (${activeCount})`}
+        {s.open}
+        {activeCount > 0 && ` (${activeCount})`}
       </Button>
 
       <dialog
@@ -90,17 +82,17 @@ export function FilterSheet({ events, series, filters, today, activeCount, onApp
           <div className="flex h-full flex-col">
             <div className="flex items-center justify-between border-b border-line py-2 pr-2 pl-4">
               <h2 id="filtry-tytul" className="type-h3 text-gold">
-                Filtry
+                {s.title}
               </h2>
-              <Button variant="icon" onClick={close} aria-label="Zamknij filtry">
+              <Button variant="icon" onClick={close} aria-label={s.close}>
                 <X {...iconProps} className="size-6" />
               </Button>
             </div>
 
             <div className="flex-1 overflow-y-auto px-4 pb-8">
-              <Group title="Kiedy" count={draft.kiedy || draft.od || draft.do ? 1 : 0} defaultOpen>
+              <Group title={s.when} count={draft.kiedy || draft.od || draft.do ? 1 : 0} selected={s.selected} defaultOpen>
                 <Options>
-                  {entries(WHEN).map(([key, label]) => (
+                  {entries(labels.when).map(([key, label]) => (
                     <Toggle
                       key={key}
                       pressed={draft.kiedy === key}
@@ -111,16 +103,18 @@ export function FilterSheet({ events, series, filters, today, activeCount, onApp
                   ))}
                 </Options>
                 <fieldset className="mt-5">
-                  <legend className="mb-2 text-[0.9375rem] font-semibold text-text">Albo wybierz zakres dat</legend>
+                  <legend className="mb-2 text-[0.9375rem] font-semibold text-text">{s.dateRange}</legend>
                   <div className="grid grid-cols-2 gap-3">
                     <DateField
-                      label="Od"
+                      id="filtr-data-od"
+                      label={s.from}
                       value={draft.od}
                       min={today}
                       onChange={(od) => update({ od, kiedy: undefined })}
                     />
                     <DateField
-                      label="Do"
+                      id="filtr-data-do"
+                      label={s.to}
                       value={draft.do}
                       min={draft.od ?? today}
                       onChange={(to) => update({ do: to, kiedy: undefined })}
@@ -129,9 +123,9 @@ export function FilterSheet({ events, series, filters, today, activeCount, onApp
                 </fieldset>
               </Group>
 
-              <Group title="Rodzaj" count={draft.rodzaj.length}>
+              <Group title={s.type} count={draft.rodzaj.length} selected={s.selected}>
                 <Options>
-                  {entries(TYPES).map(([key, label]) => (
+                  {entries(labels.types).map(([key, label]) => (
                     <Toggle key={key} pressed={draft.rodzaj.includes(key)} onPressedChange={() => toggleIn("rodzaj", key)}>
                       {label}
                     </Toggle>
@@ -139,9 +133,9 @@ export function FilterSheet({ events, series, filters, today, activeCount, onApp
                 </Options>
               </Group>
 
-              <Group title="Dla kogo" count={draft.dlaKogo.length + (draft.wiek ? 1 : 0)}>
+              <Group title={s.audience} count={draft.dlaKogo.length + (draft.wiek ? 1 : 0)} selected={s.selected}>
                 <Options>
-                  {entries(AUDIENCES).map(([key, label]) => (
+                  {entries(labels.audiences).map(([key, label]) => (
                     <Toggle key={key} pressed={draft.dlaKogo.includes(key)} onPressedChange={() => toggleIn("dlaKogo", key)}>
                       {label}
                     </Toggle>
@@ -149,7 +143,7 @@ export function FilterSheet({ events, series, filters, today, activeCount, onApp
                 </Options>
                 <div className="mt-5 flex flex-col gap-2">
                   <label htmlFor="filtr-wiek" className="text-[0.9375rem] font-semibold text-text">
-                    Wiek dziecka (w latach)
+                    {s.age}
                   </label>
                   <Input
                     id="filtr-wiek"
@@ -166,14 +160,14 @@ export function FilterSheet({ events, series, filters, today, activeCount, onApp
                     className="w-32"
                   />
                   <p id="filtr-wiek-opis" className="type-meta text-text-muted">
-                    Pokażemy wydarzenia z sugerowanym wiekiem, który pasuje.
+                    {s.ageHint}
                   </p>
                 </div>
               </Group>
 
-              <Group title="Nastrój" count={draft.nastroj.length}>
+              <Group title={s.mood} count={draft.nastroj.length} selected={s.selected}>
                 <Options>
-                  {entries(MOODS).map(([key, label]) => (
+                  {entries(labels.moods).map(([key, label]) => (
                     <Toggle key={key} pressed={draft.nastroj.includes(key)} onPressedChange={() => toggleIn("nastroj", key)}>
                       {label}
                     </Toggle>
@@ -181,35 +175,31 @@ export function FilterSheet({ events, series, filters, today, activeCount, onApp
                 </Options>
               </Group>
 
-              <Group title="Miejsce" count={draft.miejsce.length}>
+              <Group title={s.place} count={draft.miejsce.length} selected={s.selected}>
                 <Options>
-                  {entries(PLACES).map(([key, label]) => (
+                  {entries(labels.places).map(([key, label]) => (
                     <Toggle key={key} pressed={draft.miejsce.includes(key)} onPressedChange={() => toggleIn("miejsce", key)}>
                       {label}
                     </Toggle>
                   ))}
                 </Options>
-                <p className="mt-4 type-meta text-text-muted">
-                  Wszystkie sale i galerie mają wejście bez progów i windę.
-                </p>
+                <p className="mt-4 type-meta text-text-muted">{s.placeNote}</p>
               </Group>
 
-              <Group title="Czas trwania" count={draft.czas ? 1 : 0}>
+              <Group title={s.duration} count={draft.czas ? 1 : 0} selected={s.selected}>
                 <Options>
-                  {entries(DURATIONS).map(([key, label]) => (
+                  {entries(labels.durations).map(([key, label]) => (
                     <Toggle key={key} pressed={draft.czas === key} onPressedChange={(on) => update({ czas: on ? key : undefined })}>
                       {label}
                     </Toggle>
                   ))}
                 </Options>
-                <p className="mt-4 type-meta text-text-muted">
-                  Uwzględniamy wydarzenia z podanym czasem trwania. Wystawy możesz oglądać tak długo, jak chcesz.
-                </p>
+                <p className="mt-4 type-meta text-text-muted">{s.durationNote}</p>
               </Group>
 
-              <Group title="Cykl i festiwal" count={draft.cykl ? 1 : 0}>
+              <Group title={s.series} count={draft.cykl ? 1 : 0} selected={s.selected}>
                 <label htmlFor="filtr-cykl" className="mb-2 block text-[0.9375rem] font-semibold text-text">
-                  Wybierz cykl
+                  {s.chooseSeries}
                 </label>
                 <div className="relative">
                   <select
@@ -218,7 +208,7 @@ export function FilterSheet({ events, series, filters, today, activeCount, onApp
                     onChange={(e) => update({ cykl: e.target.value || undefined })}
                     className="h-13 w-full cursor-pointer appearance-none border-[1.5px] border-line-strong bg-background pr-12 pl-4 text-base text-text"
                   >
-                    <option value="">Wszystkie cykle</option>
+                    <option value="">{s.allSeries}</option>
                     {series.map((s) => (
                       <option key={s.key} value={s.key}>
                         {s.label}
@@ -235,12 +225,10 @@ export function FilterSheet({ events, series, filters, today, activeCount, onApp
 
             <div className="flex items-center justify-between gap-4 border-t border-line bg-background px-4 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] shadow-[0_-4px_16px_rgba(26,26,26,.08)]">
               <Button variant="link" onClick={() => setDraft({ ...emptyFilters, q: draft.q })}>
-                Wyczyść
+                {s.clear}
               </Button>
               <Button onClick={apply} className="min-w-0 flex-1 sm:flex-none">
-                <span aria-live="polite">
-                  Pokaż {count} {plural(count, "wynik", "wyniki", "wyników")}
-                </span>
+                <span aria-live="polite">{s.show(count)}</span>
               </Button>
             </div>
           </div>
@@ -255,11 +243,14 @@ const entries = <T extends Record<string, string>>(options: T) => Object.entries
 function Group({
   title,
   count,
+  selected,
   defaultOpen,
   children,
 }: {
   title: string
   count: number
+  /** „wybrano 2” w języku interfejsu */
+  selected: (n: number) => string
   defaultOpen?: boolean
   children: React.ReactNode
 }) {
@@ -268,7 +259,7 @@ function Group({
       <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 py-2 [&::-webkit-details-marker]:hidden">
         <span className="type-h4 text-text">
           {title}
-          {count > 0 && <span className="type-meta font-semibold text-text-muted"> · wybrano {count}</span>}
+          {count > 0 && <span className="type-meta font-semibold text-text-muted"> · {selected(count)}</span>}
         </span>
         <ChevronDown {...iconProps} className="size-6 shrink-0 transition-transform group-open:rotate-180" />
       </summary>
@@ -282,17 +273,18 @@ function Options({ children }: { children: React.ReactNode }) {
 }
 
 function DateField({
+  id,
   label,
   value,
   min,
   onChange,
 }: {
+  id: string
   label: string
   value?: string
   min: string
   onChange: (value?: string) => void
 }) {
-  const id = `filtr-data-${label.toLowerCase()}`
   return (
     <div className="flex flex-col gap-2">
       <label htmlFor={id} className="text-[0.9375rem] font-semibold text-text">

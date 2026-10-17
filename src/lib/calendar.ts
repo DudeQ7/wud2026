@@ -1,6 +1,9 @@
+import type { Dictionary } from "@/i18n"
+import { pl } from "@/i18n/dictionaries/pl"
 import {
   type FsEvent,
   addDays,
+  formatDayMonth,
   formatLongDate,
   formatSeries,
   isExhibition,
@@ -11,52 +14,12 @@ import {
 // co da się wyprowadzić z koncerty.json – bez zgadywania cen, statusów biletów i nastrojów.
 // Moduł jest czysty (bez danych), więc liczy wyniki zarówno na serwerze, jak i w przeglądarce.
 
-// ——— Wartości filtrów (klucze = wartości w adresie URL) ———
+// ——— Wartości filtrów ———
+// Klucze = wartości w adresie URL (po polsku we wszystkich językach, żeby linki działały wszędzie).
+// Etykiety są w słowniku: t.calendar.when, t.calendar.types itd.
 
-export const WHEN = {
-  dzis: "Dziś",
-  jutro: "Jutro",
-  weekend: "Ten weekend",
-  tydzien: "Najbliższe 7 dni",
-  miesiac: "Najbliższy miesiąc",
-} as const
-
-export const TYPES = {
-  symfoniczny: "Symfoniczny",
-  kameralny: "Kameralny",
-  jazz: "Jazz",
-  "muzyka-swiata": "Muzyka świata",
-  edukacja: "Edukacja i dzieci",
-  wystawa: "Wystawa",
-  zwiedzanie: "Zwiedzanie",
-  festiwal: "Festiwal",
-  spotkania: "Film, debata, wykład",
-} as const
-
-export const AUDIENCES = {
-  dzieci: "Dzieci",
-  rodziny: "Rodziny",
-  szkoly: "Szkoły",
-  seniorzy: "Seniorzy",
-} as const
-
-export const PLACES = {
-  symfoniczna: "Sala Symfoniczna",
-  kameralna: "Sala Kameralna",
-  galerie: "Galerie",
-  hol: "Hol i foyer",
-} as const
-
-export const DURATIONS = {
-  "do-45-min": "Do 45 min",
-  "do-90-min": "Do 90 min",
-  dluzej: "Dłużej niż 90 min",
-} as const
-
-export const MOODS = {
-  filmowa: "Muzyka filmowa",
-  niezwykle: "Coś niezwykłego",
-} as const
+const { when: WHEN, types: TYPES, audiences: AUDIENCES, places: PLACES, durations: DURATIONS, moods: MOODS } =
+  pl.calendar
 
 export type When = keyof typeof WHEN
 export type EventType = keyof typeof TYPES
@@ -307,7 +270,7 @@ export type CalendarRow = { event: CalendarEvent; times: string[] }
 export type CalendarDay = { day: string; label: string; rows: CalendarRow[] }
 
 /** Wiersze kalendarza pogrupowane po dniach (§6.7): jedno wydarzenie = jeden wiersz w danym dniu */
-export function calendarDays(events: CalendarEvent[], filters: Filters, today: string): CalendarDay[] {
+export function calendarDays(events: CalendarEvent[], filters: Filters, today: string, t: Dictionary): CalendarDay[] {
   const [from, to] = dateWindow(filters, today)
   const byDay = new Map<string, CalendarRow[]>()
 
@@ -328,7 +291,7 @@ export function calendarDays(events: CalendarEvent[], filters: Filters, today: s
     .sort(([a], [b]) => a.localeCompare(b))
     .map(([day, rows]) => ({
       day,
-      label: formatLongDate(day),
+      label: formatLongDate(day, t),
       rows: rows.sort((a, b) => a.times[0].localeCompare(b.times[0])),
     }))
 }
@@ -341,60 +304,52 @@ export function countRows(days: CalendarDay[]) {
 
 export type ActiveFilter = { id: string; label: string; remove: (f: Filters) => Filters }
 
-const formatDay = (key: string) => key.split("-").reverse().slice(0, 2).join(".")
-
-export function activeFilters(filters: Filters, seriesLabels: Record<string, string>): ActiveFilter[] {
+export function activeFilters(filters: Filters, seriesLabels: Record<string, string>, t: Dictionary): ActiveFilter[] {
+  const labels = t.calendar
   const result: ActiveFilter[] = []
   const without = <K extends keyof Filters>(key: K, value?: Filters[K]) => (f: Filters) => ({ ...f, [key]: value })
 
-  if (filters.q) result.push({ id: "q", label: `„${filters.q}”`, remove: without("q") })
-  if (filters.kiedy) result.push({ id: "kiedy", label: WHEN[filters.kiedy], remove: without("kiedy") })
+  if (filters.q) result.push({ id: "q", label: labels.quote(filters.q), remove: without("q") })
+  if (filters.kiedy) result.push({ id: "kiedy", label: labels.when[filters.kiedy], remove: without("kiedy") })
   if (filters.od || filters.do) {
-    const label = [filters.od && `od ${formatDay(filters.od)}`, filters.do && `do ${formatDay(filters.do)}`]
+    const label = [filters.od && labels.rangeFrom(formatDayMonth(filters.od, t)), filters.do && labels.rangeTo(formatDayMonth(filters.do, t))]
       .filter(Boolean)
       .join(" ")
     result.push({ id: "zakres", label: label.charAt(0).toUpperCase() + label.slice(1), remove: (f) => ({ ...f, od: undefined, do: undefined }) })
   }
-  const multi = <K extends "rodzaj" | "dlaKogo" | "miejsce" | "nastroj">(key: K, labels: Record<Filters[K][number], string>) => {
+  const multi = <K extends "rodzaj" | "dlaKogo" | "miejsce" | "nastroj">(key: K, names: Record<Filters[K][number], string>) => {
     for (const value of filters[key] as Filters[K][number][]) {
       result.push({
         id: `${key}-${value}`,
-        label: labels[value],
+        label: names[value],
         remove: (f) => ({ ...f, [key]: (f[key] as string[]).filter((v) => v !== value) }),
       })
     }
   }
-  multi("rodzaj", TYPES)
-  multi("dlaKogo", AUDIENCES)
-  if (filters.wiek) result.push({ id: "wiek", label: `Wiek ${filters.wiek} ${years(filters.wiek)}`, remove: without("wiek") })
-  multi("miejsce", PLACES)
-  if (filters.czas) result.push({ id: "czas", label: DURATIONS[filters.czas], remove: without("czas") })
-  multi("nastroj", MOODS)
+  multi("rodzaj", labels.types)
+  multi("dlaKogo", labels.audiences)
+  if (filters.wiek) result.push({ id: "wiek", label: labels.age(filters.wiek), remove: without("wiek") })
+  multi("miejsce", labels.places)
+  if (filters.czas) result.push({ id: "czas", label: labels.durations[filters.czas], remove: without("czas") })
+  multi("nastroj", labels.moods)
   if (filters.cykl) result.push({ id: "cykl", label: seriesLabels[filters.cykl] ?? filters.cykl, remove: without("cykl") })
   return result
 }
 
 /** Do 3 propozycji „bez tego filtra będzie X wyników” – najpierw te, które dają najwięcej */
-export function alternatives(events: CalendarEvent[], filters: Filters, today: string, seriesLabels: Record<string, string>) {
-  return activeFilters(filters, seriesLabels)
+export function alternatives(
+  events: CalendarEvent[],
+  filters: Filters,
+  today: string,
+  seriesLabels: Record<string, string>,
+  t: Dictionary
+) {
+  return activeFilters(filters, seriesLabels, t)
     .map((filter) => {
       const relaxed = filter.remove(filters)
-      return { filter, relaxed, count: countRows(calendarDays(events, relaxed, today)) }
+      return { filter, relaxed, count: countRows(calendarDays(events, relaxed, today, t)) }
     })
     .filter((a) => a.count > 0)
     .sort((a, b) => b.count - a.count)
     .slice(0, 3)
-}
-
-// ——— Polska odmiana ———
-
-export function plural(n: number, one: string, few: string, many: string) {
-  if (n === 1) return one
-  const tens = n % 100
-  const units = n % 10
-  return units >= 2 && units <= 4 && (tens < 12 || tens > 14) ? few : many
-}
-
-function years(n: number) {
-  return plural(n, "rok", "lata", "lat")
 }

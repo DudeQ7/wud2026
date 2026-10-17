@@ -6,12 +6,14 @@ import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { type Locale, getDictionary, localizedPath } from "@/i18n"
 
 /**
  * Zapis do newslettera (§6.17): etykieta nad polem, „(wymagane)” słowem,
  * błędy bez czerwieni – „Błąd:” + kontur 3 px + aria-describedby. Brak integracji z CRM (mock).
  */
-export function NewsletterForm() {
+export function NewsletterForm({ lang }: { lang: Locale }) {
+  const t = getDictionary(lang).newsletter
   const id = useId()
   const [email, setEmail] = useState("")
   const [consent, setConsent] = useState(false)
@@ -21,8 +23,8 @@ export function NewsletterForm() {
   function onSubmit(e: React.FormEvent) {
     e.preventDefault()
     const next = {
-      email: /^\S+@\S+\.\S+$/.test(email) ? undefined : "Wpisz adres e-mail w formacie anna@przyklad.pl.",
-      consent: consent ? undefined : "Zaznacz zgodę, żebyśmy mogli wysyłać newsletter.",
+      email: /^\S+@\S+\.\S+$/.test(email) ? undefined : t.emailError,
+      consent: consent ? undefined : t.consentError,
     }
     setErrors(next)
     setSent(!next.email && !next.consent)
@@ -31,7 +33,7 @@ export function NewsletterForm() {
   if (sent) {
     return (
       <p role="status" className="type-body border-y border-line py-4 text-text">
-        Dziękujemy! Sprawdź skrzynkę i potwierdź zapis.
+        {t.thanks}
       </p>
     )
   }
@@ -39,13 +41,13 @@ export function NewsletterForm() {
   return (
     <form noValidate onSubmit={onSubmit} className="flex max-w-xl flex-col gap-4">
       <div className="flex flex-col gap-2 pt-2">
-        <Label htmlFor={`${id}-email`}>E-mail (wymagane)</Label>
+        <Label htmlFor={`${id}-email`}>{t.email}</Label>
         <Input
           id={`${id}-email`}
           type="email"
           inputMode="email"
           autoComplete="email"
-          placeholder="np. anna@przyklad.pl"
+          placeholder={t.placeholder}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           aria-invalid={Boolean(errors.email)}
@@ -53,7 +55,7 @@ export function NewsletterForm() {
         />
         {errors.email && (
           <p id={`${id}-email-error`} className="type-meta text-text">
-            <strong>Błąd:</strong> {errors.email}
+            <strong>{t.error}</strong> {errors.email}
           </p>
         )}
       </div>
@@ -68,21 +70,21 @@ export function NewsletterForm() {
             aria-describedby={errors.consent ? `${id}-consent-error` : undefined}
           />
           <Label htmlFor={`${id}-consent`} className="type-meta font-normal">
-            Zgadzam się na newsletter Filharmonii. Mogę zrezygnować w każdej chwili.{" "}
-            <a href="/polityka-prywatnosci" className="font-semibold underline underline-offset-2">
-              Polityka prywatności
+            {t.consent}{" "}
+            <a href={localizedPath(lang, "/polityka-prywatnosci")} className="font-semibold underline underline-offset-2">
+              {t.privacy}
             </a>
           </Label>
         </div>
         {errors.consent && (
           <p id={`${id}-consent-error`} className="type-meta text-text">
-            <strong>Błąd:</strong> {errors.consent}
+            <strong>{t.error}</strong> {errors.consent}
           </p>
         )}
       </div>
 
       <Button type="submit" block className="sm:w-fit">
-        Zapisz się
+        {t.submit}
       </Button>
     </form>
   )

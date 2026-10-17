@@ -4,18 +4,23 @@ import * as React from "react"
 
 import { AssistantDialog } from "@/components/fs/assistant-dialog"
 import { iconProps } from "@/components/fs/icons"
+import { type Dictionary, type Locale, getDictionary, localizedPath } from "@/i18n"
 import { eventCards, venue } from "@/lib/assistant"
 import { cn } from "@/lib/utils"
 
-type NavItem = { label: string; href?: string; icon?: React.ComponentType<React.SVGProps<SVGSVGElement>> }
+type NavItem = {
+  key: keyof Omit<Dictionary["nav"], "label">
+  href?: string
+  icon?: React.ComponentType<React.SVGProps<SVGSVGElement>>
+}
 
 const items: NavItem[] = [
-  { label: "Kalendarz", href: "/repertuar", icon: CalendarDays },
-  { label: "Szukaj", href: "/szukaj", icon: Search },
+  { key: "calendar", href: "/repertuar", icon: CalendarDays },
+  { key: "search", href: "/szukaj", icon: Search },
   // Bez adresu: asystent otwiera się jako nakładka nad bieżącą stroną (§6.14)
-  { label: "Asystent" },
-  { label: "Planuj", href: "/planuj-wizyte", icon: MapPin },
-  { label: "Konto", href: "/konto", icon: User },
+  { key: "assistant" },
+  { key: "plan", href: "/planuj-wizyte", icon: MapPin },
+  { key: "account", href: "/konto", icon: User },
 ]
 
 /** Heksagon – wyłącznie dla asystenta AI (§5.3): czarny, ze złotym „AI” (5,91:1) */
@@ -33,19 +38,23 @@ function AiHexagon() {
 /**
  * Dolna nawigacja (§6.4): 5 pozycji z zawsze widocznym podpisem.
  * Aktywna pozycja: linia 2 px u góry, pogrubiony podpis i aria-current – nigdy sam kolor.
+ * `current` to adres bez prefiksu języka, np. „/repertuar”.
  */
-export function BottomNav({ current }: { current?: string }) {
+export function BottomNav({ lang, current }: { lang: Locale; current?: string }) {
+  const t = getDictionary(lang)
   return (
     <nav
-      aria-label="Dolna"
+      aria-label={t.nav.label}
       className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-background pb-[env(safe-area-inset-bottom)]"
     >
       <ul className="mx-auto grid h-16 max-w-xl grid-cols-5">
-        {items.map(({ label, href, icon: Icon }) => {
+        {items.map(({ key, href, icon: Icon }) => {
+          const label = t.nav[key]
           if (!href) {
             return (
-              <li key={label}>
+              <li key={key}>
                 <AssistantDialog
+                  lang={lang}
                   events={eventCards}
                   venue={venue}
                   className="flex h-full w-full cursor-pointer flex-col items-center justify-end gap-1 pb-2 text-xs font-semibold text-text"
@@ -60,7 +69,7 @@ export function BottomNav({ current }: { current?: string }) {
           return (
             <li key={href}>
               <Link
-                href={href}
+                href={localizedPath(lang, href)}
                 aria-current={active ? "page" : undefined}
                 className={cn(
                   "flex h-full flex-col items-center justify-end gap-1 pb-2 text-xs text-text",
