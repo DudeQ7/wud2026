@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "deny": [
+      "Read(./ScrappedData/pages/**)",
+      "Read(./ScrappedData/scraper/node_modules/**)",
+      "Bash(find ScrappedData/pages*)",
+      "Bash(ls -R ScrappedData*)"
+    ]
+  }
+}
