@@ -8,6 +8,7 @@ import { Container, Eyebrow } from "@/components/fs/layout"
 import { SiteFooter } from "@/components/fs/site-footer"
 import { SiteHeader } from "@/components/fs/site-header"
 import { buttonVariants } from "@/components/ui/button"
+import { guide } from "@/content/about"
 import { buildingAccess, firstVisit } from "@/content/event"
 import { address, boxOffice } from "@/content/home"
 import { venueInfo } from "@/lib/events"
@@ -124,6 +125,12 @@ export default function PlanVisitPage() {
                 Zadzwoń do kasy: {boxOffice.phone}
               </a>
             </Answer>
+
+            {guide.map((item) => (
+              <Answer key={item.q} title={item.q}>
+                <p>{item.a}</p>
+              </Answer>
+            ))}
 
             <Answer title="Sale i przestrzenie">
               <ul className="flex flex-col gap-1">
