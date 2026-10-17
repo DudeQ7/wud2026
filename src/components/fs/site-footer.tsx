@@ -1,11 +1,12 @@
 import { ArrowRight } from "lucide-react"
 import Link from "next/link"
 
+import visit from "@/data/visit.json"
 import { iconProps } from "@/components/fs/icons"
 import { Container, Eyebrow } from "@/components/fs/layout"
 import { Logo } from "@/components/fs/wordmark"
-import { address, boxOffice, footerLinks } from "@/content/home"
-import { type Locale, getDictionary, localizedPath } from "@/i18n"
+import { address, footerLinks } from "@/content/home"
+import { type Locale, getDictionary, localizedPath, locales, languageNames } from "@/i18n"
 
 /**
  * Stopka (§6.18): czerń, logo białe. Kontakt z kasą zawsze w tym samym miejscu (WCAG 3.2.6).
@@ -23,18 +24,18 @@ export function SiteFooter({ lang }: { lang: Locale }) {
 
         <div className="flex flex-col gap-2">
           <Eyebrow tone="dark">{t.footer.boxOffice}</Eyebrow>
-          <p className="type-meta whitespace-pre-line text-on-dark-muted">{t.footer.boxOfficeHours}</p>
+          <p className="type-meta whitespace-pre-line text-on-dark-muted">{lang === "pl" ? visit.boxOffice.hours : t.footer.boxOfficeHours}</p>
           <a
-            href={`tel:${boxOffice.phone.replaceAll(" ", "")}`}
+            href={`tel:${visit.boxOffice.phone.replaceAll(" ", "")}`}
             className="flex min-h-11 w-fit items-center font-semibold underline underline-offset-4"
           >
-            {boxOffice.phone}
+            {visit.boxOffice.phone}
           </a>
           <a
-            href={`mailto:${boxOffice.email}`}
+            href={`mailto:${visit.boxOffice.email}`}
             className="flex min-h-11 w-fit items-center font-semibold underline underline-offset-4"
           >
-            {boxOffice.email}
+            {visit.boxOffice.email}
           </a>
         </div>
 
@@ -54,6 +55,13 @@ export function SiteFooter({ lang }: { lang: Locale }) {
           </ul>
         </nav>
 
+        <nav aria-label={t.common.language} className="flex gap-3 lg:col-span-3">
+          {locales.map((code) => (
+            <Link key={code} href={localizedPath(code, "/")} lang={code} hrefLang={code} aria-label={languageNames[code]} aria-current={code === lang ? "true" : undefined} className="flex min-h-11 min-w-11 cursor-pointer items-center justify-center font-semibold hover:underline hover:underline-offset-4 focus-visible:underline">
+              {code.toUpperCase()}
+            </Link>
+          ))}
+        </nav>
         <p className="type-meta text-on-dark-muted lg:col-span-3">
           {t.footer.copyright}
         </p>

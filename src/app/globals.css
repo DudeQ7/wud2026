@@ -213,10 +213,12 @@
     font-variant-numeric: tabular-nums;
   }
   /* Nakładka asystenta (§6.14): pod spodem strona się nie przewija */
-  html:has(dialog.assistant-dialog[open]) {
+  html:has(dialog.assistant-dialog[open]),
+  html:has(dialog.site-menu[open]) {
     overflow: hidden;
   }
-  dialog.assistant-dialog::backdrop {
+  dialog.assistant-dialog::backdrop,
+  dialog.site-menu::backdrop {
     background: rgba(26, 26, 26, 0.6); /* --color-scrim */
   }
   dialog.assistant-dialog[open] {
