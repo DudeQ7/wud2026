@@ -8,5 +8,6 @@ import { type Locale, defaultLocale, hasLocale } from "./config"
  */
 export async function getLang(): Promise<Locale> {
   const value = await rootLang()
-  return hasLocale(value) ? value : defaultLocale
+  const candidate = value ?? ""
+  return hasLocale(candidate) ? candidate : defaultLocale
 }

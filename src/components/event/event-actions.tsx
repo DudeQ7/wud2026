@@ -2,6 +2,7 @@
 
 import { CalendarPlus, Navigation, Phone, Share2 } from "lucide-react"
 import { useState } from "react"
+import posthog from "posthog-js"
 
 import { iconProps } from "@/components/fs/icons"
 import { Button, buttonVariants } from "@/components/ui/button"
@@ -35,6 +36,7 @@ export function EventActions({ title, date, durationMin, venue, address, phone }
     link.download = "filharmonia-szczecin.ics"
     link.click()
     URL.revokeObjectURL(link.href)
+    posthog.capture("event_added_to_calendar", { has_duration: Boolean(durationMin) })
     setStatus("Plik wydarzenia jest gotowy – otwórz go, żeby dodać termin do kalendarza.")
   }
 
@@ -43,12 +45,14 @@ export function EventActions({ title, date, durationMin, venue, address, phone }
     if (navigator.share) {
       try {
         await navigator.share(data)
+        posthog.capture("event_shared", { share_method: "native" })
       } catch {
         // Użytkownik zamknął okno udostępniania – nic nie robimy
       }
       return
     }
     await navigator.clipboard.writeText(data.url)
+    posthog.capture("event_shared", { share_method: "clipboard" })
     setStatus("Skopiowano link do wydarzenia.")
   }
 

@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
+import posthog from "posthog-js";
 import { updateProfile } from "@/app/actions/panel";
 import { type Locale, getDictionary, locales } from "@/i18n";
 import type { Profile } from "@/types/database";
@@ -15,7 +16,11 @@ export function ProfileForm({ lang, profile, userEmail }: ProfileFormProps) {
   const t = getDictionary(lang).panel.profile;
   const [state, formAction, isPending] = useActionState(
     async (_prevState: unknown, formData: FormData) => {
-      return await updateProfile(formData);
+      const result = await updateProfile(formData);
+      if ("success" in result && result.success) {
+        posthog.capture("profile_updated");
+      }
+      return result;
     },
     null
   );

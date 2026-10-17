@@ -1,6 +1,7 @@
 "use client"
 
 import { useId, useState } from "react"
+import posthog from "posthog-js"
 
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -41,6 +42,7 @@ export function NewsletterForm({ lang }: { lang: Locale }) {
       })
       if (!response.ok) throw new Error("Signup failed")
       setSent(true)
+      posthog.capture("newsletter_signup_completed")
     } catch {
       setSubmitError(true)
     } finally {

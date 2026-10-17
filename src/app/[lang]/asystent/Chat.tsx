@@ -5,6 +5,7 @@ import { useEffect, useRef, useState, useTransition } from "react";
 import { X } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import posthog from "posthog-js";
 import locales from "@/data/locales.json";
 import type { ChatMessage, EventCard, Lang, Reply, Venue } from "@/lib/assistant";
 import { toggleFavorite, getFavoriteEventIds } from "@/app/actions/panel";
@@ -32,6 +33,7 @@ const nextDate = (dates: string[]) => dates.find((date) => new Date(date) >= new
 export default function Chat({ lang, events, venue, titleId, onClose, className }: Props) {
   const router = useRouter();
   const [entries, setEntries] = useState<Entry[]>([]);
+  const aiSessionId = useRef<string>(null);
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
   const [userEmail, setUserEmail] = useState<string | null>(null);
@@ -70,14 +72,19 @@ export default function Chat({ lang, events, venue, titleId, onClose, className 
       { role: "user", content: question },
     ];
     setEntries((prev) => [...prev, { role: "user", content: question }, { role: "assistant", content: "" }]);
+    posthog.capture("assistant_message_sent", {
+      language: lang,
+      message_number: history.filter((message) => message.role === "user").length,
+    });
     setInput("");
     setBusy(true);
 
     try {
+      aiSessionId.current ??= crypto.randomUUID();
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: history, lang }),
+        body: JSON.stringify({ messages: history, lang, sessionId: aiSessionId.current }),
       });
       if (!res.ok || !res.body) throw new Error(res.statusText);
 
@@ -107,7 +114,12 @@ export default function Chat({ lang, events, venue, titleId, onClose, className 
     );
 
     startTransition(async () => {
-      await toggleFavorite(eventId, lang);
+      const result = await toggleFavorite(eventId, lang);
+      if ("isFavorite" in result && result.isFavorite === true) {
+        posthog.capture("assistant_favorite_added", { event_id: eventId });
+      } else if ("isFavorite" in result && result.isFavorite === false) {
+        posthog.capture("assistant_favorite_removed", { event_id: eventId });
+      }
     });
   }
 
