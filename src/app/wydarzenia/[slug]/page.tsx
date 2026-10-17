@@ -169,7 +169,7 @@ async function EventView({ id }: { id: number }) {
 
         {series && (
           <Link
-            href={`/repertuar?cykl=${seriesKey(event.series)}`}
+            href={`/cykl/${seriesKey(event.series)}`}
             className={cn(buttonVariants({ variant: "link" }), "mt-2 whitespace-normal")}
           >
             Cykl: {series} →
