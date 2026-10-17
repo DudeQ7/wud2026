@@ -2,12 +2,15 @@
 
 import { parse } from "partial-json";
 import { useEffect, useRef, useState, useTransition } from "react";
+import { X } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import locales from "@/data/locales.json";
 import type { ChatMessage, EventCard, Lang, Reply, Venue } from "@/lib/assistant";
 import { toggleFavorite, getFavoriteEventIds } from "@/app/actions/panel";
 import { createClient } from "@/lib/supabase/client";
+import { iconProps } from "@/components/fs/icons";
+import { cn } from "@/lib/utils";
 
 type Entry = ChatMessage & Partial<Reply>;
 
@@ -16,11 +19,16 @@ type Props = {
   lang: Lang;
   events: EventCard[];
   venue: Venue;
+  /** Id nagłówka – nakładka wskazuje go w aria-labelledby */
+  titleId?: string;
+  /** W nakładce: przycisk zamknięcia w nagłówku */
+  onClose?: () => void;
+  className?: string;
 };
 
 const nextDate = (dates: string[]) => dates.find((date) => new Date(date) >= new Date()) ?? dates.at(-1)!;
 
-export default function Chat({ lang, events, venue }: Props) {
+export default function Chat({ lang, events, venue, titleId, onClose, className }: Props) {
   const router = useRouter();
   const [entries, setEntries] = useState<Entry[]>([]);
   const [input, setInput] = useState("");
@@ -106,25 +114,37 @@ export default function Chat({ lang, events, venue }: Props) {
   const suggestions = !last ? t.suggestions : busy ? [] : (last.suggestions ?? []);
 
   return (
-    <main lang={lang} className="mx-auto flex h-dvh w-full max-w-2xl flex-col px-4">
-      <header className="flex items-center justify-between py-4">
-        <h1 className="text-lg font-semibold">{t.title}</h1>
-        {userEmail ? (
-          <Link
-            href="/panel"
-            className="inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1 text-xs font-semibold hover:bg-muted transition-colors"
-          >
-            <span>👤</span>
-            <span>Mój Panel</span>
-          </Link>
-        ) : (
-          <Link
-            href="/auth/login"
-            className="inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1 text-xs font-semibold hover:bg-muted transition-colors"
-          >
-            <span>Zaloguj się</span>
-          </Link>
-        )}
+    <div lang={lang} className={cn("mx-auto flex w-full max-w-2xl flex-col px-4", className)}>
+      <header className="flex items-center justify-between gap-2 py-4">
+        <h2 id={titleId} className="text-lg font-semibold">{t.title}</h2>
+        <div className="flex items-center gap-1">
+          {userEmail ? (
+            <Link
+              href="/panel"
+              className="inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1 text-xs font-semibold hover:bg-muted transition-colors"
+            >
+              <span>👤</span>
+              <span>Mój Panel</span>
+            </Link>
+          ) : (
+            <Link
+              href="/auth/login"
+              className="inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1 text-xs font-semibold hover:bg-muted transition-colors"
+            >
+              <span>Zaloguj się</span>
+            </Link>
+          )}
+          {onClose && (
+            <button
+              type="button"
+              onClick={onClose}
+              aria-label={t.close}
+              className="flex size-11 cursor-pointer items-center justify-center text-ink hover:bg-bg-subtle"
+            >
+              <X {...iconProps} className="size-6" />
+            </button>
+          )}
+        </div>
       </header>
 
       <div role="log" aria-live="polite" aria-busy={busy} className="flex-1 space-y-4 overflow-y-auto pb-4">
@@ -248,6 +268,6 @@ export default function Chat({ lang, events, venue }: Props) {
           {t.send}
         </button>
       </form>
-    </main>
+    </div>
   );
 }

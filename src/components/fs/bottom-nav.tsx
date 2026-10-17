@@ -2,15 +2,18 @@ import { CalendarDays, MapPin, Search, User } from "lucide-react"
 import Link from "next/link"
 import * as React from "react"
 
+import { AssistantDialog } from "@/components/fs/assistant-dialog"
 import { iconProps } from "@/components/fs/icons"
+import { eventCards, venue } from "@/lib/assistant"
 import { cn } from "@/lib/utils"
 
-type NavItem = { label: string; href: string; icon?: React.ComponentType<React.SVGProps<SVGSVGElement>> }
+type NavItem = { label: string; href?: string; icon?: React.ComponentType<React.SVGProps<SVGSVGElement>> }
 
 const items: NavItem[] = [
   { label: "Kalendarz", href: "/repertuar", icon: CalendarDays },
   { label: "Szukaj", href: "/szukaj", icon: Search },
-  { label: "Asystent", href: "/asystent" },
+  // Bez adresu: asystent otwiera się jako nakładka nad bieżącą stroną (§6.14)
+  { label: "Asystent" },
   { label: "Planuj", href: "/planuj-wizyte", icon: MapPin },
   { label: "Konto", href: "/konto", icon: User },
 ]
@@ -39,6 +42,20 @@ export function BottomNav({ current }: { current?: string }) {
     >
       <ul className="mx-auto grid h-16 max-w-xl grid-cols-5">
         {items.map(({ label, href, icon: Icon }) => {
+          if (!href) {
+            return (
+              <li key={label}>
+                <AssistantDialog
+                  events={eventCards}
+                  venue={venue}
+                  className="flex h-full w-full cursor-pointer flex-col items-center justify-end gap-1 pb-2 text-xs font-semibold text-text"
+                >
+                  <AiHexagon />
+                  {label}
+                </AssistantDialog>
+              </li>
+            )
+          }
           const active = current === href
           return (
             <li key={href}>
@@ -50,7 +67,7 @@ export function BottomNav({ current }: { current?: string }) {
                   active ? "border-t-2 border-ink font-bold" : "font-semibold"
                 )}
               >
-                {Icon ? <Icon {...iconProps} className="size-6" /> : <AiHexagon />}
+                {Icon && <Icon {...iconProps} className="size-6" />}
                 {label}
               </Link>
             </li>

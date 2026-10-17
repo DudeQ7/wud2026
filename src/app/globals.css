@@ -212,6 +212,30 @@
   .tabular-nums {
     font-variant-numeric: tabular-nums;
   }
+  /* Nakładka asystenta (§6.14): pod spodem strona się nie przewija */
+  html:has(dialog.assistant-dialog[open]) {
+    overflow: hidden;
+  }
+  dialog.assistant-dialog::backdrop {
+    background: rgba(26, 26, 26, 0.6); /* --color-scrim */
+  }
+  dialog.assistant-dialog[open] {
+    animation: assistant-in 200ms ease-out;
+  }
+  @keyframes assistant-in {
+    from {
+      opacity: 0;
+      transform: translateY(24px);
+    }
+  }
+  @media (min-width: 64rem) {
+    @keyframes assistant-in {
+      from {
+        opacity: 0;
+        transform: translateX(24px);
+      }
+    }
+  }
   @media (prefers-reduced-motion: reduce) {
     *,
     *::before,
