@@ -45,3 +45,5 @@ next-env.d.ts
 # scraper
 ScrappedData/scraper/node_modules/
 ScrappedData/scraper/run.log
+
+.mcp.json
