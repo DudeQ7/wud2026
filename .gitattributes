@@ -1,2 +1,3 @@
 # dane scrapowane: zawsze LF, bez ostrzezen o CRLF
 ScrappedData/** text eol=lf
+ScrappedData/Images/** binary
