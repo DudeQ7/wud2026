@@ -12,6 +12,8 @@ type AssistantDialogProps = {
   venue: Venue
   /** Wygląd przycisku otwierającego (heksagon z dolnej nawigacji) */
   className?: string
+  /** Nazwa dla przycisku bez pełnego podpisu (np. sam heksagon „AI”) */
+  label?: string
   children: React.ReactNode
 }
 
@@ -21,7 +23,7 @@ type AssistantDialogProps = {
  * blokadę reszty strony, zamykanie Esc i powrót fokusu na przycisk otwierający.
  * Rozmowa zostaje w pamięci po zamknięciu – ponowne otwarcie wraca do niej.
  */
-export function AssistantDialog({ lang = "pl", events, venue, className, children }: AssistantDialogProps) {
+export function AssistantDialog({ lang = "pl", events, venue, className, label, children }: AssistantDialogProps) {
   const dialogRef = useRef<HTMLDialogElement>(null)
   // Czat montujemy dopiero przy pierwszym otwarciu, żeby nie obciążać każdej strony
   const [mounted, setMounted] = useState(false)
@@ -39,7 +41,14 @@ export function AssistantDialog({ lang = "pl", events, venue, className, childre
 
   return (
     <>
-      <button type="button" onClick={show} aria-haspopup="dialog" aria-expanded={open} className={className}>
+      <button
+        type="button"
+        onClick={show}
+        aria-haspopup="dialog"
+        aria-expanded={open}
+        aria-label={label}
+        className={className}
+      >
         {children}
       </button>
       <dialog

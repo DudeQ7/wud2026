@@ -56,9 +56,9 @@ export function LanguageSwitcher({ lang }: { lang: Locale }) {
         aria-controls={listId}
         aria-label={`${lang.toUpperCase()}, ${t.common.language}: ${languageNames[lang]}`}
         onClick={() => setOpen((o) => !o)}
-        className="flex size-11 cursor-pointer items-center justify-center font-bold"
+        className="flex size-11 cursor-pointer items-center justify-center font-semibold"
       >
-        <span lang={lang} className="border-b-2 border-ink leading-5">
+        <span lang={lang} className="hover-line">
           {lang.toUpperCase()}
         </span>
       </button>
@@ -80,9 +80,9 @@ export function LanguageSwitcher({ lang }: { lang: Locale }) {
               lang={code}
               hrefLang={code}
               aria-label={`${code.toUpperCase()} – ${languageNames[code]}`}
-              className="group flex size-11 items-center justify-center font-semibold focus-visible:outline-offset-[-2px]"
+              className="flex size-11 items-center justify-center font-semibold focus-visible:outline-offset-[-2px]"
             >
-              <span className="border-b-2 border-transparent leading-5 group-hover:border-ink">{code.toUpperCase()}</span>
+              <span className="hover-line">{code.toUpperCase()}</span>
             </a>
           </li>
         ))}

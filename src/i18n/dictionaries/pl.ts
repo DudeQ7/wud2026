@@ -39,6 +39,11 @@ export const pl = {
     assistant: "Asystent",
     plan: "Planuj",
     account: "Konto",
+    /** Górne menu na desktopie (§6.3) */
+    mainLabel: "Główne",
+    planVisit: "Planuj wizytę",
+    /** Przycisk asystenta w prawym dolnym rogu (desktop) – musi zawierać widoczne „AI” (WCAG 2.5.3) */
+    assistantAi: "Asystent AI",
   },
 
   footerPages: {
@@ -278,7 +283,7 @@ export const pl = {
   },
 
   auth: {
-    back: "Wróć do Asystenta",
+    back: "Wróć na stronę główną",
     email: "Adres e-mail",
     emailPlaceholder: "twoj@email.pl",
     password: "Hasło",

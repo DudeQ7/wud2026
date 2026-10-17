@@ -131,20 +131,13 @@ export default function Chat({ lang, events, venue, titleId, onClose, className 
       <header className="flex items-center justify-between gap-2 py-4">
         <h2 id={titleId} className="text-lg font-semibold">{t.title}</h2>
         <div className="flex items-center gap-1">
-          {userEmail ? (
+          {userEmail && (
             <Link
               href={localizedPath(lang, "/panel")}
               className="inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1 text-xs font-semibold hover:bg-muted transition-colors"
             >
               <span aria-hidden>👤</span>
               <span>{t.panel}</span>
-            </Link>
-          ) : (
-            <Link
-              href={localizedPath(lang, "/auth/login")}
-              className="inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1 text-xs font-semibold hover:bg-muted transition-colors"
-            >
-              <span>{t.login}</span>
             </Link>
           )}
           {onClose && (

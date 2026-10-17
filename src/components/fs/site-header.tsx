@@ -1,14 +1,15 @@
 "use client"
 
-import { ArrowRight, Menu, X } from "lucide-react"
+import { ArrowRight, Menu, Search, User, X } from "lucide-react"
 import Link from "next/link"
+import { usePathname } from "next/navigation"
 import { useEffect, useId, useRef, useState } from "react"
 
 import { iconProps } from "@/components/fs/icons"
 import { LanguageSwitcher } from "@/components/fs/language-switcher"
 import { Container } from "@/components/fs/layout"
 import { Logo } from "@/components/fs/wordmark"
-import { type Locale, getDictionary, localizedPath } from "@/i18n"
+import { type Locale, getDictionary, localizedPath, stripLocale } from "@/i18n"
 import { cn } from "@/lib/utils"
 
 type SiteHeaderProps = {
@@ -17,7 +18,11 @@ type SiteHeaderProps = {
   overlay?: boolean
 }
 
-/** Górny pasek mobile (§6.4): logo, PL | EN | DE, Menu. Przyklejony, 56 px. */
+/**
+ * Górny pasek. Mobile (§6.4): logo, PL | EN | DE, Menu.
+ * Desktop (§6.3, ≥ 1024 px): do tego pozycje dolnej nawigacji – Repertuar, Planuj wizytę, Szukaj, Konto;
+ * dolny pasek wtedy znika, a asystent jest w prawym dolnym rogu.
+ */
 export function SiteHeader({ lang, overlay = false }: SiteHeaderProps) {
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
@@ -38,6 +43,13 @@ export function SiteHeader({ lang, overlay = false }: SiteHeaderProps) {
 
   const t = getDictionary(lang)
   const solid = !overlay || scrolled
+  // Adres bez prefiksu języka – do oznaczenia aktywnej pozycji menu
+  const page = stripLocale(usePathname())
+  const isActive = (href: string) => page === href || page.startsWith(`${href}/`)
+  const mainLinks = [
+    { label: t.calendar.title, href: "/repertuar" },
+    { label: t.nav.planVisit, href: "/planuj-wizyte" },
+  ]
 
   return (
     <header
@@ -48,8 +60,29 @@ export function SiteHeader({ lang, overlay = false }: SiteHeaderProps) {
       )}
     >
       <Container className="flex h-full items-center justify-between gap-4">
-        <Logo lang={lang} className="h-14" priority />
+        <div className="flex items-center gap-6">
+          <Logo lang={lang} className="h-14" priority />
+          <nav aria-label={t.nav.mainLabel} className="hidden lg:block">
+            <ul className="flex items-center gap-1">
+              {mainLinks.map(({ label, href }) => (
+                <li key={href}>
+                  <HeaderLink href={localizedPath(lang, href)} active={isActive(href)}>
+                    {label}
+                  </HeaderLink>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        </div>
         <div className="flex items-center gap-2">
+          <HeaderLink href={localizedPath(lang, "/szukaj")} active={isActive("/szukaj")} className="hidden lg:flex">
+            <Search {...iconProps} className="size-5" />
+            {t.nav.search}
+          </HeaderLink>
+          <HeaderLink href={localizedPath(lang, "/konto")} active={isActive("/konto")} className="hidden lg:flex">
+            <User {...iconProps} className="size-5" />
+            {t.nav.account}
+          </HeaderLink>
           <LanguageSwitcher lang={lang} />
           <button
             type="button"
@@ -61,7 +94,7 @@ export function SiteHeader({ lang, overlay = false }: SiteHeaderProps) {
               menuRef.current?.showModal()
               setMenuOpen(true)
             }}
-            className="flex size-11 cursor-pointer items-center justify-center text-ink hover:bg-bg-subtle"
+            className="flex size-11 cursor-pointer items-center justify-center text-ink"
           >
             <Menu {...iconProps} className="size-7" />
           </button>
@@ -77,7 +110,7 @@ export function SiteHeader({ lang, overlay = false }: SiteHeaderProps) {
       >
         <div className="flex items-center justify-between border-b border-line px-4 py-3 sm:px-6">
           <h2 id={`${menuId}-title`} className="type-h2 text-gold">{t.common.menu}</h2>
-          <button type="button" autoFocus onClick={closeMenu} aria-label={lang === "pl" ? "Zamknij menu" : lang === "en" ? "Close menu" : "Menü schließen"} className="flex size-11 cursor-pointer items-center justify-center hover:bg-bg-subtle">
+          <button type="button" autoFocus onClick={closeMenu} aria-label={lang === "pl" ? "Zamknij menu" : lang === "en" ? "Close menu" : "Menü schließen"} className="flex size-11 cursor-pointer items-center justify-center">
             <X {...iconProps} className="size-6" />
           </button>
         </div>
@@ -88,8 +121,8 @@ export function SiteHeader({ lang, overlay = false }: SiteHeaderProps) {
               <ul>
                 {group.links.map(([label, href]) => (
                   <li key={href} className="border-b border-line">
-                    <Link href={localizedPath(lang, href)} onClick={closeMenu} className="flex min-h-12 cursor-pointer items-center justify-between gap-3 py-3 font-semibold hover:bg-bg-subtle hover:underline hover:underline-offset-4">
-                      {label}<ArrowRight {...iconProps} className="size-5 shrink-0" />
+                    <Link href={localizedPath(lang, href)} onClick={closeMenu} className="flex min-h-12 cursor-pointer items-center justify-between gap-3 py-3 font-semibold">
+                      <span className="hover-line">{label}</span><ArrowRight {...iconProps} className="size-5 shrink-0" />
                     </Link>
                   </li>
                 ))}
@@ -99,6 +132,29 @@ export function SiteHeader({ lang, overlay = false }: SiteHeaderProps) {
         </nav>
       </dialog>
     </header>
+  )
+}
+
+/** Pozycja menu w nagłówku: najechanie wysuwa podkreślenie (hover-line); bieżąca strona ma aria-current */
+function HeaderLink({
+  href,
+  active,
+  className,
+  children,
+}: {
+  href: string
+  active: boolean
+  className?: string
+  children: React.ReactNode
+}) {
+  return (
+    <Link
+      href={href}
+      aria-current={active ? "page" : undefined}
+      className={cn("flex h-11 items-center px-3 font-semibold whitespace-nowrap text-ink", className)}
+    >
+      <span className="hover-line flex items-center gap-2">{children}</span>
+    </Link>
   )
 }
 

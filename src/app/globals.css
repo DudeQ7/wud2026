@@ -50,6 +50,14 @@
   --bottom-nav-h: calc(64px + env(safe-area-inset-bottom));
 }
 
+/* Desktop (§6.3): nagłówek 72 px z menu, bez dolnej nawigacji – asystent to przycisk w prawym dolnym rogu */
+@media (min-width: 64rem) {
+  :root {
+    --header-h: 72px;
+    --bottom-nav-h: 0px;
+  }
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -192,6 +200,20 @@
   --ring: var(--fs-on-dark);
 }
 
+/* Podkreślenie po najechaniu w nagłówku i menu: linia 2 px wysuwa się od lewej (200 ms, ease-out, §8).
+   Klasa idzie na etykietę (span) wewnątrz linku lub przycisku – reaguje na najechanie całego pola 44 px.
+   Bez stałego wyróżnienia – bieżącą stronę i język niesie aria-current. Na ekranach dotykowych nie działa. */
+@utility hover-line {
+  padding-block: 4px;
+  background: linear-gradient(currentColor, currentColor) left bottom / 0 2px no-repeat;
+  transition: background-size 200ms ease-out;
+  @media (hover: hover) {
+    :is(a, button):hover > & {
+      background-size: 100% 2px;
+    }
+  }
+}
+
 @layer base {
   * {
     @apply border-border;
@@ -201,6 +223,12 @@
     scroll-padding-top: var(--header-h);
     scroll-padding-bottom: var(--bottom-nav-h);
     -webkit-text-size-adjust: 100%;
+  }
+  /* Przycisk asystenta (56 px + 24 px od krawędzi) nie może zasłaniać elementu z fokusem (WCAG 2.4.11) */
+  @media (min-width: 64rem) {
+    html {
+      scroll-padding-bottom: 6rem;
+    }
   }
   body {
     @apply bg-background text-foreground antialiased;

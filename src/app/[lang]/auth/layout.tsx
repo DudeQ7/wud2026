@@ -11,7 +11,7 @@ export default async function AuthLayout({ children, params }: LayoutProps<"/[la
     <div className="flex min-h-dvh flex-col justify-between bg-background px-4 py-8 text-foreground">
       <header className="mx-auto w-full max-w-md">
         <Link
-          href={localizedPath(lang, "/asystent")}
+          href={localizedPath(lang, "/")}
           className="inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
         >
           <span aria-hidden>←</span>

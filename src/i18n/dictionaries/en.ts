@@ -36,6 +36,9 @@ export const en: Dictionary = {
     assistant: "Assistant",
     plan: "Plan",
     account: "Account",
+    mainLabel: "Main",
+    planVisit: "Plan your visit",
+    assistantAi: "AI assistant",
   },
 
   footerPages: {
@@ -314,7 +317,7 @@ export const en: Dictionary = {
   },
 
   auth: {
-    back: "Back to the Assistant",
+    back: "Back to the home page",
     email: "Email address",
     emailPlaceholder: "you@email.com",
     password: "Password",
