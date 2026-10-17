@@ -9,6 +9,11 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@opentelemetry/api-logs": "^0.223.0",
+    "@opentelemetry/exporter-logs-otlp-http": "^0.223.0",
+    "@opentelemetry/resources": "^2.12.0",
+    "@opentelemetry/sdk-logs": "^0.223.0",
+    "@posthog/ai": "^8.14.1",
     "@supabase/ssr": "^0.12.7",
     "@supabase/supabase-js": "^2.118.0",
     "class-variance-authority": "^0.7.1",
@@ -17,6 +22,8 @@
     "next": "16.4.2",
     "openai": "7.34.0",
     "partial-json": "0.1.7",
+    "posthog-js": "^1.438.12",
+    "posthog-node": "^5.56.2",
     "radix-ui": "^1.8.1",
     "react": "19.3.0",
     "react-dom": "19.3.0",
