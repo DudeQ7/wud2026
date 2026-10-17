@@ -71,15 +71,26 @@ export async function register(prevState: AuthState | null, formData: FormData):
     return { error: error.message || "Błąd podczas rejestracji." };
   }
 
-  // Jeśli w Supabase brak sesji od razu po rejestracji (np. przy włączonym potwierdzaniu w panelu),
-  // logujemy użytkownika od razu bez oczekiwania na e-mail weryfikacyjny
+  // Supabase zwraca pustą tablicę identities, jeśli użytkownik o tym mailu już istnieje
+  if (data?.user && (!data.user.identities || data.user.identities.length === 0)) {
+    return {
+      error: "Konto z tym adresem e-mail już istnieje. Przejdź do strony logowania lub podaj inny e-mail.",
+    };
+  }
+
+  // Jeśli brak sesji (np. włączone potwierdzanie w panelu Supabase), logujemy użytkownika
   if (data?.user && !data.session) {
     const { error: signInError } = await supabase.auth.signInWithPassword({
       email: parsed.data.email,
       password: parsed.data.password,
     });
     if (signInError) {
-      return { error: signInError.message };
+      return {
+        error:
+          signInError.message === "Invalid login credentials"
+            ? "Nieprawidłowe dane logowania lub konto już istnieje z innym hasłem."
+            : signInError.message,
+      };
     }
   }
 
