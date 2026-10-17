@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import Link from "next/link"
 
 import { SimplePage } from "@/components/fs/simple-page"
 import { orchestra } from "@/content/about"
@@ -27,6 +28,9 @@ export default function OrchestraPage() {
       </div>
       <h2 className="mt-10 type-h3 text-gold">{orchestra.director.role}</h2>
       <p className="mt-1 type-body text-text">{orchestra.director.name}</p>
+      <Link href="/artysci" className="mt-6 inline-flex min-h-11 items-center font-semibold text-text underline decoration-[1.5px] underline-offset-[3px]">
+        Artyści występujący w tym sezonie →
+      </Link>
     </SimplePage>
   )
 }

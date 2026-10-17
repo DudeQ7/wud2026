@@ -21,6 +21,7 @@ import { fragments } from "@/content/audio"
 import { calendarEditorial } from "@/content/calendar"
 import { accessAssistance, accessTickets, buildingAccess, firstVisit } from "@/content/event"
 import { address, boxOffice, recommended } from "@/content/home"
+import { artistByName } from "@/lib/artists"
 import { seriesKey, toCalendarEvent } from "@/lib/calendar"
 import {
   type FsEvent,
@@ -202,7 +203,16 @@ async function EventView({ id }: { id: number }) {
             <ul className="border-t border-line">
               {details.artists.map((a) => (
                 <li key={a.name} className="flex flex-col border-b border-line py-3">
-                  <span className="font-semibold text-text">{a.name}</span>
+                  {artistByName(a.name) ? (
+                    <Link
+                      href={`/artysci/${artistByName(a.name)!.slug}`}
+                      className="inline-flex min-h-11 w-fit items-center font-semibold text-text underline decoration-[1.5px] underline-offset-[3px]"
+                    >
+                      {a.name}
+                    </Link>
+                  ) : (
+                    <span className="font-semibold text-text">{a.name}</span>
+                  )}
                   {a.role && <span className="type-meta text-text-muted">{a.role}</span>}
                 </li>
               ))}
