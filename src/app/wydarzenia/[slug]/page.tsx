@@ -7,6 +7,7 @@ import * as React from "react"
 import { Suspense } from "react"
 
 import { BackLink } from "@/components/event/back-link"
+import { FragmentPlayer } from "@/components/event/fragment-player"
 import { EventActions } from "@/components/event/event-actions"
 import { EventCard } from "@/components/fs/event-card"
 import { FactList, eventPrice } from "@/components/fs/event-meta"
@@ -16,6 +17,7 @@ import { Photo } from "@/components/fs/photo"
 import { SiteFooter } from "@/components/fs/site-footer"
 import { SiteHeader } from "@/components/fs/site-header"
 import { buttonVariants } from "@/components/ui/button"
+import { fragments } from "@/content/audio"
 import { calendarEditorial } from "@/content/calendar"
 import { accessAssistance, accessTickets, buildingAccess, firstVisit } from "@/content/event"
 import { address, boxOffice, recommended } from "@/content/home"
@@ -215,6 +217,9 @@ async function EventView({ id }: { id: number }) {
                 <li key={i} className="flex flex-col border-b border-line py-3">
                   {p.composer && <span className="font-semibold text-text">{p.composer}</span>}
                   <span className="text-text">{p.work}</span>
+                  {fragments[id]?.[i] && (
+                    <FragmentPlayer fragment={fragments[id][i]} label={[p.composer, p.work].filter(Boolean).join(", ")} />
+                  )}
                 </li>
               ))}
             </ol>
