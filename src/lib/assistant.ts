@@ -64,11 +64,6 @@ Pola odpowiedzi:
 DANE:
 ${JSON.stringify(knowledge)}`;
 
-export function detectLang(acceptLanguage: string | null): Lang {
-  const parsed = langSchema.safeParse(acceptLanguage?.slice(0, 2).toLowerCase());
-  return parsed.success ? parsed.data : "pl";
-}
-
 export async function streamReply({ messages, lang }: ChatRequest): Promise<ReadableStream<Uint8Array>> {
   const now = new Intl.DateTimeFormat("pl-PL", {
     dateStyle: "full",

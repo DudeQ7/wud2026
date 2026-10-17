@@ -1,6 +1,5 @@
 {
   "pl": {
-    "label": "PL",
     "title": "Asystent Filharmonii",
     "greeting": "Cześć! Pomogę Ci znaleźć koncert, zaplanować wizytę albo odpowiem na pytania o Filharmonię.",
     "placeholder": "Zapytaj o koncert, bilety, zwiedzanie…",
@@ -16,7 +15,6 @@
     ]
   },
   "en": {
-    "label": "EN",
     "title": "Philharmonic Assistant",
     "greeting": "Hi! I can help you find a concert, plan your visit or answer questions about the Philharmonic.",
     "placeholder": "Ask about concerts, tickets, tours…",
@@ -32,7 +30,6 @@
     ]
   },
   "de": {
-    "label": "DE",
     "title": "Philharmonie-Assistent",
     "greeting": "Hallo! Ich helfe dir, ein Konzert zu finden, deinen Besuch zu planen oder Fragen zur Philharmonie zu beantworten.",
     "placeholder": "Frag nach Konzerten, Tickets, Führungen…",

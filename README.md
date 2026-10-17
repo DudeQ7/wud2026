@@ -22,7 +22,7 @@ pnpm dev
 ```
 
 - `ScrappedData/Data/koncerty.json` – baza wiedzy asystenta (wydarzenia ze strony Filharmonii)
-- `src/data/locales.json` – teksty UI i pytania startowe (pl/en/de); język wybiera użytkownik przełącznikiem w nagłówku
+- `src/data/locales.json` – teksty UI i pytania startowe (pl/en/de); język przekazuje front przez prop `lang` w `<Chat>` (na razie `pl`)
 - `src/lib/assistant.ts` – prompt, schemat odpowiedzi, wywołanie OpenAI
 - `src/app/api/chat/route.ts` – endpoint streamujący
 - `src/app/Chat.tsx` – interfejs czatu

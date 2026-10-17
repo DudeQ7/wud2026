@@ -5,17 +5,14 @@ import { useEffect, useRef, useState } from "react";
 import locales from "@/data/locales.json";
 import type { ChatMessage, EventCard, Lang, Reply } from "@/lib/assistant";
 
-// `lang` zapamiętuje, w jakim języku padła odpowiedź – po zmianie języka jej propozycje są nieaktualne.
-type Entry = ChatMessage & Partial<Reply> & { lang?: Lang };
+type Entry = ChatMessage & Partial<Reply>;
 
-type Props = { initialLang: Lang; events: EventCard[] };
-
-const langs = Object.keys(locales) as Lang[];
+// Język ustawia front (props) – czat nie ma własnego przełącznika.
+type Props = { lang: Lang; events: EventCard[] };
 
 const nextDate = (dates: string[]) => dates.find((date) => new Date(date) >= new Date()) ?? dates.at(-1)!;
 
-export default function Chat({ initialLang, events }: Props) {
-  const [lang, setLang] = useState(initialLang);
+export default function Chat({ lang, events }: Props) {
   const [entries, setEntries] = useState<Entry[]>([]);
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
@@ -37,7 +34,7 @@ export default function Chat({ initialLang, events }: Props) {
       ...entries.map(({ role, content }) => ({ role, content })),
       { role: "user", content: question },
     ];
-    setEntries((prev) => [...prev, { role: "user", content: question }, { role: "assistant", content: "", lang }]);
+    setEntries((prev) => [...prev, { role: "user", content: question }, { role: "assistant", content: "" }]);
     setInput("");
     setBusy(true);
 
@@ -64,27 +61,11 @@ export default function Chat({ initialLang, events }: Props) {
   }
 
   const last = entries.at(-1);
-  const suggestions = busy ? [] : last?.lang === lang ? (last.suggestions ?? []) : t.suggestions;
+  const suggestions = !last ? t.suggestions : busy ? [] : (last.suggestions ?? []);
 
   return (
     <main lang={lang} className="mx-auto flex h-dvh w-full max-w-2xl flex-col px-4">
-      <header className="flex items-center justify-between gap-4 py-4">
-        <h1 className="text-lg font-semibold">{t.title}</h1>
-        <div role="group" aria-label="Język / Language" className="flex gap-1 text-sm">
-          {langs.map((code) => (
-            <button
-              key={code}
-              type="button"
-              lang={code}
-              aria-pressed={code === lang}
-              onClick={() => setLang(code)}
-              className="rounded-full px-2.5 py-1 aria-pressed:bg-foreground aria-pressed:text-background hover:bg-muted aria-pressed:hover:bg-foreground"
-            >
-              {locales[code].label}
-            </button>
-          ))}
-        </div>
-      </header>
+      <h1 className="py-4 text-lg font-semibold">{t.title}</h1>
 
       <div role="log" aria-live="polite" aria-busy={busy} className="flex-1 space-y-4 overflow-y-auto pb-4">
         <p className="text-muted-foreground">{t.greeting}</p>
