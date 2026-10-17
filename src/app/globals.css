@@ -236,6 +236,16 @@
       }
     }
   }
+  /* Arkusz filtrów kalendarza (§6.6): od dołu na mobile, szuflada z prawej na desktopie */
+  html:has(dialog.filter-sheet[open]) {
+    overflow: hidden;
+  }
+  dialog.filter-sheet::backdrop {
+    background: rgba(26, 26, 26, 0.6); /* --color-scrim */
+  }
+  dialog.filter-sheet[open] {
+    animation: assistant-in 200ms ease-out;
+  }
   @media (prefers-reduced-motion: reduce) {
     *,
     *::before,

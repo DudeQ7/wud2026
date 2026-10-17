@@ -3,7 +3,7 @@ import Image from "next/image"
 import { FactList } from "@/components/fs/event-meta"
 import { Container, Eyebrow } from "@/components/fs/layout"
 import { buttonVariants } from "@/components/ui/button"
-import { type FsEvent, formatLineup, formatSeries, formatShortDate, formatTime } from "@/lib/events"
+import { type FsEvent, formatLineup, formatSeries, formatShortDate, formatTime } from "@/lib/event-format"
 import { cn } from "@/lib/utils"
 
 type HeroProps = {

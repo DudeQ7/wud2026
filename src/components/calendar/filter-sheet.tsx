@@ -1,0 +1,304 @@
+"use client"
+
+import { ChevronDown, X } from "lucide-react"
+import * as React from "react"
+import { useRef, useState } from "react"
+
+import { iconProps } from "@/components/fs/icons"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Toggle } from "@/components/ui/toggle"
+import {
+  AUDIENCES,
+  type CalendarEvent,
+  DURATIONS,
+  type Filters,
+  MOODS,
+  PLACES,
+  TYPES,
+  WHEN,
+  calendarDays,
+  countRows,
+  emptyFilters,
+  plural,
+} from "@/lib/calendar"
+import { cn } from "@/lib/utils"
+
+type FilterSheetProps = {
+  events: CalendarEvent[]
+  series: { key: string; label: string }[]
+  filters: Filters
+  today: string
+  /** Liczba aktywnych filtrów – na przycisku „Wszystkie filtry (n)” */
+  activeCount: number
+  onApply: (filters: Filters) => void
+}
+
+/**
+ * Pełne filtry (§6.6): na mobile arkusz dolny ~90% wysokości, na desktopie szuflada z prawej.
+ * Zmiany są szkicem – licznik w stopce liczy wyniki na żywo, a lista zmienia się dopiero po „Pokaż”.
+ * Natywny <dialog> daje aria-modal, pułapkę fokusu, Esc i powrót fokusu na przycisk otwierający.
+ */
+export function FilterSheet({ events, series, filters, today, activeCount, onApply }: FilterSheetProps) {
+  const dialogRef = useRef<HTMLDialogElement>(null)
+  const [draft, setDraft] = useState(filters)
+  const [open, setOpen] = useState(false)
+
+  const count = open ? countRows(calendarDays(events, draft, today)) : 0
+
+  function show() {
+    setDraft(filters)
+    dialogRef.current?.showModal()
+    setOpen(true)
+  }
+
+  function close() {
+    dialogRef.current?.close()
+  }
+
+  function apply() {
+    onApply(draft)
+    close()
+  }
+
+  const update = (patch: Partial<Filters>) => setDraft((d) => ({ ...d, ...patch }))
+
+  function toggleIn<K extends "rodzaj" | "dlaKogo" | "miejsce" | "nastroj">(key: K, value: Filters[K][number]) {
+    setDraft((d) => {
+      const values = d[key] as string[]
+      return { ...d, [key]: values.includes(value) ? values.filter((v) => v !== value) : [...values, value] }
+    })
+  }
+
+  return (
+    <>
+      <Button variant="secondary" size="sm" onClick={show} aria-haspopup="dialog" aria-expanded={open}>
+        Wszystkie filtry{activeCount > 0 && ` (${activeCount})`}
+      </Button>
+
+      <dialog
+        ref={dialogRef}
+        aria-labelledby="filtry-tytul"
+        onClose={() => setOpen(false)}
+        onClick={(e) => e.target === e.currentTarget && close()}
+        className={cn(
+          "filter-sheet m-0 mt-auto h-[90dvh] max-h-none w-full max-w-none bg-background p-0 text-foreground",
+          "lg:mt-0 lg:ml-auto lg:h-dvh lg:w-[480px] lg:border-l lg:border-line"
+        )}
+      >
+        {open && (
+          <div className="flex h-full flex-col">
+            <div className="flex items-center justify-between border-b border-line py-2 pr-2 pl-4">
+              <h2 id="filtry-tytul" className="type-h3 text-gold">
+                Filtry
+              </h2>
+              <Button variant="icon" onClick={close} aria-label="Zamknij filtry">
+                <X {...iconProps} className="size-6" />
+              </Button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto px-4 pb-8">
+              <Group title="Kiedy" count={draft.kiedy || draft.od || draft.do ? 1 : 0} defaultOpen>
+                <Options>
+                  {entries(WHEN).map(([key, label]) => (
+                    <Toggle
+                      key={key}
+                      pressed={draft.kiedy === key}
+                      onPressedChange={(on) => update({ kiedy: on ? key : undefined, od: undefined, do: undefined })}
+                    >
+                      {label}
+                    </Toggle>
+                  ))}
+                </Options>
+                <fieldset className="mt-5">
+                  <legend className="mb-2 text-[0.9375rem] font-semibold text-text">Albo wybierz zakres dat</legend>
+                  <div className="grid grid-cols-2 gap-3">
+                    <DateField
+                      label="Od"
+                      value={draft.od}
+                      min={today}
+                      onChange={(od) => update({ od, kiedy: undefined })}
+                    />
+                    <DateField
+                      label="Do"
+                      value={draft.do}
+                      min={draft.od ?? today}
+                      onChange={(to) => update({ do: to, kiedy: undefined })}
+                    />
+                  </div>
+                </fieldset>
+              </Group>
+
+              <Group title="Rodzaj" count={draft.rodzaj.length}>
+                <Options>
+                  {entries(TYPES).map(([key, label]) => (
+                    <Toggle key={key} pressed={draft.rodzaj.includes(key)} onPressedChange={() => toggleIn("rodzaj", key)}>
+                      {label}
+                    </Toggle>
+                  ))}
+                </Options>
+              </Group>
+
+              <Group title="Dla kogo" count={draft.dlaKogo.length + (draft.wiek ? 1 : 0)}>
+                <Options>
+                  {entries(AUDIENCES).map(([key, label]) => (
+                    <Toggle key={key} pressed={draft.dlaKogo.includes(key)} onPressedChange={() => toggleIn("dlaKogo", key)}>
+                      {label}
+                    </Toggle>
+                  ))}
+                </Options>
+                <div className="mt-5 flex flex-col gap-2">
+                  <label htmlFor="filtr-wiek" className="text-[0.9375rem] font-semibold text-text">
+                    Wiek dziecka (w latach)
+                  </label>
+                  <Input
+                    id="filtr-wiek"
+                    type="number"
+                    inputMode="numeric"
+                    min={1}
+                    max={18}
+                    value={draft.wiek ?? ""}
+                    onChange={(e) => {
+                      const wiek = Number(e.target.value)
+                      update({ wiek: wiek > 0 && wiek < 19 ? Math.floor(wiek) : undefined })
+                    }}
+                    aria-describedby="filtr-wiek-opis"
+                    className="w-32"
+                  />
+                  <p id="filtr-wiek-opis" className="type-meta text-text-muted">
+                    Pokażemy wydarzenia z sugerowanym wiekiem, który pasuje.
+                  </p>
+                </div>
+              </Group>
+
+              <Group title="Nastrój" count={draft.nastroj.length}>
+                <Options>
+                  {entries(MOODS).map(([key, label]) => (
+                    <Toggle key={key} pressed={draft.nastroj.includes(key)} onPressedChange={() => toggleIn("nastroj", key)}>
+                      {label}
+                    </Toggle>
+                  ))}
+                </Options>
+              </Group>
+
+              <Group title="Miejsce" count={draft.miejsce.length}>
+                <Options>
+                  {entries(PLACES).map(([key, label]) => (
+                    <Toggle key={key} pressed={draft.miejsce.includes(key)} onPressedChange={() => toggleIn("miejsce", key)}>
+                      {label}
+                    </Toggle>
+                  ))}
+                </Options>
+                <p className="mt-4 type-meta text-text-muted">
+                  Wszystkie sale i galerie mają wejście bez progów i windę.
+                </p>
+              </Group>
+
+              <Group title="Czas trwania" count={draft.czas ? 1 : 0}>
+                <Options>
+                  {entries(DURATIONS).map(([key, label]) => (
+                    <Toggle key={key} pressed={draft.czas === key} onPressedChange={(on) => update({ czas: on ? key : undefined })}>
+                      {label}
+                    </Toggle>
+                  ))}
+                </Options>
+                <p className="mt-4 type-meta text-text-muted">
+                  Uwzględniamy wydarzenia z podanym czasem trwania. Wystawy możesz oglądać tak długo, jak chcesz.
+                </p>
+              </Group>
+
+              <Group title="Cykl i festiwal" count={draft.cykl ? 1 : 0}>
+                <label htmlFor="filtr-cykl" className="mb-2 block text-[0.9375rem] font-semibold text-text">
+                  Wybierz cykl
+                </label>
+                <div className="relative">
+                  <select
+                    id="filtr-cykl"
+                    value={draft.cykl ?? ""}
+                    onChange={(e) => update({ cykl: e.target.value || undefined })}
+                    className="h-13 w-full cursor-pointer appearance-none border-[1.5px] border-line-strong bg-background pr-12 pl-4 text-base text-text"
+                  >
+                    <option value="">Wszystkie cykle</option>
+                    {series.map((s) => (
+                      <option key={s.key} value={s.key}>
+                        {s.label}
+                      </option>
+                    ))}
+                  </select>
+                  <ChevronDown
+                    {...iconProps}
+                    className="pointer-events-none absolute top-1/2 right-4 size-5 -translate-y-1/2 text-text"
+                  />
+                </div>
+              </Group>
+            </div>
+
+            <div className="flex items-center justify-between gap-4 border-t border-line bg-background px-4 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] shadow-[0_-4px_16px_rgba(26,26,26,.08)]">
+              <Button variant="link" onClick={() => setDraft({ ...emptyFilters, q: draft.q })}>
+                Wyczyść
+              </Button>
+              <Button onClick={apply} className="min-w-0 flex-1 sm:flex-none">
+                <span aria-live="polite">
+                  Pokaż {count} {plural(count, "wynik", "wyniki", "wyników")}
+                </span>
+              </Button>
+            </div>
+          </div>
+        )}
+      </dialog>
+    </>
+  )
+}
+
+const entries = <T extends Record<string, string>>(options: T) => Object.entries(options) as [keyof T & string, string][]
+
+function Group({
+  title,
+  count,
+  defaultOpen,
+  children,
+}: {
+  title: string
+  count: number
+  defaultOpen?: boolean
+  children: React.ReactNode
+}) {
+  return (
+    <details open={defaultOpen} className="group border-b border-line">
+      <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 py-2 [&::-webkit-details-marker]:hidden">
+        <span className="type-h4 text-text">
+          {title}
+          {count > 0 && <span className="type-meta font-semibold text-text-muted"> · wybrano {count}</span>}
+        </span>
+        <ChevronDown {...iconProps} className="size-6 shrink-0 transition-transform group-open:rotate-180" />
+      </summary>
+      <div className="pt-1 pb-6">{children}</div>
+    </details>
+  )
+}
+
+function Options({ children }: { children: React.ReactNode }) {
+  return <div className="flex flex-wrap gap-2">{children}</div>
+}
+
+function DateField({
+  label,
+  value,
+  min,
+  onChange,
+}: {
+  label: string
+  value?: string
+  min: string
+  onChange: (value?: string) => void
+}) {
+  const id = `filtr-data-${label.toLowerCase()}`
+  return (
+    <div className="flex flex-col gap-2">
+      <label htmlFor={id} className="text-[0.9375rem] font-semibold text-text">
+        {label}
+      </label>
+      <Input id={id} type="date" min={min} value={value ?? ""} onChange={(e) => onChange(e.target.value || undefined)} className="px-3" />
+    </div>
+  )
+}

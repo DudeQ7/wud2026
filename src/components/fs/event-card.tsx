@@ -3,7 +3,7 @@ import * as React from "react"
 import { AccessibilityNote, MetaLine } from "@/components/fs/event-meta"
 import { Eyebrow } from "@/components/fs/layout"
 import { Photo, PhotoDateBadge } from "@/components/fs/photo"
-import { type FsEvent, datesOn, formatDateBadge, formatDuration, formatTime } from "@/lib/events"
+import { type FsEvent, datesOn, formatDateBadge, formatDuration, formatTime } from "@/lib/event-format"
 import { cn } from "@/lib/utils"
 
 type EventCardProps = {

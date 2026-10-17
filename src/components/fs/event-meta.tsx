@@ -3,7 +3,7 @@ import * as React from "react"
 
 import { iconProps } from "@/components/fs/icons"
 import { Badge } from "@/components/ui/badge"
-import { type FsEvent, formatDayMonth, galleryInfo, isExhibition, lastDate } from "@/lib/events"
+import { type FsEvent, formatDayMonth, galleryInfo, isExhibition, lastDate } from "@/lib/event-format"
 import { cn } from "@/lib/utils"
 
 /** Metadane w jednej linii: „Sala Symfoniczna · bilet 10 zł · 1 h 40 min” (§3.2 meta) */

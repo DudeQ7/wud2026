@@ -4,7 +4,7 @@ import { useState } from "react"
 
 import { EventRow } from "@/components/fs/event-row"
 import { Toggle } from "@/components/ui/toggle"
-import type { FsEvent } from "@/lib/events"
+import type { FsEvent } from "@/lib/event-format"
 
 export type DayGroup = {
   /** YYYY-MM-DD */

@@ -1,5 +1,5 @@
 import { AccessibilityNote, EventInfoBadge, MetaLine, eventPrice } from "@/components/fs/event-meta"
-import { type FsEvent, formatDuration, formatTime, galleryInfo, isExhibition } from "@/lib/events"
+import { type FsEvent, formatDuration, formatTime, galleryInfo, isExhibition } from "@/lib/event-format"
 import { cn } from "@/lib/utils"
 
 type EventRowProps = {
