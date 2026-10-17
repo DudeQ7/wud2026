@@ -1,0 +1,28 @@
+---
+url: https://filharmonia.szczecin.pl/ludzie/2233-Katarzyna_Lassak_-_skrzypce
+title: "Katarzyna Lassak - Ludzie - Filharmonia w Szczecinie"
+description: "Katarzyna Lassak jest absolwentką Uniwersytetu Muzycznego Fryderyka Chopina w Warszawie, gdzie studiowała w klasie skrzypiec dra hab. Janusza..."
+scraped_at: 2026-10-17T18:01:49.191Z
+---
+
+[![Filharmonia Szczecin logo](https://filharmonia.szczecin.pl/img/fs/logo_mono_dark.svg)](https://filharmonia.szczecin.pl/)
+
+# Katarzyna Lassak
+
+![Katarzyna Lassak](https://filharmonia.szczecin.pl/files/people/pl_2233image_midi.jpg?v=1)Katarzyna Lassak jest absolwentką Uniwersytetu Muzycznego Fryderyka Chopina w Warszawie, gdzie studiowała w klasie skrzypiec dra hab. Janusza Wawrowskiego, prof. UMFC oraz dr hab. Agaty Szymczewskiej, prof. UMFC i prof. dr hab. Andrzeja Gębskiego. W 2022 r. obroniła z wyróżnieniem swoją pracę doktorską na Uniwersytecie Muzycznym Fryderyka Chopina w Warszawie. Dokonała pierwszego nagrania zapomnianego II Koncertu skrzypcowego „Góralskiego” Jana A. Maklakiewicza z Orkiestrą Polskiego Radia w Warszawie, w Studiu Koncertowym Polskiego Radia im. Witolda Lutosławskiego. Występowała jako solistka na Festiwalu Smyczkowym „Mistrzowie polskiej wiolinistyki” w Filharmonii Zielonogórskiej im. Tadeusza Bairda, w Filharmonii Pomorskiej im. Ignacego Jana Paderewskiego w Bydgoszczy, w Filharmonii Świętokrzyskiej im. Oskara Kolberga w Kielcach.  
+  
+Katarzyna Lassak jest pochodzącą z rodziny o wielopokoleniowych tradycjach muzycznych góralką z Zakopanego, prymistką w Rodzinnej Muzyce Lassaków "Heliosów". Chętnie wykonuje utwory z klasycznego repertuaru skrzypcowego inspirowane muzyką ludową, a w szczególności polską muzyką ludową rodzimego dla niej regionu Skalnego Podhala. W 2022 r., według unikatowej koncepcji Katarzyny Lassak, odbył się w Zakopanem koncert „Inspiracje kompozytorów folklorem góralskim”. Przedstawiła wspólnie z Muzyką Rodziny Lassaków „Heliosów” z Zakopanego tradycyjne „nuty” góralskie, będące ludowymi źródłami inspiracji kompozytorów i zagrała z Orkiestrą Polskiego Radia w Warszawie pod dyrekcją Michała Klauzy II Koncert skrzypcowy „Góralski” J.A. Maklakiewicza. Wykonanie tej kompozycji przypadało w 70. rocznicę jej powstania w Zakopanem, a cytowana w koncercie „nuta” góralska to „hymn” / „śpiewka festiwalowa” Międzynarodowego Festiwalu Folkloru Ziem Górskich, w ramach którego odbywało się wydarzenie.  
+  
+W wieku 18 lat zdobyła I miejsce w 17. Ogólnopolskim Konkursie Wokalnym „Pamiętajmy o Osieckiej”. W 2016 roku została zaproszona do wykonania Koncertu Galowego 19. Konkursu „Pamiętajmy o Osieckiej”. Premierowy koncert „Gonią wilki za owcami” odbył się w Teatrze ROMA w Warszawie, w wykonaniu: Katarzyny Lassak, Mateusza Pospieszalskiego z zespołem oraz Atom String Quartet, Muzyki Rodziny Lassaków "Heliosów" i gościnnie Sebastiana Karpiela-Bułecki.  
+  
+Od 2010 r. gra w Tatrzańskiej Orkiestrze Klimatycznej, z którą występowała także jako solistka na 27. Międzynarodowym Festiwalu Muzyki Sakralnej „Gaude Mater”, 49. Międzynarodowym Festiwalu Folkloru Ziem Górskich w Zakopanem oraz w Galowym Koncercie Sylwestrowym i Koncercie z okazji Święta Niepodległości w Zakopanem. Została zaproszona przez prof. Janusza Wawrowskiego do jego zespołu Warsaw Players, z którym koncertowała jako solistka i kameralistka na Festiwalu „Emanacje” w Europejskim Centrum Muzyki Krzysztofa Pendereckiego w Lusławicach, Festiwalu „Ogrody Muzyczne” w Warszawie, Festiwalu „Muzyczne Przestrzenie” oraz na Zamku Królewskim w Warszawie. Grała w Orkiestrze Symfonicznej Uniwersytetu Muzycznego Fryderyka Chopina pod batutą Grzegorza Nowaka w Pałacu Narodów, głównej siedzibie ONZ w Genewie podczas uroczystego koncertu z okazji 100-lecia odzyskania przez Polskę niepodległości.  
+  
+Katarzyna Lassak miała swój recital w Pałacu Prezydenckim. Występowała m. in. w Filharmonii Narodowej, Teatrze Wielkim – Operze Narodowej, Operze Krakowskiej, Teatrze Palladium w Warszawie, Muzeum Narodowym w Krakowie, Muzeum Karola Szymanowskiego w Willi „Atma” w Zakopanem, Teatrze im. Stanisława Ignacego Witkiewicza w Zakopanem oraz na międzynarodowych festiwalach muzycznych w kraju i za granicą. Była wielokrotnym gościem audycji radiowych w Programie Drugim Polskiego Radia oraz programów telewizyjnych. Jest stypendystką Ministra Kultury i Dziedzictwa Narodowego.  
+  
+Jako solistka instrumentalistka wygrała: GRAND PRIX dla najlepszego instrumentalisty na Międzynarodowym Festiwalu Folkloru Ziem Górskich, w Międzynarodowym Konkursie Kapel, Śpiewaków i Instrumentalistów Ludowych im. Wł. Trebuni-Tutki, I miejsce w Ogólnopolskim Konkursie „Sabałowe Bajania” w Bukowinie Tatrzańskiej, I miejsce na Festiwalu Folkloru Górali Polskich w Żywcu, główną nagrodę w Konkursie „Stefaniokowe nuty” w Leśnicy, główną nagrodę w Przeglądzie „Berdowe Muzykowanie” w Poroninie. Jako prymistka rodzinnej muzyki wygrała: I miejsce na Ogólnopolskim Festiwalu Kapel i Śpiewaków Ludowych w Kazimierzu Dolnym, I miejsce w Konkursie Muzyk Podhalańskich w Nowym Targu, I miejsce w Konkursie „Muzykowanie na Duchową nutę” w Czarnym Dunajcu, I miejsce na „Dziadońcynym Graniu” w Bukowinie Tatrzańskiej, I nagrodę na „Przednówku w Polanach” w Kościelisku. Jest członkiem Zespołu Regionalnego im. Klimka Bachledy. Od kilku lat pełni funkcję konferansjera na Międzynarodowym Festiwalu Folkloru Ziem Górskich w Zakopanem. W 2023 r. została uroczyście „pasowana na prymistkę” i nadano jej honorowy tytuł „Wierchowej Orlicy”.
+
+## Media: obrazy
+
+- https://filharmonia.szczecin.pl/files/people/pl_2233image_midi.jpg
+- https://filharmonia.szczecin.pl/img/fs/logo_mono_dark.svg
+- https://filharmonia.szczecin.pl/files/people/pl_2233image_midi.jpg?v=1

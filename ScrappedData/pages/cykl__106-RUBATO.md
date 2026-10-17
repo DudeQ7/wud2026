@@ -1,0 +1,43 @@
+---
+url: https://filharmonia.szczecin.pl/cykl/106-RUBATO
+title: "RUBATO - Cykle - Filharmonia w Szczecinie"
+description: "RUBATO [obrabowanie] jest cyklem prezentującym muzykę tradycyjną w różnych, nie rzadko odległych kontekstach. W koncertach pod tym szyldem usłyszeć..."
+scraped_at: 2026-10-17T17:40:35.666Z
+---
+
+[![Filharmonia Szczecin logo](https://filharmonia.szczecin.pl/img/fs/logo_mono_dark.svg)](https://filharmonia.szczecin.pl/)
+
+# RUBATO
+
+[CYKL WYDARZEŃ](https://filharmonia.szczecin.pl/cykl)
+
+RUBATO \[obrabowanie\] jest cyklem prezentującym muzykę tradycyjną w różnych, nie rzadko odległych kontekstach. W koncertach pod tym szyldem usłyszeć będzie można wykonawców nurtu in crudo, zajmujących się muzyką ludową w ujęciu rekonstrukcyjnym, ale również w postaci artystycznego przetworzenia.
+
+  
+
+WYDARZENIA
+
+Pokaż wydarzenia archiwalne (6)
+
+2017-10-02, 19:00[**Raphael Rogiński i Genowefa Lenarcik – Projekt Żywizna** - Koncert tradycyjny](https://filharmonia.szczecin.pl/wydarzenia/679-Raphael_Roginski_i_Genowefa_Lenarcik__Projekt_Zywizna)
+
+2017-11-07, 19:00[**Maniucha i Ksawery - Improwizacje Poleskie** - Koncert tradycyjny](https://filharmonia.szczecin.pl/wydarzenia/694-Maniucha_i_Ksawery_-_Improwizacje_Poleskie)
+
+2017-12-05, 19:00[**PIOUN - Nuty Odzyskane** - Koncert tradycyjny](https://filharmonia.szczecin.pl/wydarzenia/710-PIOUN_-_Nuty_Odzyskane)
+
+2018-01-09, 19:00[**Kapela Maliszów** - Koncert tradycyjny](https://filharmonia.szczecin.pl/wydarzenia/804-Kapela_Maliszow)
+
+2018-03-12, 19:00[**Čači Vorba** - Koncert tradycyjny](https://filharmonia.szczecin.pl/wydarzenia/805-ai_Vorba)
+
+2018-04-10, 19:00[**Kapela ze Wsi Warszawa i mazowieccy wirtuozi** - Koncert tradycyjny](https://filharmonia.szczecin.pl/wydarzenia/807-Kapela_ze_Wsi_Warszawa_i_mazowieccy_wirtuozi)
+
+## Media: obrazy
+
+- https://filharmonia.szczecin.pl/logo.jpg
+- https://filharmonia.szczecin.pl/img/fs/logo_mono_dark.svg
+- https://filharmonia.szczecin.pl/files/events/pl_679gallery_gallery_1_midi.jpg
+- https://filharmonia.szczecin.pl/files/events/pl_694gallery_gallery_1_midi.jpg
+- https://filharmonia.szczecin.pl/files/events/pl_710gallery_gallery_1_midi.jpg
+- https://filharmonia.szczecin.pl/files/events/pl_804gallery_gallery_1_midi.jpg
+- https://filharmonia.szczecin.pl/files/events/pl_805gallery_gallery_1_midi.jpg
+- https://filharmonia.szczecin.pl/files/events/pl_807gallery_gallery_1_midi.jpg
