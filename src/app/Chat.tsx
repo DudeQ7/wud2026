@@ -2,17 +2,25 @@
 
 import { parse } from "partial-json";
 import { useEffect, useRef, useState } from "react";
-import type { ChatMessage, FilharmoniaEvent, Lang, Locale, Reply } from "@/lib/assistant";
+import locales from "@/data/locales.json";
+import type { ChatMessage, EventCard, Lang, Reply } from "@/lib/assistant";
 
-type Entry = ChatMessage & Partial<Reply>;
+// `lang` zapamiętuje, w jakim języku padła odpowiedź – po zmianie języka jej propozycje są nieaktualne.
+type Entry = ChatMessage & Partial<Reply> & { lang?: Lang };
 
-type Props = { lang: Lang; t: Locale; events: FilharmoniaEvent[] };
+type Props = { initialLang: Lang; events: EventCard[] };
 
-export default function Chat({ lang, t, events }: Props) {
+const langs = Object.keys(locales) as Lang[];
+
+const nextDate = (dates: string[]) => dates.find((date) => new Date(date) >= new Date()) ?? dates.at(-1)!;
+
+export default function Chat({ initialLang, events }: Props) {
+  const [lang, setLang] = useState(initialLang);
   const [entries, setEntries] = useState<Entry[]>([]);
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
   const endRef = useRef<HTMLDivElement>(null);
+  const t = locales[lang];
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ block: "end" });
@@ -29,7 +37,7 @@ export default function Chat({ lang, t, events }: Props) {
       ...entries.map(({ role, content }) => ({ role, content })),
       { role: "user", content: question },
     ];
-    setEntries((prev) => [...prev, { role: "user", content: question }, { role: "assistant", content: "" }]);
+    setEntries((prev) => [...prev, { role: "user", content: question }, { role: "assistant", content: "", lang }]);
     setInput("");
     setBusy(true);
 
@@ -37,7 +45,7 @@ export default function Chat({ lang, t, events }: Props) {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: history }),
+        body: JSON.stringify({ messages: history, lang }),
       });
       if (!res.ok || !res.body) throw new Error(res.statusText);
 
@@ -49,18 +57,34 @@ export default function Chat({ lang, t, events }: Props) {
         updateLast({ ...reply, content: reply.answer ?? "" });
       }
     } catch {
-      updateLast({ content: t.error, eventIds: [], suggestions: [] });
+      updateLast({ content: t.error, events: [], suggestions: [] });
     } finally {
       setBusy(false);
     }
   }
 
   const last = entries.at(-1);
-  const suggestions = !last ? t.suggestions : busy ? [] : (last.suggestions ?? []);
+  const suggestions = busy ? [] : last?.lang === lang ? (last.suggestions ?? []) : t.suggestions;
 
   return (
     <main lang={lang} className="mx-auto flex h-dvh w-full max-w-2xl flex-col px-4">
-      <h1 className="py-4 text-lg font-semibold">{t.title}</h1>
+      <header className="flex items-center justify-between gap-4 py-4">
+        <h1 className="text-lg font-semibold">{t.title}</h1>
+        <div role="group" aria-label="Język / Language" className="flex gap-1 text-sm">
+          {langs.map((code) => (
+            <button
+              key={code}
+              type="button"
+              lang={code}
+              aria-pressed={code === lang}
+              onClick={() => setLang(code)}
+              className="rounded-full px-2.5 py-1 aria-pressed:bg-foreground aria-pressed:text-background hover:bg-muted aria-pressed:hover:bg-foreground"
+            >
+              {locales[code].label}
+            </button>
+          ))}
+        </div>
+      </header>
 
       <div role="log" aria-live="polite" aria-busy={busy} className="flex-1 space-y-4 overflow-y-auto pb-4">
         <p className="text-muted-foreground">{t.greeting}</p>
@@ -75,28 +99,36 @@ export default function Chat({ lang, t, events }: Props) {
               {entry.content || (busy && i === entries.length - 1 ? "…" : "")}
             </p>
 
-            {entry.eventIds
-              ?.map((id) => events.find((event) => event.id === id))
-              .filter((event) => event !== undefined)
-              .map((event) => (
-                <article key={event.id} className="rounded-xl border border-border p-4">
-                  <h2 className="font-semibold">{event.title}</h2>
+            {entry.events?.map(({ id, title, kind, place }) => {
+              const event = events.find((card) => card.id === id);
+              if (!event) return null;
+              return (
+                <article key={id} className="rounded-xl border border-border p-4">
+                  {kind && <p className="text-xs text-muted-foreground">{kind}</p>}
+                  <h2 className="font-semibold">{title}</h2>
                   <p className="text-sm text-muted-foreground">
-                    {new Date(event.date).toLocaleString(lang, { dateStyle: "full", timeStyle: "short" })} ·{" "}
-                    {event.hall} · {event.price}
+                    {new Date(nextDate(event.dates)).toLocaleString(lang, { dateStyle: "full", timeStyle: "short" })}
+                    {place && ` · ${place}`}
                   </p>
-                  {event.ticketUrl && (
-                    <a
-                      href={event.ticketUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="mt-2 inline-block text-sm font-medium underline underline-offset-4"
-                    >
-                      {t.tickets}
-                    </a>
-                  )}
+                  <div className="mt-2 flex gap-4 text-sm font-medium">
+                    {[
+                      [event.url, t.details],
+                      [event.ticketsUrl, t.tickets],
+                    ].map(([href, label]) => (
+                      <a
+                        key={label}
+                        href={href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="underline underline-offset-4"
+                      >
+                        {label}
+                      </a>
+                    ))}
+                  </div>
                 </article>
-              ))}
+              );
+            })}
           </div>
         ))}
         <div ref={endRef} />

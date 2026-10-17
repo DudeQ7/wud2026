@@ -1,0 +1,50 @@
+{
+  "pl": {
+    "label": "PL",
+    "title": "Asystent Filharmonii",
+    "greeting": "Cześć! Pomogę Ci znaleźć koncert, zaplanować wizytę albo odpowiem na pytania o Filharmonię.",
+    "placeholder": "Zapytaj o koncert, bilety, zwiedzanie…",
+    "send": "Wyślij",
+    "details": "Szczegóły",
+    "tickets": "Bilety",
+    "error": "Coś poszło nie tak. Spróbuj ponownie za chwilę.",
+    "suggestions": [
+      "Co gra w ten weekend?",
+      "Koncert dla dziecka 5+",
+      "Kiedy można zwiedzać budynek?",
+      "Jakie są zniżki na bilety?"
+    ]
+  },
+  "en": {
+    "label": "EN",
+    "title": "Philharmonic Assistant",
+    "greeting": "Hi! I can help you find a concert, plan your visit or answer questions about the Philharmonic.",
+    "placeholder": "Ask about concerts, tickets, tours…",
+    "send": "Send",
+    "details": "Details",
+    "tickets": "Tickets",
+    "error": "Something went wrong. Please try again in a moment.",
+    "suggestions": [
+      "What's on this weekend?",
+      "Are there tours in English?",
+      "Concerts for kids?",
+      "Box office opening hours?"
+    ]
+  },
+  "de": {
+    "label": "DE",
+    "title": "Philharmonie-Assistent",
+    "greeting": "Hallo! Ich helfe dir, ein Konzert zu finden, deinen Besuch zu planen oder Fragen zur Philharmonie zu beantworten.",
+    "placeholder": "Frag nach Konzerten, Tickets, Führungen…",
+    "send": "Senden",
+    "details": "Details",
+    "tickets": "Tickets",
+    "error": "Etwas ist schiefgelaufen. Bitte versuche es gleich noch einmal.",
+    "suggestions": [
+      "Was läuft am Wochenende?",
+      "Gibt es Führungen auf Deutsch?",
+      "Konzerte für Kinder?",
+      "Öffnungszeiten der Kasse?"
+    ]
+  }
+}

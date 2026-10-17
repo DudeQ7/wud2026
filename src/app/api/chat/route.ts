@@ -1,14 +1,11 @@
-import { z } from "zod";
-import { messageSchema, streamReply } from "@/lib/assistant";
-
-const bodySchema = z.object({ messages: z.array(messageSchema).min(1).max(100) });
+import { chatRequestSchema, streamReply } from "@/lib/assistant";
 
 export async function POST(request: Request) {
-  const body = bodySchema.safeParse(await request.json().catch(() => null));
+  const body = chatRequestSchema.safeParse(await request.json().catch(() => null));
   if (!body.success) return Response.json({ error: "Invalid request" }, { status: 400 });
 
   try {
-    return new Response(await streamReply(body.data.messages), {
+    return new Response(await streamReply(body.data), {
       headers: { "Content-Type": "text/plain; charset=utf-8", "Cache-Control": "no-store" },
     });
   } catch (error) {

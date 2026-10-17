@@ -1,7 +1,6 @@
 import { headers } from "next/headers";
 import { Suspense } from "react";
-import data from "@/data/filharmonia.json";
-import { getLocale } from "@/lib/assistant";
+import { detectLang, eventCards } from "@/lib/assistant";
 import Chat from "./Chat";
 
 export default function Home() {
@@ -13,6 +12,6 @@ export default function Home() {
 }
 
 async function LocalizedChat() {
-  const { lang, t } = getLocale((await headers()).get("accept-language"));
-  return <Chat lang={lang} t={t} events={data.events} />;
+  const lang = detectLang((await headers()).get("accept-language"));
+  return <Chat initialLang={lang} events={eventCards} />;
 }
