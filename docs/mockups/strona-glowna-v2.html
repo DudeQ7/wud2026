@@ -1,0 +1,606 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Strona główna – makieta v2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0B0B0D; --ink-2:#17161A; --paper:#FFFFFF; --stone:#F5F2EC; --line:#E3DED4; --muted:#57534C;
+  --gold:#E2BE68; --gold-l:#F3E2B0; --gold-d:#7A5A10;
+  --c-sym:#B8892A; --c-jazz:#2747E0; --c-her:#C2185B; --c-edu:#177A4F; --c-light:#C4441F; --c-wys:#6A4CC7; --c-zw:#4A463F; --c-kam:#8C6A1E;
+  --serif:'Instrument Serif',Georgia,serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--paper)}
+body{font-family:'Inter Tight',system-ui,sans-serif;color:var(--ink);width:390px;-webkit-font-smoothing:antialiased;font-size:15px;line-height:1.4}
+img{display:block}
+a{color:inherit;text-decoration:none}
+.wrap{padding:0 16px}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase}
+.h2{font-family:var(--serif);font-weight:400;font-size:40px;line-height:1;letter-spacing:-.01em}
+.h2 em{font-style:italic}
+.lead{font-size:15px;color:var(--muted);margin-top:8px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 18px;font:600 15px/1 'Inter Tight';border-radius:0;border:0;text-decoration:none}
+.btn-gold{background:var(--gold);color:var(--ink)}
+.btn-ink{background:var(--ink);color:#fff}
+.btn-line{border:1.5px solid currentColor;background:transparent}
+.chamfer{clip-path:polygon(0 0,calc(100% - 18px) 0,100% 18px,100% 100%,0 100%)}
+.chamfer-bl{clip-path:polygon(0 0,100% 0,100% 100%,18px 100%,0 calc(100% - 18px))}
+section{position:relative}
+
+/* ---------- HERO ---------- */
+.hero{height:844px;background:var(--ink);overflow:hidden;color:#fff}
+.hero-art{position:absolute;inset:0}
+.top{position:absolute;top:0;left:0;right:0;height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 8px 0 16px;z-index:3}
+.brand{display:flex;align-items:center;gap:10px;color:#fff;text-decoration:none}
+.brand b{display:block;font-size:12.5px;letter-spacing:.2em;font-weight:800;line-height:1.15}
+.brand span{display:block;font-size:10.5px;letter-spacing:.32em;font-weight:500;opacity:.9}
+.top-actions{display:flex;align-items:center}
+.icon-btn{width:44px;height:44px;display:grid;place-items:center;color:#fff;font:600 13px 'Inter Tight'}
+.hero-card{position:absolute;left:12px;right:12px;bottom:88px;background:var(--ink);padding:20px 20px 16px;z-index:2}
+.hero-card .meta-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.tag{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:5px 8px;color:#fff}
+.hero-card .date{font-size:13px;font-weight:600;color:var(--gold-l)}
+.hero-card h1{font-family:var(--serif);font-weight:400;font-size:46px;line-height:.98;margin:12px 0 10px;letter-spacing:-.01em}
+.hero-card h1 small{display:block;font-family:'Inter Tight';font-size:13px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:6px}
+.hero-card p{font-size:14px;color:#D9D6CF}
+.facts{display:flex;gap:14px;margin:12px 0 16px;font-size:12.5px;color:#fff;flex-wrap:wrap}
+.facts span{display:flex;align-items:center;gap:6px}
+.facts svg{opacity:.9}
+.cta-row{display:flex;gap:8px}
+.cta-row .btn-gold{flex:1}
+.cta-row .btn-line{color:#fff}
+.hero-card .foot{display:flex;justify-content:space-between;align-items:center;margin-top:14px;padding-top:12px;border-top:1px solid #2C2A2F;font-size:12.5px;color:#D9D6CF}
+.toggle{display:inline-flex;align-items:center;gap:8px}
+.switch{width:30px;height:18px;border-radius:9px;background:var(--gold);position:relative}
+.switch:after{content:"";position:absolute;right:2px;top:2px;width:14px;height:14px;border-radius:50%;background:var(--ink)}
+.botnav{position:absolute;left:0;right:0;bottom:0;height:72px;background:#fff;color:var(--ink);display:grid;grid-template-columns:repeat(5,1fr);border-top:1px solid var(--line);z-index:4;padding-bottom:10px}
+.botnav a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:11px;font-weight:600;color:var(--ink);text-decoration:none}
+.botnav a.on{color:var(--ink)}
+.botnav a.on svg{color:var(--gold-d)}
+.botnav .ai{position:relative}
+.botnav .ai i{position:absolute;top:-22px;width:52px;height:52px;background:var(--ink);display:grid;place-items:center;clip-path:polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0 50%)}
+.botnav .ai span{margin-top:30px}
+
+/* ---------- KALENDARZ ---------- */
+.cal{background:var(--paper);padding:44px 0 36px}
+.tabs{display:flex;margin-top:20px;border-bottom:1px solid var(--line)}
+.tabs a{flex:1;text-align:center;padding:12px 0;font-weight:600;font-size:14px;color:var(--muted);text-decoration:none;border-bottom:3px solid transparent;margin-bottom:-1px}
+.tabs a.on{color:var(--ink);border-color:var(--ink)}
+.days{display:flex;gap:6px;margin:16px -16px 0 0;overflow:hidden}
+.day{flex:0 0 50px;height:76px;border:1px solid var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
+.day small{font-size:11px;font-weight:700;letter-spacing:.06em;color:var(--muted);text-transform:uppercase}
+.day b{font-size:20px;font-weight:700}
+.day .dots{display:flex;gap:3px;height:6px;margin-top:3px}
+.day .dots i{width:6px;height:6px;border-radius:50%}
+.day.sel{background:var(--ink);border-color:var(--ink);color:#fff}
+.day.sel small{color:var(--gold-l)}
+.day.wk{background:var(--stone)}
+.chips{display:flex;gap:8px;margin:14px -16px 0 0;overflow:hidden}
+.chip{flex:0 0 auto;min-height:40px;display:inline-flex;align-items:center;gap:6px;padding:0 14px;border:1.5px solid var(--ink);font-size:13.5px;font-weight:600;white-space:nowrap}
+.chip.gold{background:var(--gold);border-color:var(--gold)}
+.daygroup{margin-top:22px}
+.daygroup h3{font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding-bottom:8px;border-bottom:1px solid var(--line)}
+.ev{display:grid;grid-template-columns:54px 1fr 20px;gap:12px;padding:14px 0;border-bottom:1px solid var(--line);align-items:start}
+.ev time{font-size:17px;font-weight:700;line-height:1.2}
+.ev .bar{display:block;width:22px;height:4px;margin-top:8px}
+.ev h4{font-size:16.5px;font-weight:650;line-height:1.25}
+.ev .m{font-size:13px;color:var(--muted);margin-top:3px}
+.ev .badges{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.b{font-size:11.5px;font-weight:600;padding:3px 7px;border:1px solid var(--line);color:var(--ink);display:inline-flex;align-items:center;gap:4px}
+.b.ok{background:#E3F3EA;border-color:#E3F3EA;color:#145C3B}
+.b.last{background:#FFF0D2;border-color:#FFF0D2;color:#6B4300}
+.b.free{background:var(--stone);border-color:var(--stone)}
+.ev .chev{margin-top:4px}
+.more{display:flex;justify-content:space-between;align-items:center;margin-top:20px;width:100%}
+
+/* ---------- MOZAIKA ---------- */
+.mosaic{background:var(--ink);color:#fff;padding:48px 0 44px}
+.mosaic .lead{color:#CFCBC3}
+.grid{display:grid;grid-template-columns:1fr 1fr;grid-auto-rows:132px;gap:8px;margin-top:22px}
+.tile{position:relative;overflow:hidden;background:#222;color:#fff}
+.tile img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.tile .scrim{position:absolute;inset:0;background:linear-gradient(to top,rgba(11,11,13,.96) 0%,rgba(11,11,13,.86) 34%,rgba(11,11,13,.15) 72%,rgba(11,11,13,0) 100%)}
+.tile .when{position:absolute;top:0;left:0;background:var(--ink);padding:6px 9px;font-size:11.5px;font-weight:700;letter-spacing:.04em}
+.tile .when b{color:var(--gold-l);font-weight:700}
+.tile .body{position:absolute;left:12px;right:12px;bottom:11px}
+.tile .cyc{display:flex;align-items:center;gap:6px;font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px}
+.tile .cyc i{width:10px;height:10px;display:block}
+.tile h4{font-size:15px;font-weight:650;line-height:1.18}
+.tile .m{font-size:11.5px;color:#D6D2CA;margin-top:3px}
+.tile.big h4{font-family:var(--serif);font-weight:400;font-size:32px;line-height:1}
+.tile.big .m{font-size:13px}
+.tile .pick{position:absolute;top:0;right:0;background:var(--gold);color:var(--ink);font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;padding:7px 10px 7px 16px;clip-path:polygon(10px 0,100% 0,100% 100%,0 100%)}
+.tile.s2{grid-row:span 2}
+.tile.w2{grid-column:span 2}
+.tile.big{grid-column:span 2;grid-row:span 2}
+.tile.cut-tr{clip-path:polygon(0 0,calc(100% - 22px) 0,100% 22px,100% 100%,0 100%)}
+.tile.cut-bl{clip-path:polygon(0 0,100% 0,100% 100%,22px 100%,0 calc(100% - 22px))}
+.tile.cut-br{clip-path:polygon(0 0,100% 0,100% calc(100% - 22px),calc(100% - 22px) 100%,0 100%)}
+.mosaic .btn-line{color:#fff;width:100%;justify-content:space-between;margin-top:20px}
+
+/* ---------- DLA CIEBIE ---------- */
+.foryou{background:var(--stone);padding:48px 0 44px}
+.helper{margin-top:22px;background:var(--ink);color:#fff;padding:22px 20px;position:relative;overflow:hidden}
+.helper svg.hex{position:absolute;right:-30px;top:-30px;opacity:.9}
+.helper .eyebrow{color:var(--gold)}
+.helper h3{font-family:var(--serif);font-weight:400;font-size:30px;line-height:1.02;margin:8px 0 8px;max-width:250px}
+.helper p{font-size:14px;color:#D9D6CF;max-width:270px}
+.helper .steps{display:flex;gap:6px;margin:16px 0}
+.helper .steps i{flex:1;height:4px;background:#34323A}
+.helper .steps i:first-child{background:var(--gold)}
+.moods{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.mood{background:#fff;min-height:96px;padding:14px;display:flex;flex-direction:column;justify-content:space-between;border-top:4px solid var(--c)}
+.mood b{font-size:15.5px;font-weight:650;line-height:1.2}
+.mood span{font-size:12.5px;color:var(--muted);display:flex;justify-content:space-between;align-items:center}
+
+/* ---------- PIERWSZY RAZ ---------- */
+.first{background:var(--paper);padding:48px 0 44px}
+.cards{display:flex;gap:10px;margin:22px -16px 0 0;overflow:hidden}
+.fcard{flex:0 0 260px;border:1px solid var(--line);padding:18px;min-height:178px;display:flex;flex-direction:column}
+.fcard .n{font-family:var(--serif);font-size:44px;line-height:.9;color:var(--gold-d)}
+.fcard b{font-size:16.5px;font-weight:650;margin-top:12px;line-height:1.25}
+.fcard p{font-size:13.5px;color:var(--muted);margin-top:6px}
+.dots-pager{display:flex;gap:6px;margin-top:16px}
+.dots-pager i{width:22px;height:4px;background:var(--line)}
+.dots-pager i:first-child{background:var(--ink)}
+
+/* ---------- ODKRYJ ---------- */
+.discover{background:var(--ink);color:#fff;padding:48px 0 44px}
+.discover .lead{color:#CFCBC3}
+.dgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:22px}
+.dtile{position:relative;height:150px;overflow:hidden;background:#1d1c20}
+.dtile svg{position:absolute;inset:0}
+.dtile img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.dtile .scrim{position:absolute;inset:0;background:linear-gradient(to top,rgba(11,11,13,.95),rgba(11,11,13,.2) 70%)}
+.dtile b{position:absolute;left:12px;bottom:28px;font-size:17px;font-weight:650}
+.dtile span{position:absolute;left:12px;bottom:10px;font-size:11.5px;color:#D6D2CA}
+.dtile.w2{grid-column:span 2;height:170px}
+
+/* ---------- PLANUJ ---------- */
+.plan{background:var(--gold-l);padding:44px 0 40px}
+.plan .lead{color:#3F3A30}
+.plist{margin-top:18px;background:#fff}
+.prow{display:grid;grid-template-columns:40px 1fr 18px;gap:12px;align-items:center;padding:14px 16px;border-bottom:1px solid var(--line)}
+.prow:last-child{border-bottom:0}
+.prow .ic{width:40px;height:40px;background:var(--ink);color:var(--gold);display:grid;place-items:center}
+.prow b{font-size:15.5px;font-weight:650;display:block}
+.prow span{font-size:12.5px;color:var(--muted)}
+.plan .row2{display:flex;gap:8px;margin-top:12px}
+.plan .row2 .btn{flex:1}
+
+/* ---------- NEWSLETTER / STOPKA ---------- */
+.news{background:var(--paper);padding:44px 0 40px}
+.field{display:flex;margin-top:18px;border:1.5px solid var(--ink)}
+.field label{flex:1;display:flex;align-items:center;padding:0 14px;font-size:15px;color:var(--muted);min-height:52px}
+.field .btn{min-height:52px}
+.consent{display:flex;gap:10px;margin-top:12px;font-size:12.5px;color:var(--muted)}
+.consent i{flex:0 0 20px;height:20px;border:1.5px solid var(--ink)}
+.partners{margin-top:36px;border-top:1px solid var(--line);padding-top:18px}
+.partners .eyebrow{color:var(--muted)}
+.plogos{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.plogos div{height:46px;background:var(--stone);display:grid;place-items:center;font-size:11px;font-weight:700;letter-spacing:.08em;color:#6F6A61}
+footer{background:var(--ink);color:#fff;padding:40px 16px 32px}
+footer .cols{display:grid;grid-template-columns:1fr 1fr;gap:6px 16px;margin-top:24px}
+footer .cols a{color:#fff;text-decoration:none;font-size:14px;padding:8px 0}
+footer .addr{font-size:13px;color:#CFCBC3;margin-top:20px;line-height:1.55}
+footer .langs{display:flex;gap:8px;margin-top:22px}
+footer .langs a{min-width:48px;min-height:44px;display:grid;place-items:center;border:1px solid #3A383E;color:#fff;text-decoration:none;font-weight:700;font-size:13px}
+footer .langs a.on{background:#fff;color:var(--ink)}
+footer .legal{font-size:11.5px;color:#A9A49B;margin-top:24px}
+</style>
+</head>
+<body>
+
+<!-- ============ 1. HERO v2 · Wejście do Złotej Sali ============ -->
+<section class="hero" aria-label="Najbliższy koncert">
+  <svg class="hero-art" id="heroArt" viewBox="0 0 390 844" width="390" height="844" aria-hidden="true"></svg>
+
+  <header class="top">
+    <a class="brand" href="#">
+      <svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><path d="M3 26 L11 4 L15 14 L19 4 L27 26" fill="none" stroke="#fff" stroke-width="2.4" stroke-linejoin="miter"/><path d="M3 26 H27" stroke="#E2BE68" stroke-width="2.4"/></svg>
+      <div><b>FILHARMONIA</b><span>SZCZECIN</span></div>
+    </a>
+    <div class="top-actions">
+      <a class="icon-btn" href="#" aria-label="Zmień język">PL</a>
+      <a class="icon-btn" href="#" aria-label="Szukaj"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21"/></svg></a>
+      <a class="icon-btn" href="#" aria-label="Menu"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M3 7h18M3 12h18M9 17h12"/></svg></a>
+    </div>
+  </header>
+
+  <div class="hero-card chamfer">
+    <div class="meta-top">
+      <span class="tag" style="background:var(--c-her);text-transform:none;letter-spacing:.02em;font-size:12.5px">FilHERmonia</span>
+      <span class="date">pt 23.10 · 19:00 · Sala symfoniczna</span>
+    </div>
+    <h1><small>Koncert symfoniczny</small>Oda do młodości</h1>
+    <p>Noa Wildschut – skrzypce · Aleksandra Melaniuk – dyrygent. Bruch, Dvořák, Mendelssohn.</p>
+    <div class="facts">
+      <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#E2BE68" stroke-width="2.4"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>ok. 100 min</span>
+      <span><svg width="14" height="14" viewBox="0 0 24 24" fill="#E2BE68"><circle cx="12" cy="4.5" r="2.2"/><path d="M10 8h3v5h4.5l2.5 6-2 .8-2-4.8H11a1 1 0 0 1-1-1z"/><path d="M8.5 11.3A5.5 5.5 0 1 0 15 18.6l-.9-1.8a3.5 3.5 0 1 1-4.7-4.1z"/></svg>Sala dostępna</span>
+      <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#E2BE68" stroke-width="2.4"><path d="M6 10a6 6 0 1 1 9 5.2c-1.3.8-2 1.6-2 3a3 3 0 0 1-5.5 1.6"/></svg>Pętla indukcyjna</span>
+    </div>
+    <div class="cta-row">
+      <a class="btn btn-gold" href="#">Kup bilet <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0B0B0D" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      <a class="btn btn-line" href="#">Szczegóły</a>
+    </div>
+    <div class="foot">
+      <span class="toggle"><span class="switch" aria-hidden="true"></span>Animacje włączone</span>
+      <span>Kalendarz ↓</span>
+    </div>
+  </div>
+
+  <nav class="botnav" aria-label="Nawigacja główna">
+    <a class="on" href="#"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3.5" y="5" width="17" height="15.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>Kalendarz</a>
+    <a href="#"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21"/></svg>Szukaj</a>
+    <a class="ai" href="#"><i><svg width="24" height="24" viewBox="0 0 24 24" fill="#E2BE68"><path d="M12 2l2.2 6.3L20.5 10.5 14.2 12.7 12 19l-2.2-6.3L3.5 10.5 9.8 8.3z"/></svg></i><span>Asystent</span></a>
+    <a href="#"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>Planuj wizytę</a>
+    <a href="#"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.2-4 4.3-6 8-6s6.8 2 8 6"/></svg>Konto</a>
+  </nav>
+</section>
+
+<!-- ============ 2. KALENDARZ ============ -->
+<section class="cal" aria-labelledby="cal-h">
+  <div class="wrap">
+    <p class="eyebrow" style="color:var(--gold-d)">Repertuar</p>
+    <h2 class="h2" id="cal-h" style="margin-top:8px">Co gramy <em>teraz</em> i wkrótce</h2>
+
+    <div class="tabs" role="tablist">
+      <a href="#">Dziś</a><a href="#">Jutro</a><a class="on" href="#" aria-selected="true">Weekend</a><a href="#">Tydzień</a>
+    </div>
+
+    <div class="days" id="days"></div>
+
+    <div class="chips">
+      <span class="chip gold">✦ Pomóż mi wybrać</span>
+      <span class="chip">Dla dzieci</span>
+      <span class="chip">Jazz</span>
+      <span class="chip">Wystawy</span>
+      <span class="chip">♿ Dostępność</span>
+    </div>
+
+    <div class="daygroup">
+      <h3>Sobota 17.10 · dziś</h3>
+      <div class="ev">
+        <div><time>12:00</time><i class="bar" style="background:var(--c-wys)"></i></div>
+        <div><h4>Obecność | Łukasz Patelczyk</h4><p class="m">Wystawa · Galeria Poziom 4. · do 22.11</p>
+          <div class="badges"><span class="b free">Bilet 10 zł</span><span class="b">♿ winda</span></div></div>
+        <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0B0B0D" stroke-width="2.2"><path d="m9 6 6 6-6 6"/></svg>
+      </div>
+      <div class="ev">
+        <div><time>12:00</time><i class="bar" style="background:var(--c-wys)"></i></div>
+        <div><h4>Dymy nad Bieszczadami. Opowieść o przemijaniu</h4><p class="m">Wystawa · Art.Room · do 22.11</p>
+          <div class="badges"><span class="b free">Bilet 10 zł</span></div></div>
+        <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0B0B0D" stroke-width="2.2"><path d="m9 6 6 6-6 6"/></svg>
+      </div>
+    </div>
+
+    <div class="daygroup">
+      <h3>Niedziela 18.10</h3>
+      <div class="ev">
+        <div><time>11:00</time><i class="bar" style="background:var(--c-edu)"></i></div>
+        <div><h4>Jak w baroku brzmiały pory roku?</h4><p class="m">Akademia Młodego Melomana · Sala symfoniczna · 5+</p>
+          <div class="badges"><span class="b last">Ostatnie miejsca</span><span class="b">Dla rodzin</span><span class="b">♿</span></div></div>
+        <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0B0B0D" stroke-width="2.2"><path d="m9 6 6 6-6 6"/></svg>
+      </div>
+      <div class="ev">
+        <div><time>12:00</time><i class="bar" style="background:var(--c-wys)"></i></div>
+        <div><h4>Wystawy: Galeria Poziom 4. i Art.Room</h4><p class="m">2 wystawy · 12:00–16:00</p>
+          <div class="badges"><span class="b free">Bilet 10 zł</span></div></div>
+        <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0B0B0D" stroke-width="2.2"><path d="m9 6 6 6-6 6"/></svg>
+      </div>
+    </div>
+
+    <a class="btn btn-ink more" href="#">Pełny repertuar <span>90 wydarzeń →</span></a>
+  </div>
+</section>
+
+<!-- ============ 3. MOZAIKA: NAJBLIŻSZE + POLECAMY ============ -->
+<section class="mosaic" aria-labelledby="mos-h">
+  <div class="wrap">
+    <p class="eyebrow" style="color:var(--gold)">Najbliższe wydarzenia</p>
+    <h2 class="h2" id="mos-h" style="margin-top:8px">Wybierz <em>wieczór</em></h2>
+    <p class="lead">Kolor oznacza cykl. Status biletów widać od razu.</p>
+
+    <div class="grid">
+      <a class="tile big cut-tr" href="#">
+        <img src="https://filharmonia.szczecin.pl/files/events/pl_2601gallery_gallery_1_maxi.png" alt="">
+        <div class="scrim"></div>
+        <span class="when">nd <b>25.10</b> · 19:00</span>
+        <span class="pick">Polecamy</span>
+        <div class="body">
+          <div class="cyc"><i style="background:var(--c-light)"></i>Filharmonia Light</div>
+          <h4>Mitch&amp;Mitch<br>Amore assoluto per Ennio</h4>
+          <p class="m">Muzyka Ennio Morricone z Orkiestrą Filharmonii · Sala symfoniczna</p>
+        </div>
+      </a>
+      <a class="tile s2 cut-bl" href="#">
+        <img src="https://filharmonia.szczecin.pl/files/events/pl_2608gallery_gallery_1_midi.png" alt="">
+        <div class="scrim"></div>
+        <span class="when">pn <b>19.10</b> · 19:00</span>
+        <div class="body">
+          <div class="cyc"><i style="background:#6F8BFF"></i>Jazz</div>
+          <h4>Paulina Przybysz<br>Insides</h4>
+          <p class="m">Sala symfoniczna</p>
+        </div>
+      </a>
+      <a class="tile" href="#">
+        <img src="https://filharmonia.szczecin.pl/files/events/pl_2612gallery_gallery_2_midi.jpg" alt="">
+        <div class="scrim"></div>
+        <span class="when">nd <b>18.10</b> · 11:00</span>
+        <div class="body">
+          <div class="cyc"><i style="background:#3FBF85"></i>Rodzinne · 5+</div>
+          <h4>Jak w baroku brzmiały pory roku?</h4>
+        </div>
+      </a>
+      <a class="tile cut-br" href="#">
+        <img src="https://filharmonia.szczecin.pl/files/events/pl_2597gallery_gallery_1_midi.png" alt="">
+        <div class="scrim"></div>
+        <span class="when">śr <b>28.10</b> · 19:00</span>
+        <div class="body">
+          <div class="cyc"><i style="background:var(--gold)"></i>Kameralne</div>
+          <h4>Slavic Sessions</h4>
+          <p class="m">Sala kameralna · 65 min</p>
+        </div>
+      </a>
+      <a class="tile w2 cut-tr" href="#">
+        <img src="https://filharmonia.szczecin.pl/files/events/pl_2551gallery_gallery_1_maxi.png" alt="">
+        <div class="scrim"></div>
+        <span class="when">pt <b>30.10</b> · 19:00</span>
+        <div class="body">
+          <div class="cyc"><i style="background:var(--gold)"></i>Symfoniczne</div>
+          <h4>Symfoniczny fundament</h4>
+          <p class="m">Beethoven, Mozart · Olga Zado – fortepian · 110 min</p>
+        </div>
+      </a>
+      <a class="tile" href="#">
+        <img src="https://filharmonia.szczecin.pl/files/events/pl_2659gallery_gallery_1_midi.jpg" alt="">
+        <div class="scrim"></div>
+        <span class="when">sob <b>24.10</b> · 12:00</span>
+        <div class="body">
+          <div class="cyc"><i style="background:#FF5C9A"></i>FilHERmonia</div>
+          <h4>Marsz Różowej Wstążki. Finał</h4>
+        </div>
+      </a>
+      <a class="tile cut-bl" href="#">
+        <img src="https://filharmonia.szczecin.pl/files/events/pl_2623gallery_gallery_1_midi.jpg" alt="">
+        <div class="scrim"></div>
+        <span class="when">pn <b>19.10</b> · 10:00</span>
+        <div class="body">
+          <div class="cyc"><i style="background:#3FBF85"></i>Dla przedszkoli</div>
+          <h4>Donuta powraca</h4>
+          <p class="m">50 min, bez przerwy</p>
+        </div>
+      </a>
+      <a class="tile w2 cut-br" href="#">
+        <img src="https://filharmonia.szczecin.pl/files/events/pl_2555gallery_gallery_2_maxi.png" alt="">
+        <div class="scrim"></div>
+        <span class="when">sob <b>31.10</b> · 19:00</span>
+        <div class="body">
+          <div class="cyc"><i style="background:var(--gold)"></i>Symfoniczne · z wykładem</div>
+          <h4>Pomniki symfoniki | Mozart</h4>
+          <p class="m">Symfonia nr 40 g-moll · 30 min wykładu dyrygenta przed koncertem</p>
+        </div>
+      </a>
+    </div>
+
+    <a class="btn btn-line" href="#">Pełny repertuar <span>→</span></a>
+  </div>
+</section>
+
+<!-- ============ 4. DLA CIEBIE ============ -->
+<section class="foryou" aria-labelledby="fy-h">
+  <div class="wrap">
+    <p class="eyebrow" style="color:var(--gold-d)">Dla Ciebie</p>
+    <h2 class="h2" id="fy-h" style="margin-top:8px">Nie wiesz, <em>na co iść?</em></h2>
+
+    <div class="helper chamfer">
+      <svg class="hex" width="150" height="150" viewBox="0 0 100 100" aria-hidden="true"><polygon points="50,4 90,27 90,73 50,96 10,73 10,27" fill="none" stroke="#E2BE68" stroke-width="1.2"/><polygon points="50,20 76,35 76,65 50,80 24,65 24,35" fill="none" stroke="#E2BE68" stroke-width="1.2" opacity=".6"/><polygon points="50,36 62,43 62,57 50,64 38,57 38,43" fill="#E2BE68" opacity=".9"/></svg>
+      <p class="eyebrow">Pomóż mi wybrać</p>
+      <h3>5 pytań, 3 koncerty dla Ciebie</h3>
+      <p>Z kim idziesz, ile masz czasu, czego lubisz słuchać. Resztę podpowiemy.</p>
+      <div class="steps" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+      <a class="btn btn-gold" href="#">Zacznij · 1 minuta</a>
+    </div>
+
+    <div class="moods">
+      <a class="mood" style="--c:var(--ink)" href="#"><b>Pierwszy raz w Filharmonii</b><span>Zacznij tutaj <i>→</i></span></a>
+      <a class="mood" style="--c:var(--c-edu)" href="#"><b>Dla rodzin z dziećmi</b><span>12 wydarzeń <i>→</i></span></a>
+      <a class="mood" style="--c:var(--c-jazz)" href="#"><b>Jeśli lubisz jazz</b><span>Koncerty jazzowe <i>→</i></span></a>
+      <a class="mood" style="--c:var(--c-light)" href="#"><b>Muzyka filmowa</b><span>Filharmonia Light <i>→</i></span></a>
+      <a class="mood" style="--c:var(--gold)" href="#"><b>Mam tylko godzinę</b><span>Do 65 minut <i>→</i></span></a>
+      <a class="mood" style="--c:var(--c-wys)" href="#"><b>Coś niezwykłego</b><span>Wystawy, debaty, film <i>→</i></span></a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 5. PIERWSZY RAZ ============ -->
+<section class="first" aria-labelledby="fr-h">
+  <div class="wrap">
+    <p class="eyebrow" style="color:var(--gold-d)">Pierwszy raz?</p>
+    <h2 class="h2" id="fr-h" style="margin-top:8px">Czego się <em>spodziewać</em></h2>
+    <div class="cards">
+      <div class="fcard"><span class="n">01</span><b>Bilet kupisz online albo w kasie</b><p>Kasa jest czynna godzinę przed każdym biletowanym wydarzeniem.</p></div>
+      <div class="fcard"><span class="n">02</span><b>Przyjdź trochę wcześniej</b><p>Budynek otwieramy godzinę przed koncertem: jest czas na szatnię i foyer.</p></div>
+      <div class="fcard"><span class="n">03</span><b>Ulgi</b><p>Uczniowie, studenci do 26 lat, seniorzy 60+, osoby z niepełnosprawnością.</p></div>
+    </div>
+    <div class="dots-pager" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+  </div>
+</section>
+
+<!-- ============ 6. ODKRYJ FILHARMONIĘ ============ -->
+<section class="discover" aria-labelledby="dc-h">
+  <div class="wrap">
+    <p class="eyebrow" style="color:var(--gold)">Odkryj Filharmonię</p>
+    <h2 class="h2" id="dc-h" style="margin-top:8px">Więcej niż <em>koncerty</em></h2>
+    <div class="dgrid">
+      <a class="dtile w2 cut-tr" href="#"><svg id="dBuilding" viewBox="0 0 358 170" width="358" height="170" preserveAspectRatio="xMidYMid slice" aria-hidden="true"></svg><div class="scrim"></div><b>Budynek</b><span>Architektura, sale, nagroda Miesa van der Rohe</span></a>
+      <a class="dtile" href="#"><img src="https://filharmonia.szczecin.pl/files/events/pl_2550gallery_gallery_1_midi.png" alt=""><div class="scrim"></div><b>Orkiestra</b><span>Muzycy i dyrygenci</span></a>
+      <a class="dtile" href="#"><img src="https://filharmonia.szczecin.pl/files/events/pl_2658gallery_gallery_1_midi.jpg" alt=""><div class="scrim"></div><b>Zwiedzanie</b><span>PL · EN · DE · 30/20 zł</span></a>
+      <a class="dtile cut-bl" href="#"><img src="https://filharmonia.szczecin.pl/files/events/pl_2642gallery_gallery_1_midi.png" alt=""><div class="scrim"></div><b>Wystawy</b><span>Poziom 4. i Art.Room</span></a>
+      <a class="dtile" href="#"><img src="https://filharmonia.szczecin.pl/files/events/pl_2612gallery_gallery_2_midi.jpg" alt=""><div class="scrim"></div><b>EDUfilharmonia</b><span>Rodziny, szkoły, nauczyciele</span></a>
+      <a class="dtile w2" href="#"><svg id="dHistory" viewBox="0 0 358 170" width="358" height="170" aria-hidden="true"></svg><div class="scrim"></div><b>Historia</b><span>Od 1948 roku do dziś: oś czasu</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 7. PLANUJ WIZYTĘ ============ -->
+<section class="plan" aria-labelledby="pl-h">
+  <div class="wrap">
+    <p class="eyebrow" style="color:var(--gold-d)">Planuj wizytę</p>
+    <h2 class="h2" id="pl-h" style="margin-top:8px">Jak do nas <em>trafić</em></h2>
+    <p class="lead">ul. Małopolska 48, Szczecin. Większość gości przyjeżdża spoza miasta, więc wszystko jest w jednym miejscu.</p>
+    <div class="plist">
+      <div class="prow"><span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg></span><div><b>Dojazd i parking</b><span>Nawiguj, komunikacja miejska</span></div><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0B0B0D" stroke-width="2.2"><path d="m9 6 6 6-6 6"/></svg></div>
+      <div class="prow"><span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8h18v3a2 2 0 0 0 0 4v3H3v-3a2 2 0 0 0 0-4z"/></svg></span><div><b>Bilety i kasa</b><span>wt–pt 12–18, sob 12–16 · 91 431 07 20</span></div><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0B0B0D" stroke-width="2.2"><path d="m9 6 6 6-6 6"/></svg></div>
+      <div class="prow"><span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="4.5" r="2.2"/><path d="M10 8h3v5h4.5l2.5 6-2 .8-2-4.8H11a1 1 0 0 1-1-1z"/><path d="M8.5 11.3A5.5 5.5 0 1 0 15 18.6l-.9-1.8a3.5 3.5 0 1 1-4.7-4.1z"/></svg></span><div><b>Dostępność</b><span>Wejścia, windy, pętla, informacje sensoryczne</span></div><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0B0B0D" stroke-width="2.2"><path d="m9 6 6 6-6 6"/></svg></div>
+      <div class="prow"><span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.7.3-1 .8-1 1.5V14M12 17.5v.01"/></svg></span><div><b>Szatnia, sale, FAQ</b><span>Godziny otwarcia: wt–nd 10–18</span></div><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0B0B0D" stroke-width="2.2"><path d="m9 6 6 6-6 6"/></svg></div>
+    </div>
+    <div class="row2">
+      <a class="btn btn-ink" href="#">Nawiguj</a>
+      <a class="btn btn-line" href="#">Zadzwoń do kasy</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 8. NEWSLETTER · PARTNERZY · STOPKA ============ -->
+<section class="news" aria-labelledby="nl-h">
+  <div class="wrap">
+    <p class="eyebrow" style="color:var(--gold-d)">Newsletter</p>
+    <h2 class="h2" id="nl-h" style="margin-top:8px">Bądź <em>pierwszy</em> przy sprzedaży</h2>
+    <p class="lead">Raz w miesiącu: nowe koncerty i otwarcie sprzedaży biletów.</p>
+    <div class="field"><label>Twój e-mail</label><a class="btn btn-ink" href="#">Zapisz się</a></div>
+    <div class="consent"><i aria-hidden="true"></i><span>Zgadzam się na otrzymywanie newslettera. Mogę zrezygnować w każdej chwili.</span></div>
+    <div class="partners">
+      <p class="eyebrow">Partnerzy</p>
+      <div class="plogos"><div>PARTNER</div><div>PARTNER</div><div>PARTNER</div><div>PARTNER</div><div>PARTNER</div><div>PARTNER</div></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <a class="brand" href="#">
+    <svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><path d="M3 26 L11 4 L15 14 L19 4 L27 26" fill="none" stroke="#fff" stroke-width="2.4"/><path d="M3 26 H27" stroke="#E2BE68" stroke-width="2.4"/></svg>
+    <div><b>FILHARMONIA</b><span>SZCZECIN</span></div>
+  </a>
+  <div class="cols">
+    <a href="#">Partnerzy i biznes</a><a href="#">Strefa mediów</a>
+    <a href="#">Kontakt</a><a href="#">O instytucji</a>
+    <a href="#">Deklaracja dostępności</a><a href="#">Polityka prywatności</a>
+  </div>
+  <p class="addr">Filharmonia im. Mieczysława Karłowicza w Szczecinie<br>ul. Małopolska 48, 70-515 Szczecin<br>Kasa: +48 91 431 07 20 · kasa@filharmonia.szczecin.pl</p>
+  <div class="langs"><a class="on" href="#">PL</a><a href="#">EN</a><a href="#">DE</a></div>
+  <p class="legal">Makieta koncepcyjna · hackathon „Filharmonia zaczyna się online”</p>
+</footer>
+
+<script>
+// ---------- helpers ----------
+const NS='http://www.w3.org/2000/svg';
+function el(tag,attrs,parent){const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(parent)parent.appendChild(e);return e}
+function rng(seed){return()=>{seed=(seed*16807)%2147483647;return(seed-1)/2147483646}}
+function hex2rgb(h){h=h.replace('#','');return[0,2,4].map(i=>parseInt(h.substr(i,2),16))}
+function mix(a,b,t){const A=hex2rgb(a),B=hex2rgb(b);return'rgb('+A.map((v,i)=>Math.round(v+(B[i]-v)*t)).join(',')+')'}
+function pal3(p,t){t=Math.max(0,Math.min(1,t));return t<.5?mix(p[0],p[1],t*2):mix(p[1],p[2],(t-.5)*2)}
+
+// faceted triangles over a box; light(cx,cy) -> 0..1
+function facets(g,x0,y0,w,h,cols,rows,palette,seed,light,jit=.38){
+  const r=rng(seed),cw=w/cols,ch=h/rows,P=[];
+  for(let j=0;j<=rows;j++){P[j]=[];for(let i=0;i<=cols;i++){
+    const edge=i==0||j==0||i==cols||j==rows;
+    P[j][i]=[x0+i*cw+(edge?0:(r()-.5)*cw*jit*2),y0+j*ch+(edge?0:(r()-.5)*ch*jit*2)];}}
+  for(let j=0;j<rows;j++)for(let i=0;i<cols;i++){
+    const a=P[j][i],b=P[j][i+1],c=P[j+1][i+1],d=P[j+1][i];
+    const tris=r()<.5?[[a,b,c],[a,c,d]]:[[a,b,d],[b,c,d]];
+    tris.forEach(t=>{const cx=(t[0][0]+t[1][0]+t[2][0])/3,cy=(t[0][1]+t[1][1]+t[2][1])/3;
+      const col=pal3(palette,light(cx,cy)+(r()-.5)*.42);
+      el('polygon',{points:t.map(p=>p.join(',')).join(' '),fill:col,stroke:col,'stroke-width':.6},g)});
+  }
+}
+
+// ---------- HERO ART ----------
+(function(){
+  const s=document.getElementById('heroArt');
+  const defs=el('defs',{},s);
+  const sky=el('linearGradient',{id:'sky',x1:0,y1:0,x2:0,y2:1},defs);
+  el('stop',{offset:0,'stop-color':'#050507'},sky);el('stop',{offset:1,'stop-color':'#1A1720'},sky);
+  const glow=el('radialGradient',{id:'glow',cx:.5,cy:.5,r:.5},defs);
+  el('stop',{offset:0,'stop-color':'#F5D27A','stop-opacity':.55},glow);el('stop',{offset:1,'stop-color':'#F5D27A','stop-opacity':0},glow);
+  const spill=el('radialGradient',{id:'spill',cx:.5,cy:.5,r:.5},defs);
+  el('stop',{offset:0,'stop-color':'#D9A441','stop-opacity':.95},spill);
+  el('stop',{offset:.55,'stop-color':'#EBCB85','stop-opacity':.45},spill);
+  el('stop',{offset:1,'stop-color':'#FFFFFF','stop-opacity':0},spill);
+  const pl=el('linearGradient',{id:'pleat',x1:0,y1:0,x2:1,y2:0},defs);
+  el('stop',{offset:0,'stop-color':'#FFFFFF'},pl);el('stop',{offset:.55,'stop-color':'#F1F0F2'},pl);el('stop',{offset:1,'stop-color':'#C9C8CE'},pl);
+  const shade=el('linearGradient',{id:'shade',x1:0,y1:0,x2:0,y2:1},defs);
+  el('stop',{offset:0,'stop-color':'#000','stop-opacity':0},shade);el('stop',{offset:1,'stop-color':'#000','stop-opacity':.35},shade);
+
+  const B='0,318 30,206 62,282 108,150 152,268 195,104 238,268 282,160 328,282 360,212 390,306 390,844 0,844';
+  const portal=d=>`195,${158-d*1.7} ${292+d},${372-d*.4} ${292+d},844 ${98-d},844 ${98-d},${372-d*.4}`;
+  const cpB=el('clipPath',{id:'cpB'},defs);el('polygon',{points:B},cpB);
+  const cpP=el('clipPath',{id:'cpP'},defs);el('polygon',{points:portal(0)},cpP);
+
+  el('rect',{width:390,height:844,fill:'url(#sky)'},s);
+  el('ellipse',{cx:195,cy:170,rx:260,ry:200,fill:'url(#glow)'},s);
+  // tiny cold stars
+  const rs=rng(7);for(let i=0;i<26;i++)el('circle',{cx:rs()*390,cy:60+rs()*150,r:rs()*.9+.2,fill:'#fff',opacity:.25+rs()*.4},s);
+
+  // facade pleats
+  const gB=el('g',{'clip-path':'url(#cpB)'},s);
+  el('rect',{width:390,height:844,fill:'#fff'},gB);
+  for(let x=0;x<390;x+=13)el('rect',{x,y:0,width:13,height:844,fill:'url(#pleat)'},gB);
+  // pleat ridges near the gables: thin darker lines for rhythm
+  for(let x=6.5;x<390;x+=13)el('line',{x1:x,y1:0,x2:x,y2:844,stroke:'#fff','stroke-width':.8,opacity:.9},gB);
+  el('rect',{width:390,height:844,fill:'url(#shade)'},gB);
+  // golden light spilling onto the pleats
+  const sp=el('ellipse',{cx:195,cy:470,rx:250,ry:420,fill:'url(#spill)'},gB);sp.style.mixBlendMode='multiply';
+
+  // recessed portal frame (pleats folding open)
+  [[30,'#F4E8C9'],[21,'#E0C78C'],[13,'#B48B33'],[6,'#6E4E12']].forEach(([d,c])=>el('polygon',{points:portal(d),fill:c},s));
+  // folded edge strips: pleats turning into the opening
+  const gEdge=el('g',{},s);
+  for(let k=0;k<5;k++){const d0=30+k*9,d1=d0+9;const c=k%2?'#FFFFFF':'#EADBB3';
+    el('polygon',{points:`${98-d1},${372-d1*.4} ${98-d0},${372-d0*.4} ${98-d0},844 ${98-d1},844`,fill:c,opacity:.9-k*.12},gEdge);
+    el('polygon',{points:`${292+d0},${372-d0*.4} ${292+d1},${372-d1*.4} ${292+d1},844 ${292+d0},844`,fill:c,opacity:.9-k*.12},gEdge);}
+
+  // golden hall interior
+  const gP=el('g',{'clip-path':'url(#cpP)'},s);
+  facets(gP,98,140,194,704,7,22,['#4A3208','#C9962E','#FFF0B8'],11,(x,y)=>1-Math.hypot((x-195)/120,(y-330)/330)*.95);
+  // vertical light shafts like the hall's pleated gold walls
+  for(let i=0;i<9;i++){const x=110+i*22;el('rect',{x,y:140,width:1.2,height:704,fill:'#FFF6D6',opacity:.35},gP)}
+  el('ellipse',{cx:195,cy:300,rx:80,ry:150,fill:'#FFF3C9',opacity:.35},gP);
+})();
+
+// ---------- DAY STRIP ----------
+(function(){
+  const C={sym:'#B8892A',jazz:'#2747E0',her:'#C2185B',edu:'#177A4F',light:'#C4441F',wys:'#6A4CC7',zw:'#4A463F',kam:'#8C6A1E'};
+  const days=[['sob',17,['wys'],'sel'],['nd',18,['edu','wys'],'wk'],['pn',19,['edu','jazz']],['wt',20,[]],['śr',21,[]],['czw',22,[]],['pt',23,['zw','her']],['sob',24,['her','wys']]];
+  const box=document.getElementById('days');
+  days.forEach(([d,n,dots,cls])=>{const e=document.createElement('div');e.className='day '+(cls||'');
+    e.innerHTML=`<small>${d}</small><b>${n}</b><span class="dots">${dots.map(k=>`<i style="background:${cls=='sel'&&k=='wys'?'#B7A3FF':C[k]}"></i>`).join('')}</span>`;box.appendChild(e)});
+})();
+
+// ---------- DISCOVER ART ----------
+(function(){
+  const s=document.getElementById('dBuilding');
+  el('rect',{width:358,height:170,fill:'#0E0D12'},s);
+  const g=el('g',{},s);
+  const B='0,170 0,110 34,52 66,104 110,26 152,100 190,40 232,104 270,60 312,108 358,70 358,170';
+  const cp=el('clipPath',{id:'cpD'},s);el('polygon',{points:B},cp);
+  const gg=el('g',{'clip-path':'url(#cpD)'},s);
+  for(let x=0;x<358;x+=8){el('rect',{x,y:0,width:8,height:170,fill:x%16?'#E9E7EC':'#FFFFFF'},gg)}
+  el('rect',{x:0,y:120,width:358,height:50,fill:'#E2BE68',opacity:.45},gg);
+})();
+(function(){
+  const s=document.getElementById('dHistory');
+  const g=el('g',{},s);
+  facets(g,0,0,358,170,12,5,['#121116','#3B3424','#C9A04A'],5,(x,y)=>x/358*.8);
+  [['1948',40],['2014',190],['2026',310]].forEach(([y,x])=>{el('line',{x1:x,y1:30,x2:x,y2:96,stroke:'#E2BE68','stroke-width':1},s);
+    const t=el('text',{x:x-14,y:24,fill:'#F3E2B0','font-size':12,'font-weight':700,'font-family':'Inter Tight'},s);t.textContent=y});
+  el('line',{x1:0,y1:96,x2:358,y2:96,stroke:'#E2BE68','stroke-width':1.5},s);
+})();
+</script>
+</body>
+</html>
