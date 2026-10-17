@@ -237,7 +237,9 @@ export const en: Dictionary = {
     consentError: "Tick the consent box so we can send you the newsletter.",
     error: "Error:",
     submit: "Subscribe",
-    thanks: "Thank you! Check your inbox and confirm your subscription.",
+    thanks: "Thank you! Your email address has been added to the newsletter list.",
+    submitting: "Subscribing…",
+    submitError: "We could not save your email address. Please try again shortly.",
   },
 
   calendar: {

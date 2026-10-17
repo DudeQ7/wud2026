@@ -238,7 +238,9 @@ export const de: Dictionary = {
     consentError: "Bitte stimmen Sie zu, damit wir Ihnen den Newsletter senden können.",
     error: "Fehler:",
     submit: "Abonnieren",
-    thanks: "Vielen Dank! Bitte prüfen Sie Ihr Postfach und bestätigen Sie die Anmeldung.",
+    thanks: "Vielen Dank! Ihre E-Mail-Adresse wurde in die Newsletter-Liste aufgenommen.",
+    submitting: "Anmeldung läuft…",
+    submitError: "Ihre E-Mail-Adresse konnte nicht gespeichert werden. Bitte versuchen Sie es gleich noch einmal.",
   },
 
   calendar: {

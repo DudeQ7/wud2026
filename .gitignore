@@ -46,4 +46,4 @@ next-env.d.ts
 ScrappedData/scraper/node_modules/
 ScrappedData/scraper/run.log
 
-.mcp.json
+.mcp.jsonsupabase/.temp/

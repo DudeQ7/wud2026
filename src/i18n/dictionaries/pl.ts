@@ -201,7 +201,9 @@ export const pl = {
     consentError: "Zaznacz zgodę, żebyśmy mogli wysyłać newsletter.",
     error: "Błąd:",
     submit: "Zapisz się",
-    thanks: "Dziękujemy! Sprawdź skrzynkę i potwierdź zapis.",
+    thanks: "Dziękujemy! Twój adres został zapisany na liście newslettera.",
+    submitting: "Zapisywanie…",
+    submitError: "Nie udało się zapisać adresu. Spróbuj ponownie za chwilę.",
   },
 
   calendar: {
