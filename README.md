@@ -6,7 +6,7 @@ Repozytorium zespołu hackathonowego, który tworzy koncept dla Filharmonii w Sz
 
 - Piotr Wittig
 - Karol Wroński
-- Kacper Dorożalski
+- Scarlet Dorożalska
 - Paweł Dutkiewicz
 - Adrian Banaś
 - Aleksy Chojnowski
