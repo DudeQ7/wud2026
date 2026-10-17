@@ -34,7 +34,7 @@ export default function ArtistPage({ params }: PageProps<"/artysci/[slug]">) {
       <SiteHeader />
       <main id="tresc" className="pt-4 pb-16 lg:pb-24">
         <Container>
-          <Suspense fallback={<div className="h-96 bg-surface-muted" aria-busy="true" aria-label="Wczytywanie" />}>
+          <Suspense fallback={<div className="h-96 bg-surface-muted" role="status" aria-busy="true" aria-label="Wczytywanie" />}>
             <ArtistContent params={params} />
           </Suspense>
         </Container>

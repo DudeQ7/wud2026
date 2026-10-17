@@ -98,7 +98,7 @@ async function EventContent({ params }: Pick<PageProps<"/wydarzenia/[slug]">, "p
 
 function EventSkeleton() {
   return (
-    <Container className="max-w-3xl" aria-busy="true" aria-label="Wczytywanie wydarzenia">
+    <Container className="max-w-3xl" role="status" aria-busy="true" aria-label="Wczytywanie wydarzenia">
       <div className="-mx-4 aspect-[3/2] bg-surface-muted sm:mx-0" />
       <div className="mt-5 h-4 w-40 bg-surface-muted" />
       <div className="mt-3 h-10 w-3/4 bg-surface-muted" />
@@ -157,7 +157,7 @@ async function EventView({ id }: { id: number }) {
             {
               label: "Za ile",
               value: price ?? (
-                <a href={event.ticketsUrl} className="underline underline-offset-4">
+                <a href={event.ticketsUrl} className="inline-flex min-h-11 items-center underline underline-offset-4">
                   Ceny w kasie online
                 </a>
               ),

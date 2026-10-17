@@ -54,7 +54,7 @@ export default function WizardPage({ searchParams }: PageProps<"/pomoz-mi-wybrac
       <main id="tresc" className="pt-8 pb-16 lg:pt-12 lg:pb-24">
         <Container className="max-w-3xl">
           {/* Odpowiedzi (searchParams) czytamy w granicy Suspense – powłoka strony od nich nie zależy */}
-          <Suspense fallback={<div className="h-96 bg-surface-muted" aria-busy="true" aria-label="Wczytywanie" />}>
+          <Suspense fallback={<div className="h-96 bg-surface-muted" role="status" aria-busy="true" aria-label="Wczytywanie" />}>
             <Wizard searchParams={searchParams} />
           </Suspense>
         </Container>
@@ -165,7 +165,12 @@ function Results({ answers, today }: { answers: Answers; today: string }) {
         </ul>
       )}
 
-      {matches.length > 0 && <ResultList answers={answers} matches={matches} />}
+      {matches.length > 0 && (
+        <>
+          <h2 className="sr-only">Propozycje</h2>
+          <ResultList answers={answers} matches={matches} />
+        </>
+      )}
 
       {matches.length === 0 && (
         <p className="mt-4 type-body text-text">

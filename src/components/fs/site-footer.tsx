@@ -54,15 +54,15 @@ export function SiteFooter() {
 
         <div className="flex flex-col gap-3 lg:col-span-3">
           <nav aria-label="Wersja językowa" className="flex items-center gap-3 font-semibold">
-            <Link href="/" lang="pl" hrefLang="pl" aria-current="true" className="flex min-h-11 items-center font-bold underline underline-offset-4">
+            <Link href="/" lang="pl" hrefLang="pl" aria-current="true" className="flex min-h-11 min-w-11 items-center justify-center font-bold underline underline-offset-4">
               PL
             </Link>
             <span aria-hidden>|</span>
-            <a href="/en" lang="en" hrefLang="en" className="flex min-h-11 items-center">
+            <a href="/en" lang="en" hrefLang="en" className="flex min-h-11 min-w-11 items-center justify-center">
               EN
             </a>
             <span aria-hidden>|</span>
-            <a href="/de" lang="de" hrefLang="de" className="flex min-h-11 items-center">
+            <a href="/de" lang="de" hrefLang="de" className="flex min-h-11 min-w-11 items-center justify-center">
               DE
             </a>
           </nav>

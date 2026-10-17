@@ -53,7 +53,7 @@ export default function SeriesPage({ params }: PageProps<"/cykl/[key]">) {
       <SiteHeader />
       <main id="tresc" className="pt-8 pb-16 lg:pt-12 lg:pb-24">
         <Container>
-          <Suspense fallback={<div className="h-96 bg-surface-muted" aria-busy="true" aria-label="Wczytywanie" />}>
+          <Suspense fallback={<div className="h-96 bg-surface-muted" role="status" aria-busy="true" aria-label="Wczytywanie" />}>
             <SeriesContent params={params} />
           </Suspense>
         </Container>

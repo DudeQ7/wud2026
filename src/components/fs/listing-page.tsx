@@ -63,16 +63,19 @@ async function List({ events, select, empty }: Pick<ListingProps, "events" | "se
   if (!items.length) return <p className="mt-8 type-body text-text">{empty}</p>
 
   return (
-    <ul className="mt-8 grid gap-10 sm:grid-cols-2 sm:gap-x-4 lg:grid-cols-3 lg:gap-x-6">
-      {items.map(({ event, date }) => (
-        <li key={event.id} className="flex flex-col gap-2">
-          <EventCard event={event} date={date} />
-          <div className="flex flex-wrap items-center gap-2">
-            <EventInfoBadge event={event} />
-            <MetaLine items={[eventPrice(event), formatDuration(event.durationMin)]} />
-          </div>
-        </li>
-      ))}
-    </ul>
+    <>
+      <h2 className="sr-only">Nadchodzące wydarzenia</h2>
+      <ul className="mt-8 grid gap-10 sm:grid-cols-2 sm:gap-x-4 lg:grid-cols-3 lg:gap-x-6">
+        {items.map(({ event, date }) => (
+          <li key={event.id} className="flex flex-col gap-2">
+            <EventCard event={event} date={date} />
+            <div className="flex flex-wrap items-center gap-2">
+              <EventInfoBadge event={event} />
+              <MetaLine items={[eventPrice(event), formatDuration(event.durationMin)]} />
+            </div>
+          </li>
+        ))}
+      </ul>
+    </>
   )
 }

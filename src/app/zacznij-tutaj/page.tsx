@@ -51,7 +51,7 @@ export default function StartHerePage() {
 
             <li>
               <h2 className="type-h3 text-gold">2. Najbliższe koncerty</h2>
-              <Suspense fallback={<div className="mt-4 h-48 bg-surface-muted" aria-busy="true" aria-label="Wczytywanie" />}>
+              <Suspense fallback={<div className="mt-4 h-48 bg-surface-muted" role="status" aria-busy="true" aria-label="Wczytywanie" />}>
                 <Upcoming />
               </Suspense>
             </li>

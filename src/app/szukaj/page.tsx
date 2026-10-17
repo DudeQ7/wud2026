@@ -45,7 +45,7 @@ export default function SearchPage({ searchParams }: PageProps<"/szukaj">) {
       <main id="tresc" className="pt-8 pb-16 lg:pt-12 lg:pb-24">
         <Container className="max-w-3xl">
           <h1 className="type-h1 text-gold">Szukaj</h1>
-          <Suspense fallback={<div className="mt-6 h-40 bg-surface-muted" aria-busy="true" aria-label="Wczytywanie" />}>
+          <Suspense fallback={<div className="mt-6 h-40 bg-surface-muted" role="status" aria-busy="true" aria-label="Wczytywanie" />}>
             <Content searchParams={searchParams} />
           </Suspense>
         </Container>
