@@ -81,14 +81,13 @@ export function PanelNav({ lang, userId, userEmail, userName }: PanelNavProps) {
             <span>{t.assistantLink}</span>
           </Link>
 
-          <form action={logout}>
-            <input type="hidden" name="uiLang" value={lang} />
           <form
             action={logout}
             onSubmit={() => {
               posthog.reset();
             }}
           >
+            <input type="hidden" name="uiLang" value={lang} />
             <button
               type="submit"
               className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-left text-sm text-red-500 transition-colors hover:bg-red-500/10 dark:text-red-400"
