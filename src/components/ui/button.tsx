@@ -13,11 +13,11 @@ const buttonVariants = cva(
         // Czarny, biały tekst – „Kup bilet”, „Zapisz się”
         primary: "bg-ink text-on-dark hover:bg-black hover:underline hover:underline-offset-4",
         // Kontur 2 px – „Zobacz”, „Pełny repertuar”
-        secondary: "border-line-strong bg-transparent text-text hover:bg-bg-subtle",
+        secondary: "border-line-strong! bg-transparent text-text hover:bg-bg-subtle",
         // Na czerni: białe tło, czarny tekst
         inverted: "bg-on-dark text-ink hover:bg-bg-subtle",
         // Na czerni: biały kontur
-        "inverted-outline": "border-on-dark bg-transparent text-on-dark hover:bg-white/10",
+        "inverted-outline": "border-on-dark! bg-transparent text-on-dark hover:bg-white/10",
         // Link tekstowy z podkreśleniem 1,5 px
         link: "h-auto min-h-11 justify-start border-0 px-0 text-text underline decoration-[1.5px] underline-offset-[3px] hover:decoration-2",
         // Ikona bez tła, pole dotyku 44 px

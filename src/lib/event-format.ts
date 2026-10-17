@@ -124,6 +124,43 @@ export function formatSeries(series?: string) {
   return name === name.toUpperCase() ? name.charAt(0) + name.slice(1).toLowerCase() : name
 }
 
+// ——— Adres karty wydarzenia ———
+
+/** „Mitch&Mitch | Amore assoluto per Ennio” → „2601-mitch-mitch-amore-assoluto-per-ennio” */
+export function eventSlug(event: Pick<FsEvent, "id" | "title">) {
+  const words = event.title
+    .toLowerCase()
+    .replaceAll("ł", "l")
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "")
+    .slice(0, 60)
+    .replace(/-$/, "")
+  return `${event.id}-${words}`
+}
+
+/** Karta wydarzenia w serwisie (§6.11) */
+export function eventHref(event: Pick<FsEvent, "id" | "title">) {
+  return `/wydarzenia/${eventSlug(event)}`
+}
+
+/** Id z adresu – tekst po id jest tylko dla ludzi i SEO */
+export function eventIdFromSlug(slug: string) {
+  const id = Number(slug.match(/^\d+/)?.[0])
+  return Number.isInteger(id) ? id : undefined
+}
+
+/** „19:00–20:50” – godzina zakończenia z czasu trwania */
+export function formatTimeRange(dateTime: string, minutes?: number) {
+  const start = formatTime(dateTime)
+  if (!minutes) return start
+  const [h, m] = start.split(":").map(Number)
+  const end = h * 60 + m + minutes
+  const pad = (n: number) => String(n).padStart(2, "0")
+  return `${start}–${pad(Math.floor(end / 60) % 24)}:${pad(end % 60)}`
+}
+
 // ——— Pojedyncze wydarzenie ———
 
 export function datesOn(event: FsEvent, dayKey: string) {

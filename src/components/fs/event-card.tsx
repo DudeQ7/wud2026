@@ -1,10 +1,11 @@
+import Link from "next/link"
 import * as React from "react"
 
 import { AccessibilityNote, MetaLine } from "@/components/fs/event-meta"
 import { Eyebrow } from "@/components/fs/layout"
 import { Photo, PhotoDateBadge } from "@/components/fs/photo"
-import { type Locale, getDictionary, kindLabel, venueLabel } from "@/i18n"
-import { type FsEvent, datesOn, formatDateBadge, formatDuration, formatTime } from "@/lib/event-format"
+import { type Locale, getDictionary, kindLabel, localizedPath, venueLabel } from "@/i18n"
+import { type FsEvent, datesOn, eventHref, formatDateBadge, formatDuration, formatTime } from "@/lib/event-format"
 import { cn } from "@/lib/utils"
 
 type EventCardProps = {
@@ -63,13 +64,13 @@ export function EventCard({
       <div className="flex flex-col gap-1.5">
         <Eyebrow>{kindLabel(t, event.kind)}</Eyebrow>
         <h3 className={cn(variant === "featured" ? "type-h3" : "type-title-card", "text-text")}>
-          <a
-            href={event.url}
+          <Link
+            href={localizedPath(lang, eventHref(event))}
             className="after:absolute after:inset-0 group-hover:underline group-hover:underline-offset-4 focus-visible:outline-none focus-visible:after:outline-2 focus-visible:after:outline-offset-2 focus-visible:after:outline-ring"
           >
             {event.headline}
             {event.subtitle && <span className="block">{event.subtitle}</span>}
-          </a>
+          </Link>
         </h3>
         <MetaLine
           items={[

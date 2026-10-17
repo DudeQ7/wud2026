@@ -1,6 +1,7 @@
+import Link from "next/link"
 import { AccessibilityNote, EventInfoBadge, MetaLine, eventPrice } from "@/components/fs/event-meta"
-import { type Locale, getDictionary, kindLabel, venueLabel } from "@/i18n"
-import { type FsEvent, formatDuration, formatTime, galleryInfo, isExhibition } from "@/lib/event-format"
+import { type Locale, getDictionary, kindLabel, localizedPath, venueLabel } from "@/i18n"
+import { type FsEvent, eventHref, formatDuration, formatTime, galleryInfo, isExhibition } from "@/lib/event-format"
 import { cn } from "@/lib/utils"
 
 type EventRowProps = {
@@ -30,12 +31,12 @@ export function EventRow({ event, times, lang, className }: EventRowProps) {
 
       <div className="flex min-w-0 flex-1 flex-col gap-1.5">
         <h3 className="type-title-card text-text">
-          <a
-            href={event.url}
+          <Link
+            href={localizedPath(lang, eventHref(event))}
             className="after:absolute after:inset-0 group-hover:underline group-hover:underline-offset-4 focus-visible:outline-none focus-visible:after:outline-2 focus-visible:after:outline-offset-2 focus-visible:after:outline-ring"
           >
             {event.title}
-          </a>
+          </Link>
         </h3>
         <MetaLine items={[venueLabel(t, event.venue), eventPrice(event, t), formatDuration(event.durationMin)]} />
         <div className="flex flex-wrap items-center gap-2">

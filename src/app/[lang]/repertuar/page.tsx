@@ -92,7 +92,7 @@ export default async function RepertuarPage({ params }: PageProps<"/[lang]/reper
 
 function CalendarSkeleton({ label }: { label: string }) {
   return (
-    <div aria-busy="true" aria-label={label}>
+    <div role="status" aria-busy="true" aria-label={label}>
       <div className="h-[5.25rem] bg-surface-muted" />
       <div className="mt-4 flex gap-2 overflow-hidden">
         {[...Array(5)].map((_, i) => (

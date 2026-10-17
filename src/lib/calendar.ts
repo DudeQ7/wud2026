@@ -1,5 +1,7 @@
 import type { Dictionary } from "@/i18n"
 import { pl } from "@/i18n/dictionaries/pl"
+// Polska odmiana – dla tekstów, które są tylko po polsku (wyszukiwarka, cykle)
+export { plural } from "@/i18n/plural"
 import {
   type FsEvent,
   addDays,
@@ -47,6 +49,9 @@ export type Filters = {
 }
 
 export const emptyFilters: Filters = { rodzaj: [], dlaKogo: [], miejsce: [], nastroj: [] }
+
+/** sessionStorage: ostatnie filtry kalendarza („?rodzaj=jazz”) – dla „← Repertuar” na karcie wydarzenia */
+export const LAST_CALENDAR_QUERY_KEY = "fs-repertuar-filtry"
 
 // ——— Cechy wydarzenia (liczone raz, na serwerze) ———
 
@@ -270,7 +275,12 @@ export type CalendarRow = { event: CalendarEvent; times: string[] }
 export type CalendarDay = { day: string; label: string; rows: CalendarRow[] }
 
 /** Wiersze kalendarza pogrupowane po dniach (§6.7): jedno wydarzenie = jeden wiersz w danym dniu */
-export function calendarDays(events: CalendarEvent[], filters: Filters, today: string, t: Dictionary): CalendarDay[] {
+export function calendarDays(
+  events: CalendarEvent[],
+  filters: Filters,
+  today: string,
+  t: Dictionary = pl
+): CalendarDay[] {
   const [from, to] = dateWindow(filters, today)
   const byDay = new Map<string, CalendarRow[]>()
 
