@@ -1,4 +1,6 @@
 import koncerty from "@/data/koncerty.json"
+import { calendarEditorial } from "@/content/calendar"
+import { toCalendarEvent } from "@/lib/calendar"
 import { type FsEvent, addDays, datesOn, nextDate } from "@/lib/event-format"
 
 // Dane wydarzeń z koncerty.json. Ten moduł importuje cały plik danych, więc używamy go tylko
@@ -83,6 +85,66 @@ export function getEvent(id: number) {
   const event = events.find((e) => e.id === id)
   if (!event) throw new Error(`Brak wydarzenia ${id} w koncerty.json`)
   return event
+}
+
+// ——— Karta wydarzenia ———
+
+export type EventDetails = {
+  /** Opis podzielony na akapity, bez linii o czasie trwania (pokazujemy go osobno) */
+  paragraphs: string[]
+  /** Tylko gdy opis mówi to wprost */
+  intermission?: "bez przerwy" | "z przerwą"
+  /** „Kompozytor – utwór” z pola program */
+  program: { composer?: string; work: string }[]
+  /** „Imię Nazwisko – rola” z pola artists */
+  artists: { name: string; role?: string }[]
+}
+
+export function eventDetails(id: number): EventDetails {
+  const raw = koncerty.events.find((e) => e.id === id)
+  const description = raw?.description ?? ""
+  const paragraphs = description
+    .split(/\n+/)
+    .map((p) => p.trim())
+    .filter((p) => p && !/^orientacyjny czas trwania/i.test(p))
+
+  return {
+    paragraphs,
+    intermission: /bez przerwy/i.test(description) ? "bez przerwy" : /z przerwą/i.test(description) ? "z przerwą" : undefined,
+    program: (raw?.program ?? [])
+      .map((line) => line.replace(/^\\?-\s*/, "").trim())
+      .filter(Boolean)
+      .map((line) => {
+        const [composer, ...work] = line.split(" - ")
+        return work.length ? { composer, work: work.join(" - ") } : { work: line }
+      }),
+    artists: (raw?.artists ?? []).map((line) => {
+      const [name, ...role] = line.split(" - ")
+      return { name: name.trim(), role: role.join(" - ").trim() || undefined }
+    }),
+  }
+}
+
+/**
+ * Podobne wydarzenia (§6.11 pkt 9): wspólny rodzaj, cykl i odbiorcy; pierwszeństwo dla polecanych przez FS.
+ * Liczymy tylko nadchodzące terminy.
+ */
+export function similarEvents(event: FsEvent, fromKey: string, promotedIds: number[], limit = 3) {
+  const base = toCalendarEvent(event, calendarEditorial).facets
+  return events
+    .filter((e) => e.id !== event.id)
+    .map((e) => {
+      const f = toCalendarEvent(e, calendarEditorial).facets
+      const score =
+        f.types.filter((t) => base.types.includes(t)).length * 2 +
+        (f.seriesKey && f.seriesKey === base.seriesKey ? 3 : 0) +
+        f.audiences.filter((a) => base.audiences.includes(a)).length * 2 +
+        (promotedIds.includes(e.id) ? 2 : 0)
+      return { event: e, date: nextDate(e, fromKey), score }
+    })
+    .filter((x): x is { event: FsEvent; date: string; score: number } => Boolean(x.date) && x.score > 0)
+    .sort((a, b) => b.score - a.score || a.date.localeCompare(b.date))
+    .slice(0, limit)
 }
 
 // ——— Selekcja ———

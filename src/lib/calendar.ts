@@ -85,6 +85,9 @@ export type Filters = {
 
 export const emptyFilters: Filters = { rodzaj: [], dlaKogo: [], miejsce: [], nastroj: [] }
 
+/** sessionStorage: ostatnie filtry kalendarza („?rodzaj=jazz”) – dla „← Repertuar” na karcie wydarzenia */
+export const LAST_CALENDAR_QUERY_KEY = "fs-repertuar-filtry"
+
 // ——— Cechy wydarzenia (liczone raz, na serwerze) ———
 
 export type Facets = {

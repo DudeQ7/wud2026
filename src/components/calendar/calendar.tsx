@@ -19,6 +19,7 @@ import {
   alternatives,
   calendarDays,
   countRows,
+  LAST_CALENDAR_QUERY_KEY,
   emptyFilters,
   parseFilters,
   plural,
@@ -50,6 +51,15 @@ export function Calendar({ events, series }: CalendarProps) {
 
   const [limit, setLimit] = useState(PAGE_SIZE)
   const query = toQuery(filters)
+
+  // Zapamiętujemy filtry dla „← Repertuar” na karcie wydarzenia
+  useEffect(() => {
+    try {
+      sessionStorage.setItem(LAST_CALENDAR_QUERY_KEY, query ? `?${query}` : "")
+    } catch {
+      // Prywatne okno lub zablokowany storage – link wróci do pełnego repertuaru
+    }
+  }, [query])
   // Nowy zestaw filtrów zaczyna listę od początku
   const [shownQuery, setShownQuery] = useState(query)
   if (shownQuery !== query) {

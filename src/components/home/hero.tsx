@@ -3,7 +3,7 @@ import Image from "next/image"
 import { FactList } from "@/components/fs/event-meta"
 import { Container, Eyebrow } from "@/components/fs/layout"
 import { buttonVariants } from "@/components/ui/button"
-import { type FsEvent, formatLineup, formatSeries, formatShortDate, formatTime } from "@/lib/event-format"
+import { type FsEvent, eventHref, formatLineup, formatSeries, formatShortDate, formatTime } from "@/lib/event-format"
 import { cn } from "@/lib/utils"
 
 type HeroProps = {
@@ -51,7 +51,7 @@ export function Hero({ event, date, photoPosition = "50% 30%" }: HeroProps) {
                 <a href={event.ticketsUrl} className={cn(buttonVariants({ variant: "primary" }))}>
                   Kup bilet
                 </a>
-                <a href={event.url} className={cn(buttonVariants({ variant: "secondary" }))}>
+                <a href={eventHref(event)} className={cn(buttonVariants({ variant: "secondary" }))}>
                   Zobacz
                 </a>
               </div>
