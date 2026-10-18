@@ -1,0 +1,146 @@
+{
+  "capturedAt": "2026-10-18T12:42:33.164Z",
+  "source": "https://testdomain07.com",
+  "screenshots": [
+    {
+      "file": "desktop/01-strona-glowna.png",
+      "description": "Strona główna — koncert wiodący",
+      "url": "https://testdomain07.com/",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "pixelRatio": 2
+    },
+    {
+      "file": "desktop/02-najblizsze-wydarzenia.png",
+      "description": "Strona główna — przestrzenna prezentacja najbliższych koncertów",
+      "url": "https://testdomain07.com/",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "pixelRatio": 2
+    },
+    {
+      "file": "desktop/03-repertuar.png",
+      "description": "Repertuar i kalendarz wydarzeń",
+      "url": "https://testdomain07.com/repertuar",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "pixelRatio": 2
+    },
+    {
+      "file": "desktop/04-szczegoly-koncertu.png",
+      "description": "Szczegóły koncertu Pauliny Przybysz",
+      "url": "https://testdomain07.com/wydarzenia/2608-paulina-przybysz-insides",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "pixelRatio": 2
+    },
+    {
+      "file": "desktop/05-pomoz-mi-wybrac.png",
+      "description": "Kreator doboru koncertu — pierwszy krok",
+      "url": "https://testdomain07.com/pomoz-mi-wybrac",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "pixelRatio": 2
+    },
+    {
+      "file": "desktop/06-propozycje-koncertow.png",
+      "description": "Kreator — propozycje po udzieleniu odpowiedzi",
+      "url": "https://testdomain07.com/pomoz-mi-wybrac?dla=ja&kiedy=miesiac&rodzaj=jazz&budzet=bez-limitu&krok=wynik",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "pixelRatio": 2
+    },
+    {
+      "file": "desktop/07-asystent-ai.png",
+      "description": "Asystent AI — panel rozmowy i sugerowane pytania",
+      "url": "https://testdomain07.com/",
+      "viewport": {
+        "width": 1440,
+        "height": 1000
+      },
+      "pixelRatio": 2
+    },
+    {
+      "file": "mobile/01-strona-glowna.png",
+      "description": "Strona główna — koncert wiodący",
+      "url": "https://testdomain07.com/",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "pixelRatio": 2
+    },
+    {
+      "file": "mobile/02-najblizsze-wydarzenia.png",
+      "description": "Strona główna — przestrzenna prezentacja najbliższych koncertów",
+      "url": "https://testdomain07.com/",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "pixelRatio": 2
+    },
+    {
+      "file": "mobile/03-repertuar.png",
+      "description": "Repertuar i kalendarz wydarzeń",
+      "url": "https://testdomain07.com/repertuar",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "pixelRatio": 2
+    },
+    {
+      "file": "mobile/04-szczegoly-koncertu.png",
+      "description": "Szczegóły koncertu Pauliny Przybysz",
+      "url": "https://testdomain07.com/wydarzenia/2608-paulina-przybysz-insides",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "pixelRatio": 2
+    },
+    {
+      "file": "mobile/05-pomoz-mi-wybrac.png",
+      "description": "Kreator doboru koncertu — pierwszy krok",
+      "url": "https://testdomain07.com/pomoz-mi-wybrac",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "pixelRatio": 2
+    },
+    {
+      "file": "mobile/06-propozycje-koncertow.png",
+      "description": "Kreator — propozycje po udzieleniu odpowiedzi",
+      "url": "https://testdomain07.com/pomoz-mi-wybrac?dla=ja&kiedy=miesiac&rodzaj=jazz&budzet=bez-limitu&krok=wynik",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "pixelRatio": 2
+    },
+    {
+      "file": "mobile/07-asystent-ai.png",
+      "description": "Asystent AI — panel rozmowy i sugerowane pytania",
+      "url": "https://testdomain07.com/",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "pixelRatio": 2
+    }
+  ]
+}
