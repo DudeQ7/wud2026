@@ -38,6 +38,12 @@ Wiążąca specyfikacja wizualna i interakcyjna konceptu nowej strony FS. Opiera
 | D5 | Kategorie wydarzeń | **Etykieta tekstowa, bez koloru.** Status zawsze słowem i kształtem | kolorowe paski, kropki, kwadraty, kolorowe statusy |
 | D6 | Cykle i festiwale | **Bez kolorów cykli w ogóle.** Podstrona cyklu też jest czarno-biało-złota, a cykl wyróżnia typografia i zdjęcie | skórki kolorystyczne cykli |
 | D7 | Kształty | **Promień 0 wszędzie.** Ścięty narożnik (motyw łamanych płaszczyzn znaku) oszczędnie, maks. 1–2 na ekran. **Heksagon** tylko dla asystenta AI | zaokrąglenia 8 px, pigułki |
+| D8 | Rytm strony głównej | **„Dla Ciebie” to jedyna czarna sekcja** przed stopką (złoty nagłówek `#AD9450` na czerni, kafle nastrojów z białym konturem). Kafel „Pomóż mi wybrać” jest **odwrócony: biały na czerni**, jedyny jasny blok sekcji. Kafle nastrojów pokazują liczbę wydarzeń za kliknięciem (te same filtry co kalendarz). Długa biała strona bez przerwy rytmu była zbyt jednostajna na telefonie (18.10.2026) | czarny kafel na białej sekcji |
+| D9 | Status „Dostępne” | Na listach, kartach i w otwarciu **pomijamy** „Dostępne” (stan domyślny, szum); pokazujemy wyjątki: „Ostatnie miejsca”, „Wyprzedane”. Na karcie wydarzenia status jest zawsze (§6.8) | znacznik „Dostępne” przy każdym wierszu |
+| D10 | Karta wydarzenia na desktopie | 2 kolumny od 1024 px: treść 7/12 i **przyklejony panel biletowy** 4/12 (data, godzina, sala, cena, status, Kup bilet, akcje). Pasek zakupu zostaje tylko na telefonie | pasek zakupu na każdej szerokości |
+| D11 | Symbole rodzajów w kalendarzu | W widoku miesiąca pod datą z wydarzeniami stoi **po jednym symbolu na rodzaj** (maks. 2, dalej „+”), dni puste się cofają (szary tekst), dni z wydarzeniami mają tło, pogrubioną datę i symbol; legenda nad siatką wymienia tylko rodzaje z danego miesiąca. Ten sam symbol stoi przy rodzaju w wierszach listy. Symbole: nuty (symfoniczny), fortepian (kameralny), mikrofon (jazz), globus (muzyka świata), kształty (edukacja i dzieci), obraz (wystawa), ślady stóp (zwiedzanie), klaps (film, debata). Rodzaj rozróżnia kształt, nie kolor (D5/D6); nazwa jest też w `aria-label` dnia | kreski z liczbą wydarzeń (bez rodzaju), kolory rodzajów |
+| D12 | Ceny w prototypie | Ceny wydarzeń oprócz zwiedzania to **dane przykładowe** (`src/content/prices.ts`, mock cennika iksoris wg rodzaju). Prawdziwe ceny z danych mają pierwszeństwo, a dane strukturalne schema.org nigdy nie korzystają z mocka. Do wymiany na API iksoris | „Ceny w kasie online” w każdej karcie |
+| D13 | Kalendarz na telefonie: trzy wiersze kontrolek | Wiersz 1: pole szukania + „Filtry (n)”; wiersz 2: szybkie filtry w jednej przewijanej linii; wiersz 3: licznik wyników + przełącznik Lista/Miesiąc. Akapit wstępny i zdanie przy legendzie znikają na telefonie. Etykieta pola szukania jest widoczna od 640 px, na telefonie zostaje w nazwie pola (`sr-only`). Pomiar (390×844): pierwsza data w siatce z 888 px na 564 px, czyli w pierwszym ekranie. **Szybkie filtry zawsze w jednej linii:** nigdy się nie zawijają; do 768 px mają krótkie etykiety (Dziś · Weekend · Dzieci · Jazz · Wystawy) i zwarty rozmiar, więc wszystkie pięć mieści się na ekranie od 360 px (PL) i od 390 px (DE, UK); węższy ekran przewija linię. Zaznaczenie nie zmienia szerokości: ✓ stoi w rogu chipa (zamiast przed etykietą w §6.6), czyli nic się nie przesuwa i nie wypada | pięć pięter kontrolek przed pierwszą datą |
 
 D6 dotyczy interfejsu. **Zdjęcia i grafiki FS pokazujemy w oryginale, z ich kolorami** (§5.6).
 
@@ -593,7 +599,7 @@ To wyróżnik konceptu: prawie żaden serwis z inspiracji tego nie ma (wyjątki 
   - Na mobile siatka 2 × 3, na desktopie 3 × 2.
 - **Kategorie nastrojów / „Dla Ciebie”:**
   - kafle tekstowe na `#FFFFFF` z konturem 1,5 px: „Zacznij tutaj”, „Dla rodzin”, „Jeśli lubisz jazz”, „Jeśli lubisz muzykę filmową”, „Jeśli masz 30 minut”, „Coś niezwykłego”,
-  - kafel „Pomóż mi wybrać” w czerni.
+  - kafel „Pomóż mi wybrać” biały na czarnej sekcji (D8).
 - **Oś czasu historii:**
   - pionowa na mobile, pozioma przewijana na desktopie, z przyciskami ← → i obsługą klawiaturą,
   - dekady 1948 → dziś, a lata zapisane Titillium 600 w złocie jako nagłówki.

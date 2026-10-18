@@ -76,8 +76,8 @@ export default async function RepertuarPage({ params }: PageProps<"/[lang]/reper
       <SiteHeader lang={lang} />
       <main id="tresc" className="pt-8 pb-16 lg:pt-12 lg:pb-24">
         <Container>
-          <h1 className="type-h1 text-gold">{t.calendar.title}</h1>
-          <p className="mt-2 mb-6 type-body max-w-[68ch] text-text">{t.calendar.intro}</p>
+          <h1 className="mb-4 type-h1 text-gold sm:mb-0">{t.calendar.title}</h1>
+          <p className="mt-2 mb-6 hidden type-body max-w-[68ch] text-text sm:block">{t.calendar.intro}</p>
           {/* Filtry czytają adres URL w przeglądarce, więc lista renderuje się po stronie klienta */}
           <Suspense fallback={<CalendarSkeleton label={t.calendar.loading} />}>
             <Calendar3D events={calendarEvents} series={series} lang={lang} />

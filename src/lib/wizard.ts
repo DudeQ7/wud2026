@@ -7,6 +7,8 @@ import {
   emptyFilters,
   toQuery,
 } from "@/lib/calendar"
+import { minPrice } from "@/content/prices"
+import type { FsEvent } from "@/lib/event-format"
 
 // „Pomóż mi wybrać” (design.md §6.13): 5 pytań, każde można pominąć, wynik to 3–5 wydarzeń.
 // Odpowiedzi żyją w adresie URL (?dla=rodzina&kiedy=weekend&krok=3), więc kreator działa jak zwykłe
@@ -142,10 +144,9 @@ const KIEDY_PHRASE: Record<string, string> = {
   miesiac: "najbliższy miesiąc",
 }
 
-/** Najniższa cena z pola prices_pln („30/20 zł” → 20); null, gdy dane nie podają ceny */
-export function lowestPrice(prices: string[]) {
-  const numbers = prices.flatMap((p) => p.match(/\d+(?:[.,]\d+)?/g) ?? []).map((n) => Number(n.replace(",", ".")))
-  return numbers.length ? Math.min(...numbers) : null
+/** Najniższa cena w zł (0 = wstęp wolny); z danych albo z cennika przykładowego (content/prices.ts), null gdy nieznana */
+export function lowestPrice(event: Pick<FsEvent, "prices" | "type" | "kind" | "kindLabel">) {
+  return minPrice(event) ?? null
 }
 
 function toFilters(answers: Answers): Filters {
@@ -183,7 +184,7 @@ export function match(events: CalendarEvent[], answers: Answers, today: string):
       // Dla dorosłych pomijamy wydarzenia stworzone dla dzieci i szkół
       if (grownUps && (f.audiences.includes("dzieci") || f.audiences.includes("szkoly"))) continue
       // Cena znana i za wysoka odpada; brak ceny w danych nie wyklucza (nie zgadujemy)
-      const price = lowestPrice(event.prices)
+      const price = lowestPrice(event)
       if (limit !== undefined && price !== null && price > limit) continue
       seen.add(event.id)
       const fits = klimat && (f.types.some((t) => klimat.types.includes(t)) || f.moods.some((m) => klimat.moods.includes(m)))
@@ -237,7 +238,7 @@ export function reasonLine(answers: Answers, match: Match) {
     answers.dla && optionLabel("dla", answers.dla)?.toLowerCase(),
     answers.rodzaj && optionLabel("rodzaj", answers.rodzaj)?.toLowerCase(),
     ...match.reasons,
-    answers.budzet && answers.budzet !== "bez-limitu" && lowestPrice(match.event.prices) !== null
+    answers.budzet && answers.budzet !== "bez-limitu" && lowestPrice(match.event) !== null
       ? `do ${answers.budzet} zł`
       : undefined,
   ].filter(Boolean)

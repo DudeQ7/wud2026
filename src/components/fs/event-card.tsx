@@ -80,7 +80,7 @@ export function EventCard({
             compact ? undefined : formatDuration(event.durationMin),
           ]}
         />
-        <TicketStatusBadge event={event} t={t} className="mt-1" />
+        <TicketStatusBadge event={event} t={t} className="mt-1" hideAvailable />
         {sentence && <p className="mt-1 type-body text-text">{sentence}</p>}
         {showAccess && <AccessibilityNote t={t} className="mt-1" />}
       </div>

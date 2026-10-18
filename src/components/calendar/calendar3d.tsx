@@ -5,10 +5,11 @@ import { useSearchParams } from "next/navigation"
 import { useLayoutEffect, useMemo, useRef, useState } from "react"
 
 import { Calendar, type CalendarProps } from "@/components/calendar/calendar"
+import { MoreGlyph, TypeGlyph } from "@/components/calendar/type-glyph"
 import { EventRow } from "@/components/fs/event-row"
 import { iconProps } from "@/components/fs/icons"
 import { type Dictionary, getDictionary } from "@/i18n"
-import { type CalendarDay, calendarDays, parseFilters } from "@/lib/calendar"
+import { type CalendarDay, type EventType, PRIMARY_ORDER, calendarDays, parseFilters, primaryType } from "@/lib/calendar"
 import { addDays, formatLongDate, todayKey, weekday } from "@/lib/event-format"
 
 /** Czas obrotu o 90° – zgodnie z docs/calendar/calendar_design.md */
@@ -27,25 +28,31 @@ export function Calendar3D(props: CalendarProps) {
   const t = getDictionary(props.lang)
   const [displayMode, setDisplayMode] = useState<"list" | "month">("month")
 
+  const viewSwitch = (
+    <div role="group" aria-label={t.calendar.viewControls} className="flex">
+      {(["list", "month"] as const).map((mode) => (
+        <button
+          key={mode}
+          type="button"
+          aria-pressed={displayMode === mode}
+          onClick={() => setDisplayMode(mode)}
+          className={`min-h-11 border px-4 type-ui font-semibold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring ${
+            mode === "month" ? "-ml-px" : ""
+          } ${displayMode === mode ? "border-ink bg-ink text-on-dark" : "border-line-strong text-text hover:bg-bg-subtle"}`}
+        >
+          {mode === "list" ? t.calendar.viewList : t.calendar.viewMonth}
+        </button>
+      ))}
+    </div>
+  )
+
   return (
-    <>
-      <div role="group" aria-label={t.calendar.viewControls} className="mb-4 flex justify-end gap-2">
-        {(["list", "month"] as const).map((mode) => (
-          <button
-            key={mode}
-            type="button"
-            aria-pressed={displayMode === mode}
-            onClick={() => setDisplayMode(mode)}
-            className={`min-h-11 border px-4 type-ui font-semibold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring ${
-              displayMode === mode ? "border-ink bg-ink text-on-dark" : "border-line-strong text-text hover:bg-bg-subtle"
-            }`}
-          >
-            {mode === "list" ? t.calendar.viewList : t.calendar.viewMonth}
-          </button>
-        ))}
-      </div>
-      <Calendar {...props} displayMode={displayMode} monthView={<MonthView events={props.events} lang={props.lang} />} />
-    </>
+    <Calendar
+      {...props}
+      displayMode={displayMode}
+      viewSwitch={viewSwitch}
+      monthView={<MonthView events={props.events} lang={props.lang} />}
+    />
   )
 }
 
@@ -140,7 +147,7 @@ function MonthView({ events, lang }: Pick<CalendarProps, "events" | "lang">) {
             <ChevronRight {...iconProps} aria-hidden="true" className="size-5" />
           </ArrowButton>
         </div>
-        <p className="mb-3 type-ui text-text">{t.calendar.markLegend}</p>
+        <Legend types={monthTypes(dayLookup, shownMonth, today)} t={t} />
 
         {/* Scena: perspektywa ~2,5 × szerokość fasady. Rotor stoi na osi bryły (translateZ −½ szerokości). */}
         <div className="overflow-x-clip px-4 [perspective:250cqw]">
@@ -283,6 +290,9 @@ function Facade({
             const isToday = day === today
             const isPast = day < today
             const count = dayLookup.get(day)?.rows.length ?? 0
+            // Rodzaje wydarzeń tego dnia (bez minionych dni) – po jednym symbolu na rodzaj
+            const kinds = isPast ? [] : dayTypes(dayLookup.get(day))
+            const shown = kinds.length > 2 ? kinds.slice(0, 1) : kinds
 
             return (
               <button
@@ -294,22 +304,33 @@ function Facade({
               >
                 {/* Nazwa z tekstu, nie z aria-label: aria-label bez widocznego „18 dziś” łamał WCAG 2.5.3 */}
                 <span className="sr-only">
-                  {`${formatLongDate(day, t)}${isToday ? `, ${t.calendar.todayLabel}` : ""}, ${t.calendar.count(count)}`}
+                  {`${formatLongDate(day, t)}${isToday ? `, ${t.calendar.todayLabel}` : ""}, ${t.calendar.count(count)}${
+                    kinds.length ? `: ${kinds.map((kind) => t.calendar.types[kind]).join(", ")}` : ""
+                  }`}
                 </span>
                 <span
                   aria-hidden="true"
-                  className={`flex h-[2.875rem] w-10 max-w-full flex-col items-center justify-center gap-0.5 ${
-                    isSelected ? "bg-ink text-on-dark" : `hover:bg-bg-subtle ${isPast ? "text-text-muted" : "text-text"}`
+                  className={`flex h-[2.875rem] w-11 max-w-full flex-col items-center justify-center gap-[3px] ${
+                    isSelected
+                      ? "bg-ink text-on-dark"
+                      : `hover:bg-bg-subtle ${
+                          // Dni z wydarzeniami wystają (ciemny tekst, tło, symbol), puste i minione się cofają
+                          kinds.length ? "bg-bg-subtle text-text" : "text-text-muted"
+                        } ${
+                          // Dziś: obrys 2 px (nie sam kolor), słowo „dziś” gdy nic nie gra
+                          isToday ? "outline-2 -outline-offset-2 outline-ink" : ""
+                        }`
                   }`}
                 >
-                  <span className="font-heading text-lg leading-none font-semibold tabular-nums">{Number(day.slice(8))}</span>
-                  {isToday ? (
+                  <span className={`font-heading text-lg leading-none tabular-nums ${kinds.length ? "font-bold" : "font-normal"}`}>{Number(day.slice(8))}</span>
+                  {kinds.length === 0 && isToday ? (
                     <span className="type-meta leading-none">{t.calendar.todayLabel}</span>
                   ) : (
-                    <span aria-hidden="true" className="flex h-[7px] items-center gap-[3.5px]">
-                      {Array.from({ length: isPast ? 0 : Math.min(count, 3) }, (_, mark) => (
-                        <span key={mark} className={`h-[7px] w-[1.5px] ${isSelected ? "bg-on-dark" : "bg-text"}`} />
+                    <span aria-hidden="true" className="flex h-3.5 items-center gap-1">
+                      {shown.map((kind) => (
+                        <TypeGlyph key={kind} type={kind} />
                       ))}
+                      {kinds.length > 2 && <MoreGlyph />}
                     </span>
                   )}
                 </span>
@@ -319,6 +340,48 @@ function Facade({
         </div>
       </div>
       <FacadePlinth />
+    </div>
+  )
+}
+
+/** Rodzaje (po jednym na rodzaj główny) wydarzeń danego dnia, w stałej kolejności PRIMARY_ORDER */
+function dayTypes(day?: CalendarDay): EventType[] {
+  if (!day) return []
+  const present = new Set(day.rows.map(({ event }) => primaryType(event.facets.types)))
+  return PRIMARY_ORDER.filter((type) => present.has(type))
+}
+
+/** Rodzaje, które występują w pokazanym miesiącu (od dziś) – tylko je pokazuje legenda */
+function monthTypes(dayLookup: Map<string, CalendarDay>, monthStart: string, today: string): EventType[] {
+  const month = monthStart.slice(0, 7)
+  const present = new Set<EventType>()
+  for (const [day, value] of dayLookup) {
+    if (!day.startsWith(month) || day < today) continue
+    for (const type of dayTypes(value)) present.add(type)
+  }
+  return PRIMARY_ORDER.filter((type) => present.has(type))
+}
+
+/** Legenda symboli: symbol + nazwa rodzaju. Dzięki niej symbol pod datą czyta się bez zgadywania. */
+function Legend({ types, t }: { types: EventType[]; t: Dictionary }) {
+  if (!types.length) return null
+  return (
+    <div className="mb-3">
+      {/* Na telefonie legenda to jedna przewijana linia bez zdania wstępnego (zostaje dla czytników ekranu) */}
+      <p className="sr-only type-meta text-text-muted sm:not-sr-only">{t.calendar.markLegend}</p>
+      {/* Przewijany kontener bez elementów interaktywnych musi być dostępny z klawiatury (axe: scrollable-region-focusable) */}
+      <ul
+        tabIndex={0}
+        aria-label={t.calendar.markLegend}
+        className="-mx-4 flex gap-x-4 overflow-x-auto px-4 pb-1 whitespace-nowrap sm:mx-0 sm:mt-1.5 sm:flex-wrap sm:gap-y-1 sm:overflow-visible sm:px-0"
+      >
+        {types.map((type) => (
+          <li key={type} className="flex min-h-6 shrink-0 items-center gap-1.5 type-meta text-text">
+            <TypeGlyph type={type} />
+            {t.calendar.types[type]}
+          </li>
+        ))}
+      </ul>
     </div>
   )
 }

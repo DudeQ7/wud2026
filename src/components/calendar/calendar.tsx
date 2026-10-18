@@ -35,6 +35,8 @@ export type CalendarProps = {
   lang: Locale
   displayMode?: "list" | "month"
   monthView?: ReactNode
+  /** Przełącznik Lista | Miesiąc – stoi w wierszu z licznikiem wyników */
+  viewSwitch?: ReactNode
 }
 
 /**
@@ -42,7 +44,7 @@ export type CalendarProps = {
  * a „wstecz” z karty wydarzenia wraca do tych samych wyników. Wyniki liczymy w przeglądarce,
  * więc licznik i lista zmieniają się od razu, bez zapytania do serwera.
  */
-export function Calendar({ events, series, lang, displayMode = "list", monthView }: CalendarProps) {
+export function Calendar({ events, series, lang, displayMode = "list", monthView, viewSwitch }: CalendarProps) {
   const t = getDictionary(lang)
   const searchParams = useSearchParams()
   const filters = useMemo(() => parseFilters(searchParams), [searchParams])
@@ -87,28 +89,33 @@ export function Calendar({ events, series, lang, displayMode = "list", monthView
 
   const visibleDays = useMemo(() => firstRows(days, limit), [days, limit])
 
-  const quick: { label: string; on: boolean; toggle: (on: boolean) => Filters }[] = [
+  const quick: { key: keyof typeof t.calendar.quick; label: string; on: boolean; toggle: (on: boolean) => Filters }[] = [
     {
+      key: "today",
       label: t.calendar.quick.today,
       on: filters.kiedy === "dzis",
       toggle: (on) => ({ ...filters, kiedy: on ? "dzis" : undefined, od: undefined, do: undefined }),
     },
     {
+      key: "weekend",
       label: t.calendar.quick.weekend,
       on: filters.kiedy === "weekend",
       toggle: (on) => ({ ...filters, kiedy: on ? "weekend" : undefined, od: undefined, do: undefined }),
     },
     {
+      key: "kids",
       label: t.calendar.quick.kids,
       on: filters.dlaKogo.includes("dzieci"),
       toggle: (on) => ({ ...filters, dlaKogo: toggled(filters.dlaKogo, "dzieci", on) }),
     },
     {
+      key: "jazz",
       label: t.calendar.quick.jazz,
       on: filters.rodzaj.includes("jazz"),
       toggle: (on) => ({ ...filters, rodzaj: toggled(filters.rodzaj, "jazz", on) }),
     },
     {
+      key: "exhibitions",
       label: t.calendar.quick.exhibitions,
       on: filters.rodzaj.includes("wystawa"),
       toggle: (on) => ({ ...filters, rodzaj: toggled(filters.rodzaj, "wystawa", on) }),
@@ -117,14 +124,9 @@ export function Calendar({ events, series, lang, displayMode = "list", monthView
 
   return (
     <>
-      <SearchField value={filters.q} onCommit={(q) => navigate({ ...filters, q })} t={t} />
-
-      <div
-        role="group"
-        aria-label={t.calendar.quickFilters}
-        className="mt-4 flex flex-wrap gap-2"
-      >
-        {/* „Wszystkie filtry” na początku: na telefonie pasek się przewija i przycisk na końcu był ucięty */}
+      {/* Wiersz 1: szukaj + Filtry w jednej linii (na telefonie pole nie zajmuje już całej szerokości) */}
+      <div className="flex items-end gap-2">
+        <SearchField value={filters.q} onCommit={(q) => navigate({ ...filters, q })} t={t} />
         <FilterSheet
           events={events}
           series={series}
@@ -134,28 +136,53 @@ export function Calendar({ events, series, lang, displayMode = "list", monthView
           activeCount={active.length}
           onApply={navigate}
         />
+      </div>
+
+      {/* Wiersz 2: szybkie filtry w jednej, przewijanej linii; ucięty ostatni chip zdradza, że jest więcej (§6.6) */}
+      <div
+        role="group"
+        aria-label={t.calendar.quickFilters}
+        className="-mx-4 mt-1 flex gap-1 overflow-x-auto px-4 py-2 md:mx-0 md:gap-2 md:px-0"
+      >
+        {/* Zawsze jedna linia, bez zawijania. Na telefonie krótkie etykiety i zwarty rozmiar, żeby wszystkie pięć chipów
+            (także z ✓ po zaznaczeniu) mieściło się na ekranie; gdy ekran jest za wąski (np. DE na 360 px), linia się przewija. */}
         {quick.map((q) => (
-          <Toggle key={q.label} pressed={q.on} onPressedChange={(on) => navigate(q.toggle(on))} aria-controls="repertuar-lista">
-            {q.label}
+          <Toggle
+            key={q.key}
+            pressed={q.on}
+            onPressedChange={(on) => navigate(q.toggle(on))}
+            aria-controls="repertuar-lista"
+            className="min-w-11 px-2 text-[0.875rem] md:px-4 md:text-[0.9375rem]"
+          >
+            <span className="md:hidden">{t.calendar.quickShort[q.key]}</span>
+            <span className="hidden md:inline">{q.label}</span>
           </Toggle>
         ))}
       </div>
 
-      <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-line-strong pb-3">
+      {/* Wiersz 3: licznik wyników i przełącznik widoku razem */}
+      <div className="mt-4 flex flex-wrap items-center justify-between gap-x-4 gap-y-2 border-b border-line-strong pb-3">
         <p className="type-ui text-text" aria-hidden>
           {countText}
         </p>
         <p className="sr-only" aria-live="polite">
           {announced}
         </p>
-        {active.length > 0 && <ActiveFilterList filters={active} current={filters} onChange={navigate} t={t} />}
+        {viewSwitch}
       </div>
+      {active.length > 0 && (
+        <div className="mt-3">
+          <ActiveFilterList filters={active} current={filters} onChange={navigate} t={t} />
+        </div>
+      )}
 
+      {/* Kontener wyników jest zawsze w DOM (cel aria-controls przełączników), także w widoku miesiąca */}
+      <div id="repertuar-lista">
       {displayMode === "month" && monthView ? (
         // Ten sam id co lista: szybkie filtry wskazują go w aria-controls w obu widokach
         <div id="repertuar-lista">{monthView}</div>
       ) : (
-        <div id="repertuar-lista">
+        <div>
           {count === 0 ? (
             <EmptyState
               options={alternatives(events, filters, today, seriesLabels, t)}
@@ -192,6 +219,7 @@ export function Calendar({ events, series, lang, displayMode = "list", monthView
           )}
         </div>
       )}
+      </div>
     </>
   )
 }
@@ -231,8 +259,9 @@ function SearchField({ value, onCommit, t }: { value?: string; onCommit: (q?: st
   }, [text, value, onCommit])
 
   return (
-    <div role="search" className="flex flex-col gap-2">
-      <label htmlFor="repertuar-szukaj" className="text-[0.9375rem] font-semibold text-text">
+    <div role="search" className="flex min-w-0 flex-1 flex-col gap-2">
+      {/* Etykieta widoczna od 640 px; na telefonie zostaje w nazwie pola (sr-only) – oszczędza wiersz, a lupa i podpowiedź mówią, czym jest pole */}
+      <label htmlFor="repertuar-szukaj" className="sr-only text-[0.9375rem] font-semibold text-text sm:not-sr-only">
         {t.calendar.searchLabel}
       </label>
       <div className="relative">

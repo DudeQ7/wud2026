@@ -12,7 +12,7 @@ import { FavoriteButton } from "@/components/event/favorite-button"
 import { FragmentPlayer } from "@/components/event/fragment-player"
 import { Breadcrumbs } from "@/components/fs/breadcrumbs"
 import { EventCard } from "@/components/fs/event-card"
-import { FactList, TicketStatusBadge, eventPrice } from "@/components/fs/event-meta"
+import { FactList, TicketStatusBadge, eventPrice, eventPriceFrom } from "@/components/fs/event-meta"
 import { iconProps } from "@/components/fs/icons"
 import { Container, Eyebrow } from "@/components/fs/layout"
 import { Photo } from "@/components/fs/photo"
@@ -44,7 +44,7 @@ import {
 } from "@/lib/events"
 import { eventJsonLd } from "@/lib/structured-data"
 import { cn } from "@/lib/utils"
-import { type Dictionary, getDictionary, hasLocale, kindLabel, localizedPath, seriesLabel, venueLabel } from "@/i18n"
+import { type Dictionary, type Locale, getDictionary, hasLocale, kindLabel, localizedPath, seriesLabel, venueLabel } from "@/i18n"
 import { getLang } from "@/i18n/server"
 import { eventDescription, eventLead } from "@/i18n/events/descriptions"
 import { visitorRouteCopy } from "@/i18n/visitor-routes"
@@ -185,15 +185,18 @@ async function EventView({ id }: { id: number }) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
       />
-      <Container className="max-w-3xl">
+      {/* Telefon: jedna kolumna + pasek zakupu na dole. Desktop (§6.11): treść 7/12 po lewej, przyklejony panel biletowy 4/12 po prawej */}
+      <Container className="max-w-3xl lg:max-w-[1120px]">
         <Breadcrumbs label={t.common.breadcrumbs} items={crumbs} className="hidden border-b border-line lg:flex" />
+        <div className="lg:grid lg:grid-cols-12 lg:gap-x-12">
+        <div className={cn("min-w-0", past ? "lg:col-span-12 lg:max-w-3xl" : "lg:col-span-7")}>
         {/* Pierwszy ekran: CO? KIEDY? GDZIE? ZA ILE? DLA KOGO? KUP BILET (pasek na dole) */}
         <Photo
           src={event.image?.large}
           alt={event.headline}
           chamfer
           priority
-          sizes="(min-width: 768px) 768px, 100vw"
+          sizes="(min-width: 1024px) 640px, (min-width: 768px) 768px, 100vw"
           className="-mx-4 sm:mx-0"
         />
 
@@ -373,7 +376,7 @@ async function EventView({ id }: { id: number }) {
         )}
 
         {!past && (
-          <Block id="zaplanuj" title={copy.plan}>
+          <Block id="zaplanuj" title={copy.plan} className="lg:hidden">
             <EventActions
               title={event.title}
               date={date}
@@ -385,6 +388,18 @@ async function EventView({ id }: { id: number }) {
             />
           </Block>
         )}
+        </div>
+        {!past && (
+          <TicketPanel
+            event={event}
+            date={date}
+            price={price}
+            venueName={venueName}
+            t={t}
+            lang={lang}
+          />
+        )}
+        </div>
       </Container>
 
       {similar.length > 0 && (
@@ -399,15 +414,25 @@ async function EventView({ id }: { id: number }) {
         </Container>
       )}
 
-      {!past && <BuyBar event={event} date={date} price={price} t={t} />}
+      {!past && <BuyBar event={event} date={date} price={eventPriceFrom(event, t)} t={t} />}
     </>
   )
 }
 
 /** Sekcja karty: złoty nagłówek h2 w rozmiarze h3 (karta ma wiele sekcji) */
-function Block({ id, title, children }: { id: string; title: string; children: React.ReactNode }) {
+function Block({
+  id,
+  title,
+  children,
+  className,
+}: {
+  id: string
+  title: string
+  children: React.ReactNode
+  className?: string
+}) {
   return (
-    <section aria-labelledby={id} className="mt-12">
+    <section aria-labelledby={id} className={cn("mt-12", className)}>
       <h2 id={id} className="mb-4 type-h3 text-gold">
         {title}
       </h2>
@@ -464,7 +489,7 @@ function BuyBar({ event, date, price, t }: { event: FsEvent; date: string; price
   const soldout = status === "soldout"
 
   return (
-    <div className="on-dark fixed inset-x-0 bottom-0 z-40 bg-ink pb-[env(safe-area-inset-bottom)] shadow-[0_-4px_16px_rgba(26,26,26,.08)]">
+    <div className="on-dark fixed inset-x-0 bottom-0 z-40 bg-ink pb-[env(safe-area-inset-bottom)] lg:hidden shadow-[0_-4px_16px_rgba(26,26,26,.08)]">
       <Container className="flex h-[76px] max-w-3xl items-center justify-between gap-4">
         <div className="min-w-0">
           <p className="truncate font-heading text-[1.375rem] leading-tight font-semibold text-on-dark tabular-nums">
@@ -487,5 +512,71 @@ function BuyBar({ event, date, price, t }: { event: FsEvent; date: string; price
         )}
       </Container>
     </div>
+  )
+}
+
+/**
+ * Panel biletowy na desktopie (§6.11): przyklejony po prawej stronie treści. Data, godzina, sala, cena,
+ * status i „Kup bilet” są stale w zasięgu wzroku – kupujący nie musi wracać na górę strony.
+ * Na telefonie jego rolę pełni pasek zakupu na dole ekranu.
+ */
+function TicketPanel({
+  event,
+  date,
+  price,
+  venueName,
+  t,
+  lang,
+}: {
+  event: FsEvent
+  date: string
+  price?: string
+  venueName: string
+  t: Dictionary
+  lang: Locale
+}) {
+  const status = ticketStatus(event.id)
+  const soldout = status === "soldout"
+  const copy = t.event.details
+  return (
+    <aside aria-label={t.event.buyTicket} className="hidden lg:col-span-4 lg:col-start-9 lg:block">
+      <div className="sticky top-[calc(var(--header-h)+1.5rem)] mt-8 flex flex-col gap-5 border-[1.5px] border-line-strong bg-background p-6">
+        <div>
+          <p className="font-heading text-[1.75rem] leading-tight font-semibold text-text tabular-nums">
+            {formatShortDate(date, t)}
+          </p>
+          <p className="font-heading text-[1.75rem] leading-tight font-semibold text-gold tabular-nums">
+            {formatTimeRange(date, event.durationMin)}
+          </p>
+          <p className="mt-2 type-meta text-text-muted">{venueName}</p>
+        </div>
+
+        <div className="flex items-center justify-between gap-3 border-y border-line py-3">
+          <p className="type-ui text-text">{price ?? copy.pricesOnline}</p>
+          <TicketStatusBadge event={event} t={t} />
+        </div>
+
+        {soldout ? (
+          <span aria-disabled="true" className={buttonVariants({ variant: "primary", block: true })}>
+            {t.event.status.soldout}
+          </span>
+        ) : (
+          <a href={event.ticketsUrl} className={buttonVariants({ variant: "primary", block: true })}>
+            {t.event.buyTicket}
+          </a>
+        )}
+
+        <EventActions
+          title={event.title}
+          date={date}
+          durationMin={event.durationMin}
+          venue={event.venue}
+          address={address}
+          phone={boxOffice.phone}
+          lang={lang}
+          stacked
+        />
+      </div>
+    </aside>
   )
 }

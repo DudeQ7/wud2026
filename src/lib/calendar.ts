@@ -72,6 +72,25 @@ export type Facets = {
 
 export type CalendarEvent = FsEvent & { facets: Facets }
 
+/**
+ * Rodzaj „główny” do symbolu przy dacie: wydarzenie może mieć kilka rodzajów (koncert kameralny dla dzieci to
+ * kameralny + edukacja), a symbol ma być jeden. Kolejność = co najbardziej odróżnia wydarzenie od zwykłego koncertu.
+ */
+export const PRIMARY_ORDER: EventType[] = [
+  "edukacja",
+  "jazz",
+  "muzyka-swiata",
+  "kameralny",
+  "symfoniczny",
+  "spotkania",
+  "wystawa",
+  "zwiedzanie",
+]
+
+export function primaryType(types: EventType[]): EventType | undefined {
+  return PRIMARY_ORDER.find((type) => types.includes(type))
+}
+
 /** „Karłowicz” → „karlowicz” – wyszukiwanie bez polskich znaków (brief §6.6) */
 export function fold(text: string) {
   return text

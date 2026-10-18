@@ -4,6 +4,7 @@ import * as React from "react"
 import { iconProps } from "@/components/fs/icons"
 import { Badge } from "@/components/ui/badge"
 import { ticketStatus } from "@/content/availability"
+import { priceInfo } from "@/content/prices"
 import type { Dictionary } from "@/i18n"
 import { type FsEvent, formatDayMonth, isExhibition, lastDate } from "@/lib/event-format"
 import { cn } from "@/lib/utils"
@@ -28,9 +29,25 @@ export function EventInfoBadge({ event, t }: { event: FsEvent; t: Dictionary }) 
   return null
 }
 
-/** Status biletów (§6.8) – mock iksoris: dostępne, ostatnie miejsca, wyprzedane */
-export function TicketStatusBadge({ event, t, className }: { event: FsEvent; t: Dictionary; className?: string }) {
+/**
+ * Status biletów (§6.8) – mock iksoris: dostępne, ostatnie miejsca, wyprzedane.
+ * Na listach i kartach (`hideAvailable`) „Dostępne” pomijamy: to stan domyślny prawie każdego wydarzenia,
+ * więc znacznik przy każdym wierszu nie niósłby informacji i zagłuszał „Ostatnie miejsca” (jak w Berlinie:
+ * pokazujemy wyjątki). Na karcie wydarzenia status jest zawsze.
+ */
+export function TicketStatusBadge({
+  event,
+  t,
+  className,
+  hideAvailable,
+}: {
+  event: FsEvent
+  t: Dictionary
+  className?: string
+  hideAvailable?: boolean
+}) {
   const status = ticketStatus(event.id)
+  if (hideAvailable && status === "available") return null
   return (
     <Badge
       variant={status === "last" ? "solid" : status === "soldout" ? "muted" : "outline"}
@@ -45,7 +62,17 @@ export function TicketStatusBadge({ event, t, className }: { event: FsEvent; t: 
 export function eventPrice(event: FsEvent, t: Dictionary) {
   if (event.prices.length) return event.prices.join(", ")
   if (isExhibition(event)) return t.event.galleryPrice
-  return undefined
+  // Pozostałe: cennik przykładowy (MOCK systemu biletowego, content/prices.ts), dopóki nie ma API iksoris
+  const info = priceInfo(event)
+  if (!info) return undefined
+  return info.free ? t.event.free : t.event.priceRange(info.min, info.max)
+}
+
+/** Krótka cena do paska zakupu (§6.11): „od 40 zł” / „Wstęp wolny” */
+export function eventPriceFrom(event: FsEvent, t: Dictionary) {
+  const info = priceInfo(event)
+  if (!info) return undefined
+  return info.free ? t.event.free : t.event.priceFrom(info.min)
 }
 
 /**
