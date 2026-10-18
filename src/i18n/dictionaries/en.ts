@@ -48,6 +48,7 @@ export const en: Dictionary = {
     analyticsText: "Anonymous visit and click statistics.",
     save: "Save choice",
     back: "Back",
+    manage: "Privacy settings",
     privacy: "Privacy policy",
   },
 

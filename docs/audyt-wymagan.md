@@ -67,7 +67,7 @@ Legenda: ✅ zrobione · 🟡 częściowo · ❌ brak
 1. Widok miesiąca.
 2. Filtry ceny i dostępności.
 3. Panel: bilety, programy, powiadomienia.
-4. Link „Ustawienia prywatności” w stopce do zmiany zgody.
+4. ~~Link „Ustawienia prywatności” w stopce~~ — zrobione.
 5. Podłączyć prawdziwe statusy z iksoris zamiast mocka.
 
 ## P2 później

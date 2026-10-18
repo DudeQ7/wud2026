@@ -4,6 +4,7 @@ import Link from "next/link"
 import visit from "@/data/visit.json"
 import { iconProps } from "@/components/fs/icons"
 import { Container, Eyebrow } from "@/components/fs/layout"
+import { PrivacySettingsButton } from "@/components/fs/privacy-settings-button"
 import { Logo } from "@/components/fs/wordmark"
 import { address, footerLinks } from "@/content/home"
 import { type Locale, getDictionary, localizedPath } from "@/i18n"
@@ -55,9 +56,10 @@ export function SiteFooter({ lang }: { lang: Locale }) {
           </ul>
         </nav>
 
-        <p className="type-meta text-on-dark-muted lg:col-span-3">
-          {t.footer.copyright}
-        </p>
+        <div className="flex flex-col gap-1 lg:col-span-3 lg:flex-row lg:items-center lg:justify-between">
+          <p className="type-meta text-on-dark-muted">{t.footer.copyright}</p>
+          <PrivacySettingsButton lang={lang} />
+        </div>
       </Container>
     </footer>
   )

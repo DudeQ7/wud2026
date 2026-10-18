@@ -23,3 +23,10 @@ export function writeConsent(value: ConsentValue) {
   }
   window.dispatchEvent(new CustomEvent<ConsentValue>(CONSENT_EVENT, { detail: value }));
 }
+
+/** Stopka prosi baner o ponowne otwarcie ustawień (zmiana lub wycofanie zgody) */
+export const CONSENT_OPEN_EVENT = "fs-consent-open";
+
+export function openConsentSettings() {
+  window.dispatchEvent(new Event(CONSENT_OPEN_EVENT));
+}

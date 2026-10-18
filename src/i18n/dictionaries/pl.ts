@@ -51,6 +51,7 @@ export const pl = {
     analyticsText: "Anonimowe statystyki odwiedzin i kliknięć.",
     save: "Zapisz wybór",
     back: "Wróć",
+    manage: "Ustawienia prywatności",
     privacy: "Polityka prywatności",
   },
 

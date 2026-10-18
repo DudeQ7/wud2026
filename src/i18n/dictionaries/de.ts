@@ -49,6 +49,7 @@ export const de: Dictionary = {
     analyticsText: "Anonyme Besuchs- und Klickstatistiken.",
     save: "Auswahl speichern",
     back: "Zurück",
+    manage: "Datenschutzeinstellungen",
     privacy: "Datenschutzerklärung",
   },
 

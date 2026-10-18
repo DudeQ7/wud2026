@@ -1,12 +1,13 @@
 "use client"
 
 import Link from "next/link"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 
+import { PRIVACY_BUTTON_ID } from "@/components/fs/privacy-settings-button"
 import { buttonVariants } from "@/components/ui/button"
 import { type Locale, getDictionary } from "@/i18n"
 import { disableAnalytics, initAnalytics } from "@/lib/analytics"
-import { type ConsentValue, readConsent, writeConsent } from "@/lib/consent"
+import { CONSENT_OPEN_EVENT, type ConsentValue, readConsent, writeConsent } from "@/lib/consent"
 import { cn } from "@/lib/utils"
 
 /**
@@ -20,24 +21,52 @@ export function ConsentBanner({ lang }: { lang: Locale }) {
   const [settings, setSettings] = useState(false)
   const [analytics, setAnalytics] = useState(true)
 
+  // Baner otwarty ponownie ze stopki: zmiana zgody, nie pierwszy wybór
+  const [reopened, setReopened] = useState(false)
+  const sectionRef = useRef<HTMLElement>(null)
+
   useEffect(() => {
     const stored = readConsent()
     setChoice(stored)
     setAnalytics(stored !== "essential")
     setReady(true)
+
+    const reopen = () => {
+      setAnalytics(readConsent() !== "essential")
+      setSettings(true)
+      setChoice(null)
+      setReopened(true)
+    }
+    window.addEventListener(CONSENT_OPEN_EVENT, reopen)
+    return () => window.removeEventListener(CONSENT_OPEN_EVENT, reopen)
   }, [])
+
+  // Fokus przechodzi do otwartego okna ustawień, a po zamknięciu wraca na przycisk w stopce
+  useEffect(() => {
+    if (reopened && !choice) sectionRef.current?.querySelector("input")?.focus()
+  }, [reopened, choice])
 
   if (!ready || choice) return null
 
+  function close(value: ConsentValue | null) {
+    setChoice(value)
+    if (reopened) {
+      setReopened(false)
+      setSettings(false)
+      document.getElementById(PRIVACY_BUTTON_ID)?.focus()
+    }
+  }
+
   function save(value: ConsentValue) {
     writeConsent(value)
-    setChoice(value)
+    close(value)
     if (value === "analytics") initAnalytics()
     else disableAnalytics()
   }
 
   return (
     <section
+      ref={sectionRef}
       role="region"
       aria-label={t.label}
       className="fixed inset-x-0 bottom-20 z-50 mx-auto w-full max-w-3xl border border-line bg-background p-4 md:bottom-6 md:p-5"
@@ -72,7 +101,7 @@ export function ConsentBanner({ lang }: { lang: Locale }) {
             <div className="flex flex-wrap gap-2">
               <button
                 type="button"
-                onClick={() => setSettings(false)}
+                onClick={() => (reopened ? close(readConsent()) : setSettings(false))}
                 className={cn(buttonVariants({ variant: "secondary", size: "sm" }), "flex-1 sm:flex-none")}
               >
                 {t.back}
