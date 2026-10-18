@@ -1,12 +1,13 @@
 import Link from "next/link"
 
 import { Eyebrow } from "@/components/fs/layout"
+import { Photo } from "@/components/fs/photo"
 import { buttonVariants } from "@/components/ui/button"
 import { firstVisitRoute } from "@/content/home"
 import { type Locale, getDictionary, localizedPath } from "@/i18n"
 import { cn } from "@/lib/utils"
 
-/** „Pierwsza wizyta w trzech krokach”: trasa po budynku, tekst bez ilustracji (design.md §5.4) */
+/** „Pierwsza wizyta w trzech krokach”: trasa po budynku, każdy krok z oryginalnym zdjęciem FS */
 export function FirstVisitRoute({ lang }: { lang: Locale }) {
   const t = getDictionary(lang).home.discover.route
   return (
@@ -16,10 +17,12 @@ export function FirstVisitRoute({ lang }: { lang: Locale }) {
         {t.title}
       </h3>
       <ol className="mt-4 grid gap-6 lg:grid-cols-3 lg:gap-6">
-        {firstVisitRoute.map(({ key, href }, i) => {
+        {firstVisitRoute.map(({ key, href, photo, position }, i) => {
           const step = t.steps[key]
           return (
-            <li key={key} className="flex flex-col gap-2 border-t-[1.5px] border-line-strong pt-4">
+            <li key={key} className="flex flex-col gap-2">
+              {/* Zdjęcie jest ilustracją, a treść niesie nagłówek obok – alt pusty, żeby czytnik nie powtarzał tytułu */}
+              <Photo src={photo} alt="" ratio="3/2" position={position} className="mb-2" />
               <span className="block font-heading text-[2rem] leading-none font-semibold text-text tabular-nums" aria-hidden="true">
                 {i + 1}
               </span>
