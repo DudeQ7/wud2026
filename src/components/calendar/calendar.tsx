@@ -2,7 +2,7 @@
 
 import { Search, X } from "lucide-react"
 import { useSearchParams } from "next/navigation"
-import { useEffect, useMemo, useState } from "react"
+import { type ReactNode, useEffect, useMemo, useState } from "react"
 
 import { FilterSheet } from "@/components/calendar/filter-sheet"
 import { EventRow } from "@/components/fs/event-row"
@@ -29,10 +29,12 @@ import { todayKey } from "@/lib/event-format"
 
 const PAGE_SIZE = 30
 
-type CalendarProps = {
+export type CalendarProps = {
   events: CalendarEvent[]
   series: { key: string; label: string }[]
   lang: Locale
+  displayMode?: "list" | "month"
+  monthView?: ReactNode
 }
 
 /**
@@ -40,7 +42,7 @@ type CalendarProps = {
  * a „wstecz” z karty wydarzenia wraca do tych samych wyników. Wyniki liczymy w przeglądarce,
  * więc licznik i lista zmieniają się od razu, bez zapytania do serwera.
  */
-export function Calendar({ events, series, lang }: CalendarProps) {
+export function Calendar({ events, series, lang, displayMode = "list", monthView }: CalendarProps) {
   const t = getDictionary(lang)
   const searchParams = useSearchParams()
   const filters = useMemo(() => parseFilters(searchParams), [searchParams])
@@ -120,7 +122,7 @@ export function Calendar({ events, series, lang }: CalendarProps) {
       <div
         role="group"
         aria-label={t.calendar.quickFilters}
-        className="-mx-4 mt-4 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0"
+        className="mt-4 flex flex-wrap gap-2"
       >
         {quick.map((q) => (
           <Toggle key={q.label} pressed={q.on} onPressedChange={(on) => navigate(q.toggle(on))} aria-controls="repertuar-lista">
@@ -148,42 +150,46 @@ export function Calendar({ events, series, lang }: CalendarProps) {
         {active.length > 0 && <ActiveFilterList filters={active} current={filters} onChange={navigate} t={t} />}
       </div>
 
-      <div id="repertuar-lista">
-        {count === 0 ? (
-          <EmptyState
-            options={alternatives(events, filters, today, seriesLabels, t)}
-            onChange={navigate}
-            onClear={() => navigate(emptyFilters)}
-            t={t}
-          />
-        ) : (
-          <>
-            {visibleDays.map((group) => (
-              <section key={group.day} aria-labelledby={`dzien-${group.day}`}>
-                <h2
-                  id={`dzien-${group.day}`}
-                  className="sticky top-[var(--header-h)] z-10 mt-6 border-b border-line-strong bg-background py-2 type-h3 text-gold"
-                >
-                  {group.label}
-                </h2>
-                <div className="grid lg:grid-cols-2 lg:gap-x-8">
-                  {group.rows.map(({ event, times }) => (
-                    <EventRow key={event.id} event={event} times={times} lang={lang} />
-                  ))}
+      {displayMode === "month" && monthView ? (
+        monthView
+      ) : (
+        <div id="repertuar-lista">
+          {count === 0 ? (
+            <EmptyState
+              options={alternatives(events, filters, today, seriesLabels, t)}
+              onChange={navigate}
+              onClear={() => navigate(emptyFilters)}
+              t={t}
+            />
+          ) : (
+            <>
+              {visibleDays.map((group) => (
+                <section key={group.day} aria-labelledby={`dzien-${group.day}`}>
+                  <h2
+                    id={`dzien-${group.day}`}
+                    className="sticky top-[var(--header-h)] z-10 mt-6 border-b border-line-strong bg-background py-2 type-h3 text-gold"
+                  >
+                    {group.label}
+                  </h2>
+                  <div className="grid lg:grid-cols-2 lg:gap-x-8">
+                    {group.rows.map(({ event, times }) => (
+                      <EventRow key={event.id} event={event} times={times} lang={lang} />
+                    ))}
+                  </div>
+                </section>
+              ))}
+              {count > limit && (
+                <div className="mt-8 flex flex-col items-start gap-2">
+                  <p className="type-meta text-text-muted">{t.calendar.shown(limit, count)}</p>
+                  <Button variant="secondary" block className="sm:w-fit" onClick={() => setLimit((l) => l + PAGE_SIZE)}>
+                    {t.calendar.showMore}
+                  </Button>
                 </div>
-              </section>
-            ))}
-            {count > limit && (
-              <div className="mt-8 flex flex-col items-start gap-2">
-                <p className="type-meta text-text-muted">{t.calendar.shown(limit, count)}</p>
-                <Button variant="secondary" block className="sm:w-fit" onClick={() => setLimit((l) => l + PAGE_SIZE)}>
-                  {t.calendar.showMore}
-                </Button>
-              </div>
-            )}
-          </>
-        )}
-      </div>
+              )}
+            </>
+          )}
+        </div>
+      )}
     </>
   )
 }
