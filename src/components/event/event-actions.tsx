@@ -18,6 +18,8 @@ type EventActionsProps = {
   address: string
   phone: string
   lang: Locale
+  /** Jedna kolumna – wąski panel biletowy na desktopie */
+  stacked?: boolean
 }
 
 const MAPS_URL = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(
@@ -28,7 +30,7 @@ const MAPS_URL = `https://www.google.com/maps/dir/?api=1&destination=${encodeURI
  * Akcje natywne (§6.11 pkt 8): dodaj do kalendarza (.ics), udostępnij (Web Share API),
  * nawiguj (natywna aplikacja map), zadzwoń do kasy (tel:).
  */
-export function EventActions({ title, date, durationMin, venue, address, phone, lang }: EventActionsProps) {
+export function EventActions({ title, date, durationMin, venue, address, phone, lang, stacked }: EventActionsProps) {
   const [status, setStatus] = useState("")
   const text = getDictionary(lang).event.actions
 
@@ -63,7 +65,7 @@ export function EventActions({ title, date, durationMin, venue, address, phone, 
 
   return (
     <div>
-      <ul className="grid gap-2 sm:grid-cols-2">
+      <ul className={cn("grid gap-2", !stacked && "sm:grid-cols-2")}>
         <li>
           <Button variant="secondary" block className="justify-start px-4" onClick={addToCalendar}>
             <CalendarPlus {...iconProps} />
