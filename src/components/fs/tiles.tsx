@@ -18,25 +18,28 @@ type LinkTileProps = {
   href: string
   /** Np. „4 wydarzenia” – ile wyników czeka po kliknięciu */
   meta?: string
+  /** Na czarnej sekcji: biały kontur i biały tekst */
+  dark?: boolean
   className?: string
 }
 
 /** Kafel tekstowy z konturem 1,5 px – „Dla Ciebie” (§6.18). Na dole liczba wyników i strzałka: wiadomo, co da kliknięcie. */
-export function LinkTile({ title, description, href, meta, className }: LinkTileProps) {
+export function LinkTile({ title, description, href, meta, dark, className }: LinkTileProps) {
   return (
     <article
       className={cn(
-        "group press enter relative flex min-h-32 flex-col gap-1 border-[1.5px] border-line-strong p-4 hover:bg-bg-subtle",
+        "group press enter relative flex min-h-32 flex-col gap-1 border-[1.5px] p-4",
+        dark ? "border-on-dark text-on-dark hover:bg-white/10" : "border-line-strong hover:bg-bg-subtle",
         className
       )}
     >
-      <h3 className="font-heading text-lg leading-tight font-semibold text-text">
+      <h3 className={cn("font-heading text-lg leading-tight font-semibold", dark ? "text-on-dark" : "text-text")}>
         <Link href={href} className={stretchedLink}>
           {title}
         </Link>
       </h3>
-      <p className="type-meta text-text-muted">{description}</p>
-      <p className="mt-auto flex items-center justify-between gap-2 pt-2 text-[0.875rem] font-semibold text-text">
+      <p className={cn("type-meta", dark ? "text-on-dark-muted" : "text-text-muted")}>{description}</p>
+      <p className={cn("mt-auto flex items-center justify-between gap-2 pt-2 text-[0.875rem] font-semibold", dark ? "text-on-dark" : "text-text")}>
         <span className="tabular-nums">{meta}</span>
         <ArrowRight {...iconProps} className="size-5 shrink-0 transition-transform group-hover:translate-x-1" />
       </p>
@@ -49,17 +52,28 @@ type CtaTileProps = {
   title: string
   description: string
   action: { label: string; href: string }
+  /** Biały kafel na czarnej sekcji (odwrócenie: jedyny jasny blok, więc przyciąga wzrok) */
+  inverse?: boolean
   className?: string
 }
 
 /** Czarny kafel z jedną akcją – „Pomóż mi wybrać” (§6.18). Złoto „on dark”, przycisk odwrócony. */
-export function CtaTile({ eyebrow, title, description, action, className }: CtaTileProps) {
+export function CtaTile({ eyebrow, title, description, action, inverse, className }: CtaTileProps) {
   return (
-    <article className={cn("on-dark enter-scale flex flex-col gap-3 bg-ink px-5 py-6 lg:p-8", className)}>
-      <Eyebrow tone="dark">{eyebrow}</Eyebrow>
-      <h3 className="type-h2 text-on-dark">{title}</h3>
-      <p className="type-body max-w-[52ch] text-on-dark-muted">{description}</p>
-      <Link href={action.href} className={cn(buttonVariants({ variant: "inverted", block: true }), "mt-1 sm:w-fit")}>
+    <article
+      className={cn(
+        "enter-scale flex flex-col gap-3 px-5 py-6 lg:p-8",
+        inverse ? "bg-background" : "on-dark bg-ink",
+        className
+      )}
+    >
+      <Eyebrow tone={inverse ? "light" : "dark"}>{eyebrow}</Eyebrow>
+      <h3 className={cn("type-h2", inverse ? "text-gold" : "text-on-dark")}>{title}</h3>
+      <p className={cn("type-body max-w-[52ch]", inverse ? "text-text" : "text-on-dark-muted")}>{description}</p>
+      <Link
+        href={action.href}
+        className={cn(buttonVariants({ variant: inverse ? "primary" : "inverted", block: true }), "mt-1 sm:w-fit")}
+      >
         {action.label}
       </Link>
     </article>

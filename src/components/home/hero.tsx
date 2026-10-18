@@ -61,7 +61,7 @@ export function Hero({ event, date, today, lang, photoPosition = "50% 30%" }: He
                 <Eyebrow>
                   {kindLabel(t, event.kind)} · {eyebrowWhen}
                 </Eyebrow>
-                <TicketStatusBadge event={event} t={t} />
+                <TicketStatusBadge event={event} t={t} hideAvailable />
               </div>
               <h1 id="hero-title" className="type-h1 text-gold">
                 {event.headline}

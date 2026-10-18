@@ -152,19 +152,26 @@ export function ForYouSection({ lang, today }: { lang: Locale; today: string }) 
     return dict.calendar.count(countRows(calendarDays(calendarEvents, parseFilters(new URLSearchParams(query)), today, dict)))
   }
   return (
-    <Section aria-labelledby="dla-ciebie">
-      <SectionHeading id="dla-ciebie" title={t.title} lead={t.lead} />
+    <Section tone="dark" aria-labelledby="dla-ciebie">
+      {/* Jedyna czarna sekcja przed stopką: łamie rytm długiej białej strony i wyznacza „moment decyzji” */}
+      <div className="mb-6 flex flex-col gap-2 lg:mb-8">
+        <h2 id="dla-ciebie" className="type-h2 text-gold-on-dark">
+          {t.title}
+        </h2>
+        <p className="type-body max-w-[68ch] text-on-dark">{t.lead}</p>
+      </div>
       <div className="grid gap-6 lg:grid-cols-[1fr_2fr]">
         <CtaTile
           eyebrow={t.cta.eyebrow}
           title={t.cta.title}
           description={t.cta.description}
           action={{ label: t.cta.action, href: localizedPath(lang, "/pomoz-mi-wybrac") }}
+          inverse
         />
         <ul className="grid grid-cols-2 gap-4 lg:grid-cols-3">
           {moodTiles.map(({ key, href }) => (
             <li key={key} className="flex">
-              <LinkTile {...t.tiles[key]} href={localizedPath(lang, href)} meta={countFor(href)} className="flex-1" />
+              <LinkTile {...t.tiles[key]} href={localizedPath(lang, href)} meta={countFor(href)} dark className="flex-1" />
             </li>
           ))}
         </ul>

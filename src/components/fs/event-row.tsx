@@ -42,7 +42,7 @@ export function EventRow({ event, times, lang, className }: EventRowProps) {
         <div className="flex flex-wrap items-center gap-2">
           <span className="type-label text-text-muted">{exhibition ? t.event.exhibition : kindLabel(t, event.kind)}</span>
           <EventInfoBadge event={event} t={t} />
-          <TicketStatusBadge event={event} t={t} />
+          <TicketStatusBadge event={event} t={t} hideAvailable />
         </div>
         <AccessibilityNote t={t} className="mt-0.5" />
       </div>

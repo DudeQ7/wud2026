@@ -28,9 +28,25 @@ export function EventInfoBadge({ event, t }: { event: FsEvent; t: Dictionary }) 
   return null
 }
 
-/** Status biletów (§6.8) – mock iksoris: dostępne, ostatnie miejsca, wyprzedane */
-export function TicketStatusBadge({ event, t, className }: { event: FsEvent; t: Dictionary; className?: string }) {
+/**
+ * Status biletów (§6.8) – mock iksoris: dostępne, ostatnie miejsca, wyprzedane.
+ * Na listach i kartach (`hideAvailable`) „Dostępne” pomijamy: to stan domyślny prawie każdego wydarzenia,
+ * więc znacznik przy każdym wierszu nie niósłby informacji i zagłuszał „Ostatnie miejsca” (jak w Berlinie:
+ * pokazujemy wyjątki). Na karcie wydarzenia status jest zawsze.
+ */
+export function TicketStatusBadge({
+  event,
+  t,
+  className,
+  hideAvailable,
+}: {
+  event: FsEvent
+  t: Dictionary
+  className?: string
+  hideAvailable?: boolean
+}) {
   const status = ticketStatus(event.id)
+  if (hideAvailable && status === "available") return null
   return (
     <Badge
       variant={status === "last" ? "solid" : status === "soldout" ? "muted" : "outline"}
