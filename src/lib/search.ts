@@ -35,7 +35,7 @@ function distance(a: string, b: string) {
   return prev[b.length]
 }
 
-const words = (text: string) => fold(text).split(/[^a-z0-9]+/).filter(Boolean)
+const words = (text: string) => fold(text).split(/[^\p{L}\p{N}]+/u).filter(Boolean)
 
 /** Słowo zapytania pasuje, gdy jest początkiem/częścią słowa albo różni się o 1–2 znaki */
 function tokenMatches(token: string, haystack: string[]) {
@@ -61,17 +61,51 @@ const MONTH_NAMES = ["styczeń", "luty", "marzec", "kwiecień", "maj", "czerwiec
 const KEYWORDS: Record<string, { label: string; apply: (f: Filters) => Filters }> = {
   jazz: { label: "Jazz", apply: (f) => ({ ...f, rodzaj: [...f.rodzaj, "jazz"] }) },
   jazzowy: { label: "Jazz", apply: (f) => ({ ...f, rodzaj: [...f.rodzaj, "jazz"] }) },
+  джаз: { label: "Джаз", apply: (f) => ({ ...f, rodzaj: [...f.rodzaj, "jazz"] }) },
   wystawa: { label: "Wystawy", apply: (f) => ({ ...f, rodzaj: [...f.rodzaj, "wystawa"] }) },
   wystawy: { label: "Wystawy", apply: (f) => ({ ...f, rodzaj: [...f.rodzaj, "wystawa"] }) },
+  exhibition: { label: "Exhibitions", apply: (f) => ({ ...f, rodzaj: [...f.rodzaj, "wystawa"] }) },
+  exhibitions: { label: "Exhibitions", apply: (f) => ({ ...f, rodzaj: [...f.rodzaj, "wystawa"] }) },
+  ausstellung: { label: "Ausstellungen", apply: (f) => ({ ...f, rodzaj: [...f.rodzaj, "wystawa"] }) },
+  ausstellungen: { label: "Ausstellungen", apply: (f) => ({ ...f, rodzaj: [...f.rodzaj, "wystawa"] }) },
+  виставка: { label: "Виставки", apply: (f) => ({ ...f, rodzaj: [...f.rodzaj, "wystawa"] }) },
+  виставки: { label: "Виставки", apply: (f) => ({ ...f, rodzaj: [...f.rodzaj, "wystawa"] }) },
   dzieci: { label: "Dla dzieci", apply: (f) => ({ ...f, dlaKogo: [...f.dlaKogo, "dzieci"] }) },
   dziecko: { label: "Dla dzieci", apply: (f) => ({ ...f, dlaKogo: [...f.dlaKogo, "dzieci"] }) },
+  children: { label: "For children", apply: (f) => ({ ...f, dlaKogo: [...f.dlaKogo, "dzieci"] }) },
+  kids: { label: "For children", apply: (f) => ({ ...f, dlaKogo: [...f.dlaKogo, "dzieci"] }) },
+  kinder: { label: "Für Kinder", apply: (f) => ({ ...f, dlaKogo: [...f.dlaKogo, "dzieci"] }) },
+  діти: { label: "Для дітей", apply: (f) => ({ ...f, dlaKogo: [...f.dlaKogo, "dzieci"] }) },
+  дітей: { label: "Для дітей", apply: (f) => ({ ...f, dlaKogo: [...f.dlaKogo, "dzieci"] }) },
   rodzinny: { label: "Dla rodzin", apply: (f) => ({ ...f, dlaKogo: [...f.dlaKogo, "rodziny"] }) },
+  family: { label: "For families", apply: (f) => ({ ...f, dlaKogo: [...f.dlaKogo, "rodziny"] }) },
+  families: { label: "For families", apply: (f) => ({ ...f, dlaKogo: [...f.dlaKogo, "rodziny"] }) },
+  familie: { label: "Für Familien", apply: (f) => ({ ...f, dlaKogo: [...f.dlaKogo, "rodziny"] }) },
+  familien: { label: "Für Familien", apply: (f) => ({ ...f, dlaKogo: [...f.dlaKogo, "rodziny"] }) },
+  родина: { label: "Для родин", apply: (f) => ({ ...f, dlaKogo: [...f.dlaKogo, "rodziny"] }) },
+  родини: { label: "Для родин", apply: (f) => ({ ...f, dlaKogo: [...f.dlaKogo, "rodziny"] }) },
   kameralny: { label: "Kameralny", apply: (f) => ({ ...f, rodzaj: [...f.rodzaj, "kameralny"] }) },
+  chamber: { label: "Chamber", apply: (f) => ({ ...f, rodzaj: [...f.rodzaj, "kameralny"] }) },
+  kammermusik: { label: "Kammermusik", apply: (f) => ({ ...f, rodzaj: [...f.rodzaj, "kameralny"] }) },
+  камерний: { label: "Камерний", apply: (f) => ({ ...f, rodzaj: [...f.rodzaj, "kameralny"] }) },
   symfoniczny: { label: "Symfoniczny", apply: (f) => ({ ...f, rodzaj: [...f.rodzaj, "symfoniczny"] }) },
+  symphonic: { label: "Symphonic", apply: (f) => ({ ...f, rodzaj: [...f.rodzaj, "symfoniczny"] }) },
+  sinfonisch: { label: "Sinfonisch", apply: (f) => ({ ...f, rodzaj: [...f.rodzaj, "symfoniczny"] }) },
+  симфонічний: { label: "Симфонічний", apply: (f) => ({ ...f, rodzaj: [...f.rodzaj, "symfoniczny"] }) },
   weekend: { label: "Ten weekend", apply: (f) => ({ ...f, kiedy: "weekend" }) },
+  wochenende: { label: "Dieses Wochenende", apply: (f) => ({ ...f, kiedy: "weekend" }) },
+  вихідні: { label: "Ці вихідні", apply: (f) => ({ ...f, kiedy: "weekend" }) },
   dzis: { label: "Dziś", apply: (f) => ({ ...f, kiedy: "dzis" }) },
+  today: { label: "Today", apply: (f) => ({ ...f, kiedy: "dzis" }) },
+  heute: { label: "Heute", apply: (f) => ({ ...f, kiedy: "dzis" }) },
+  сьогодні: { label: "Сьогодні", apply: (f) => ({ ...f, kiedy: "dzis" }) },
   jutro: { label: "Jutro", apply: (f) => ({ ...f, kiedy: "jutro" }) },
+  tomorrow: { label: "Tomorrow", apply: (f) => ({ ...f, kiedy: "jutro" }) },
+  morgen: { label: "Morgen", apply: (f) => ({ ...f, kiedy: "jutro" }) },
+  завтра: { label: "Завтра", apply: (f) => ({ ...f, kiedy: "jutro" }) },
 }
+
+const STOP_WORDS = new Set(["w", "na", "i", "z", "dla", "o", "in", "for", "and", "fur", "am", "im", "для", "у", "в", "на", "і", "та"])
 
 function parseIntent(tokens: string[], today: string) {
   let filters: Filters = { ...emptyFilters }
@@ -91,7 +125,7 @@ function parseIntent(tokens: string[], today: string) {
     } else if (KEYWORDS[token]) {
       filters = KEYWORDS[token].apply(filters)
       if (!understood.includes(KEYWORDS[token].label)) understood.push(KEYWORDS[token].label)
-    } else if (!["w", "na", "i", "z", "dla", "o"].includes(token)) rest.push(token)
+    } else if (!STOP_WORDS.has(token)) rest.push(token)
   }
   return { filters, understood, rest }
 }

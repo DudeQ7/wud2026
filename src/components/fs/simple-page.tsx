@@ -5,6 +5,7 @@ import { Container, Eyebrow } from "@/components/fs/layout"
 import { SiteFooter } from "@/components/fs/site-footer"
 import { SiteHeader } from "@/components/fs/site-header"
 import { getDictionary } from "@/i18n"
+import { editorialCopy } from "@/i18n/editorial-routes"
 import { getLang } from "@/i18n/server"
 
 type Props = { eyebrow: string; title: string; lead?: string; source?: string; children: React.ReactNode }
@@ -12,6 +13,7 @@ type Props = { eyebrow: string; title: string; lead?: string; source?: string; c
 /** Podstrona z treścią redakcyjną: nagłówek, lead, treść, źródło */
 export async function SimplePage({ eyebrow, title, lead, source, children }: Props) {
   const lang = await getLang()
+  const ui = editorialCopy(lang).ui
   return (
     <>
       <a
@@ -29,9 +31,9 @@ export async function SimplePage({ eyebrow, title, lead, source, children }: Pro
           {children}
           {source && (
             <p className="mt-10 type-meta text-text-muted">
-              Źródło:{" "}
+              {ui.sourceLabel}{" "}
               <a href={source} className="underline underline-offset-[3px]">
-                strona Filharmonii
+                {ui.sourceLink}
               </a>
             </p>
           )}

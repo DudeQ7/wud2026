@@ -47,7 +47,7 @@ Legenda: ✅ zrobione · 🟡 częściowo · ❌ brak
 - Kreator: 5 pytań, pomijanie, wstecz, 3–5 wyników, uzasadnienie, stan braku dopasowania.
 - Asystent: odpowiedzi z danych FS, karty wydarzeń, ulubione, mapa, 4 języki, nota RODO, źródło odpowiedzi, CTA „Zadzwoń do kasy / Napisz do nas” przy braku wiedzy i wygląd zgodny z design systemem.
 - Panel i logowanie/rejestracja: ulubione, historia czatu, profil; wygląd zgodny z design systemem, w ramie serwisu (nagłówek, stopka, dolna nawigacja, formularze §6.17).
-- Tłumaczenia EN/DE/UK: EDUfilharmonia, Zwiedzanie i opisy wydarzeń demo (2608, 2550, 2612, 2597, zwiedzanie) w `src/i18n/events/descriptions.ts`.
+- Tłumaczenia EN/DE/UK: wszystkie trasy serwisu (`EDUfilharmonia`, `Zwiedzanie`, `Wystawy`, `Szukaj` z intencjami EN/DE/UK, `Artyści`, `Cykle`, `Budynek`, `Historia`, `Orkiestra`, `Zacznij tutaj`, `Pomóż mi wybrać`, `Planuj wizytę`, karta wydarzenia, panel i asystent) oraz opisy wydarzeń demo (2608, 2550, 2612, 2597, zwiedzanie) w `src/i18n/events/descriptions.ts`.
 - Dostępność bazowa: skip link, fokus, 44 px, axe 0 na 16 widokach (+ nakładka AI, logowanie i EN/DE/UK).
 - Treści: plan wizyty, dostępność, budynek, historia, artyści, cykle.
 - SEO: `schema.org/Event` na kartach wydarzeń, `Organization` i `WebSite` na stronie głównej oraz sitemap z hreflang dla tras, wydarzeń, artystów i cykli.

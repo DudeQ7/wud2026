@@ -12,19 +12,19 @@ import { SiteFooter } from "@/components/fs/site-footer"
 import { SiteHeader } from "@/components/fs/site-header"
 import { buttonVariants } from "@/components/ui/button"
 import cykle from "@/data/cykle.json"
-import { plural, seriesKey } from "@/lib/calendar"
+import { seriesKey } from "@/lib/calendar"
 import {
   eventDetails,
   events,
   formatDuration,
-  formatSeries,
   formatShortDate,
   lastDate,
   localizeEvent,
   nextDate,
   nowKey,
 } from "@/lib/events"
-import { getDictionary, localizedPath, seriesLabel } from "@/i18n"
+import { getDictionary, hasLocale, localizedPath, seriesLabel } from "@/i18n"
+import { editorialCopy } from "@/i18n/editorial-routes"
 import { getLang } from "@/i18n/server"
 
 // Cykle i festiwale (brief, moduł 8): program, artyści i bilety w serwisie. Bez koloru cyklu (D6).
@@ -38,14 +38,19 @@ export function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: PageProps<"/[lang]/cykl/[key]">): Promise<Metadata> {
-  const group = bySeries.get((await params).key)
+  const { key, lang: rawLang } = await params
+  const lang = hasLocale(rawLang) ? rawLang : "pl"
+  const group = bySeries.get(key)
   if (!group) return {}
-  const name = formatSeries(group[0].series)!
-  return { title: `${name} – Filharmonia w Szczecinie`, description: `Program, artyści i bilety: ${name}.` }
+  const t = getDictionary(lang)
+  const fullCopy = editorialCopy(lang)
+  const name = seriesLabel(t, group[0].series)!
+  return { title: `${name} – ${fullCopy.ui.institution}`, description: fullCopy.series.metaDescription(name) }
 }
 
 export default async function SeriesPage({ params }: PageProps<"/[lang]/cykl/[key]">) {
   const lang = await getLang()
+  const copy = editorialCopy(lang)
   return (
     <>
       <a
@@ -57,7 +62,7 @@ export default async function SeriesPage({ params }: PageProps<"/[lang]/cykl/[ke
       <SiteHeader lang={lang} />
       <main id="tresc" className="pt-8 pb-16 lg:pt-12 lg:pb-24">
         <Container>
-          <Suspense fallback={<div className="h-96 bg-surface-muted" role="status" aria-busy="true" aria-label="Wczytywanie" />}>
+          <Suspense fallback={<div className="h-96 bg-surface-muted" role="status" aria-busy="true" aria-label={copy.ui.loading} />}>
             <SeriesContent params={params} />
           </Suspense>
         </Container>
@@ -81,6 +86,8 @@ async function SeriesView({ seriesKeyValue }: { seriesKeyValue: string }) {
 
   const lang = await getLang()
   const t = getDictionary(lang)
+  const fullCopy = editorialCopy(lang)
+  const copy = fullCopy.series
   // Tytuły wydarzeń w języku strony; cechy i klucz cyklu liczymy z polskich danych
   const group = bySeries.get(seriesKeyValue)!.map((e) => localizeEvent(e, lang))
   const name = seriesLabel(t, group[0].series)!
@@ -100,11 +107,10 @@ async function SeriesView({ seriesKeyValue }: { seriesKeyValue: string }) {
 
   return (
     <>
-      <Eyebrow>{season ? `Cykl · sezon ${season.replace(/\/20/, "/")}` : "Cykl"}</Eyebrow>
+      <Eyebrow>{copy.eyebrow(season)}</Eyebrow>
       <h1 className="mt-1 type-h1 text-gold">{name}</h1>
       <p className="mt-2 type-body-lg max-w-[68ch] text-text">
-        {group.length} {plural(group.length, "wydarzenie", "wydarzenia", "wydarzeń")}
-        {items.length > 0 && <>, najbliższe {formatShortDate(items[0].date, t)}</>}. Ostatni termin: {formatShortDate(last, t)}.
+        {copy.lead(group.length, items.length > 0 ? formatShortDate(items[0].date, t) : undefined, formatShortDate(last, t))}
       </p>
       {about?.image && (
         // Grafika cyklu ma napisy, więc pokazujemy ją w całości, bez kadrowania do 3:2 (§5.6)
@@ -112,22 +118,25 @@ async function SeriesView({ seriesKeyValue }: { seriesKeyValue: string }) {
         <img src={about.image} alt={name} className="mt-6 -mx-4 h-auto w-[calc(100%+2rem)] max-w-none sm:mx-0 sm:w-full" />
       )}
       {about && about.description.length > 0 && (
-        <div className="mt-6 flex max-w-[68ch] flex-col gap-4 type-body text-text">
-          {about.description.map((p) => (
-            <p key={p}>{p}</p>
-          ))}
-        </div>
+        <>
+          {lang !== "pl" && <p className="mt-6 type-meta text-text-muted">{fullCopy.ui.polishDetailsNote}</p>}
+          <div className="mt-6 flex max-w-[68ch] flex-col gap-4 type-body text-text" lang="pl">
+            {about.description.map((p) => (
+              <p key={p}>{p}</p>
+            ))}
+          </div>
+        </>
       )}
       <Link
         href={localizedPath(lang, `/repertuar?cykl=${seriesKeyValue}`)}
         className={`${buttonVariants({ variant: "secondary", block: true })} mt-4 sm:w-fit`}
       >
-        Zobacz w kalendarzu
+        {copy.seeInCalendar}
       </Link>
 
-      <h2 className="mt-12 type-h2 text-gold">Program</h2>
+      <h2 className="mt-12 type-h2 text-gold">{copy.program}</h2>
       {items.length === 0 ? (
-        <p className="mt-4 type-body text-text">Wszystkie wydarzenia cyklu już się odbyły.</p>
+        <p className="mt-4 type-body text-text">{copy.emptyProgram}</p>
       ) : (
         <ul className="mt-6 grid gap-10 sm:grid-cols-2 sm:gap-x-4 lg:grid-cols-3 lg:gap-x-6">
           {items.map(({ event, date }) => (
@@ -144,7 +153,7 @@ async function SeriesView({ seriesKeyValue }: { seriesKeyValue: string }) {
 
       {artists.length > 0 && (
         <>
-          <h2 className="mt-12 type-h2 text-gold">Artyści</h2>
+          <h2 className="mt-12 type-h2 text-gold">{copy.artists}</h2>
           <ul className="mt-4 columns-1 gap-8 sm:columns-2 lg:columns-3">
             {artists.map((a) => (
               <li key={a} className="break-inside-avoid border-b border-line py-2 type-body text-text">

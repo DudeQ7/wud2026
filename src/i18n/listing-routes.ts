@@ -32,6 +32,13 @@ type ListingCopy = {
     upcoming: string
     empty: string
   }
+  exhibitions: {
+    meta: { title: string; description: string }
+    eyebrow: string
+    title: string
+    lead: string
+    empty: string
+  }
 }
 
 const edugroupHrefs = {
@@ -84,6 +91,16 @@ const polish: ListingCopy = {
     upcoming: "Najbliższe terminy",
     empty: "Aktualnych terminów zwiedzania nie ma w repertuarze. Sprawdź ponownie wkrótce.",
   },
+  exhibitions: {
+    meta: {
+      title: "Wystawy – Filharmonia w Szczecinie",
+      description: "Aktualne i nadchodzące wystawy oraz wernisaże w Galerii Poziom 4. i Art.Room.",
+    },
+    eyebrow: "Galeria Poziom 4. i Art.Room",
+    title: "Wystawy",
+    lead: "Sztuka wizualna w budynku Filharmonii: aktualne wystawy i nadchodzące wernisaże.",
+    empty: "Wkrótce pojawią się nowe wystawy.",
+  },
 }
 
 const english: ListingCopy = {
@@ -128,6 +145,16 @@ const english: ListingCopy = {
     groupsCall: "Call the box office",
     upcoming: "Upcoming dates",
     empty: "There are no tour dates in the programme at the moment. Please check again soon.",
+  },
+  exhibitions: {
+    meta: {
+      title: "Exhibitions – Philharmonic in Szczecin",
+      description: "Current and upcoming exhibitions and openings at the Level 4 Gallery and Art.Room.",
+    },
+    eyebrow: "Level 4 Gallery and Art.Room",
+    title: "Exhibitions",
+    lead: "Visual art inside the Philharmonic building: current exhibitions and upcoming openings.",
+    empty: "New exhibitions will appear here soon.",
   },
 }
 
@@ -174,6 +201,16 @@ const german: ListingCopy = {
     upcoming: "Nächste Termine",
     empty: "Derzeit stehen keine Führungstermine im Spielplan. Schauen Sie bald wieder vorbei.",
   },
+  exhibitions: {
+    meta: {
+      title: "Ausstellungen – Philharmonie Szczecin",
+      description: "Aktuelle und kommende Ausstellungen sowie Vernissagen in der Galerie Ebene 4 und im Art.Room.",
+    },
+    eyebrow: "Galerie Ebene 4 und Art.Room",
+    title: "Ausstellungen",
+    lead: "Bildende Kunst im Gebäude der Philharmonie: aktuelle Ausstellungen und kommende Vernissagen.",
+    empty: "Neue Ausstellungen erscheinen hier in Kürze.",
+  },
 }
 
 const ukrainian: ListingCopy = {
@@ -218,6 +255,16 @@ const ukrainian: ListingCopy = {
     groupsCall: "Зателефонувати до каси",
     upcoming: "Найближчі дати",
     empty: "Зараз у репертуарі немає дат екскурсій. Перевірте згодом.",
+  },
+  exhibitions: {
+    meta: {
+      title: "Виставки – Філармонія в Щецині",
+      description: "Поточні й найближчі виставки та вернісажі в Галереї Рівень 4 і Art.Room.",
+    },
+    eyebrow: "Галерея Рівень 4 і Art.Room",
+    title: "Виставки",
+    lead: "Візуальне мистецтво в будівлі Філармонії: поточні виставки й найближчі вернісажі.",
+    empty: "Незабаром з’являться нові виставки.",
   },
 }
 

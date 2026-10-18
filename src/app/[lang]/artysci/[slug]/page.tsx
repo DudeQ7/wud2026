@@ -12,7 +12,8 @@ import { SiteFooter } from "@/components/fs/site-footer"
 import { SiteHeader } from "@/components/fs/site-header"
 import { artists, eventsOfArtist, getArtist } from "@/lib/artists"
 import { localizeEvent } from "@/lib/events"
-import { getDictionary, localizedPath } from "@/i18n"
+import { getDictionary, hasLocale, localizedPath } from "@/i18n"
+import { editorialCopy } from "@/i18n/editorial-routes"
 import { getLang } from "@/i18n/server"
 
 export function generateStaticParams() {
@@ -20,13 +21,16 @@ export function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: PageProps<"/[lang]/artysci/[slug]">): Promise<Metadata> {
-  const artist = getArtist((await params).slug)
-  return artist ? { title: `${artist.name} – Filharmonia w Szczecinie`, description: artist.bio[0].slice(0, 160) } : {}
+  const { slug, lang } = await params
+  const artist = getArtist(slug)
+  const ui = editorialCopy(hasLocale(lang) ? lang : "pl").ui
+  return artist ? { title: `${artist.name} – ${ui.institution}`, description: artist.bio[0].slice(0, 160) } : {}
 }
 
 /** Profil artysty: zdjęcie 3:4, biogram i nadchodzące wydarzenia (design.md §5.6) */
 export default async function ArtistPage({ params }: PageProps<"/[lang]/artysci/[slug]">) {
   const lang = await getLang()
+  const copy = editorialCopy(lang)
   return (
     <>
       <a
@@ -38,7 +42,7 @@ export default async function ArtistPage({ params }: PageProps<"/[lang]/artysci/
       <SiteHeader lang={lang} />
       <main id="tresc" className="pt-4 pb-16 lg:pb-24">
         <Container>
-          <Suspense fallback={<div className="h-96 bg-surface-muted" role="status" aria-busy="true" aria-label="Wczytywanie" />}>
+          <Suspense fallback={<div className="h-96 bg-surface-muted" role="status" aria-busy="true" aria-label={copy.ui.loading} />}>
             <ArtistContent params={params} />
           </Suspense>
         </Container>
@@ -61,6 +65,8 @@ async function ArtistView({ slug }: { slug: string }) {
   cacheLife("hours")
 
   const lang = await getLang()
+  const fullCopy = editorialCopy(lang)
+  const copy = fullCopy.artists
   const artist = getArtist(slug)!
   const upcoming = eventsOfArtist(artist).map((x) => ({ ...x, event: localizeEvent(x.event, lang) }))
 
@@ -70,9 +76,9 @@ async function ArtistView({ slug }: { slug: string }) {
         href={localizedPath(lang, "/artysci")}
         className="-ml-1 inline-flex min-h-11 items-center px-1 text-[0.9375rem] font-semibold text-text underline-offset-4 hover:underline"
       >
-        ← Artyści
+        {copy.back}
       </Link>
-      <Eyebrow className="mt-4">Artysta</Eyebrow>
+      <Eyebrow className="mt-4">{copy.artistEyebrow}</Eyebrow>
       <h1 className="mt-1 type-h1 text-gold">{artist.name}</h1>
 
       {artist.photo && (
@@ -82,15 +88,16 @@ async function ArtistView({ slug }: { slug: string }) {
         </div>
       )}
 
-      <div className="mt-6 flex max-w-[68ch] flex-col gap-4 type-body text-text">
+      {lang !== "pl" && <p className="mt-6 type-meta text-text-muted">{fullCopy.ui.polishDetailsNote}</p>}
+      <div className="mt-6 flex max-w-[68ch] flex-col gap-4 type-body text-text" lang="pl">
         {artist.bio.map((p, i) => (
           <p key={i}>{p}</p>
         ))}
       </div>
 
-      <h2 className="mt-12 type-h3 text-gold">Najbliższe wydarzenia</h2>
+      <h2 className="mt-12 type-h3 text-gold">{copy.upcoming}</h2>
       {upcoming.length === 0 ? (
-        <p className="mt-3 type-body text-text">Nie ma teraz zapowiedzianych wydarzeń z udziałem tego artysty.</p>
+        <p className="mt-3 type-body text-text">{copy.emptyUpcoming}</p>
       ) : (
         <ul className="mt-4 grid gap-10 sm:grid-cols-2 sm:gap-x-4">
           {upcoming.map(({ event, date }) => (
