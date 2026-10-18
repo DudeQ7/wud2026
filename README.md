@@ -38,11 +38,7 @@ Stan aplikacji po hackathonie, **18 października 2026**.
 
 **Mobile — repertuar, szczegóły koncertu i asystent AI**
 
-<p align="center">
-  <img src="screenshots/2026-10-18/mobile/03-repertuar.png" alt="Mobilny repertuar z filtrami i listą wydarzeń" width="30%" />
-  <img src="screenshots/2026-10-18/mobile/04-szczegoly-koncertu.png" alt="Mobilna karta koncertu z ceną i przyciskiem zakupu biletu" width="30%" />
-  <img src="screenshots/2026-10-18/mobile/07-asystent-ai.png" alt="Mobilny asystent Filharmonii z sugerowanymi pytaniami" width="30%" />
-</p>
+![Mobilny repertuar, karta koncertu i asystent Filharmonii](screenshots/2026-10-18/mobile-wybrane.png)
 
 [Wszystkie 14 screenshotów](screenshots/2026-10-18/) · [Galeria HTML do otwarcia lokalnie](screenshots/2026-10-18/index.html) · [Pobierz komplet ZIP](screenshots/filharmonia-screenshoty-2026-10-18.zip)
 
