@@ -63,6 +63,7 @@ export const en: Dictionary = {
     mainLabel: "Main",
     planVisit: "Plan your visit",
     assistantAi: "AI assistant",
+    assistantHint: "Got a question?",
   },
 
   footerPages: {

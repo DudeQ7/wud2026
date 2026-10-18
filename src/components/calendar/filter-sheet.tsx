@@ -95,7 +95,9 @@ export function FilterSheet({ events, series, filters, today, t, activeCount, on
 
       <dialog
         ref={dialogRef}
-        aria-labelledby="filtry-tytul"
+        // Nagłówek renderuje się tylko przy otwartym arkuszu – wcześniej nazwa z aria-label
+        aria-labelledby={open ? "filtry-tytul" : undefined}
+        aria-label={open ? undefined : s.title}
         onClose={() => setOpen(false)}
         onClick={(e) => e.target === e.currentTarget && close()}
         className={cn(

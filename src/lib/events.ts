@@ -59,6 +59,8 @@ function toEvent(raw: RawEvent): FsEvent {
   const images = raw.images ?? []
   const card = images.find((src) => src.includes("_midi")) ?? images[0]
   const large = images.find((src) => src.includes("_maxi")) ?? card
+  // Miniatura wiersza kalendarza (§6.7) – 400 × 400 px wystarcza na 160 × 107 przy 2×
+  const thumb = images.find((src) => src.includes("_mini")) ?? card
 
   return {
     id: raw.id,
@@ -80,7 +82,7 @@ function toEvent(raw: RawEvent): FsEvent {
     ticketsUrl: raw.tickets_url,
     url: raw.url,
     programPdf: raw.program_pdf ?? undefined,
-    image: card ? { card, large } : undefined,
+    image: card ? { card, large, thumb } : undefined,
     lead: leadFrom(raw.description),
   }
 }

@@ -15,6 +15,8 @@ type AssistantDialogProps = {
   className?: string
   /** Nazwa dla przycisku bez pełnego podpisu (np. sam heksagon „AI”) */
   label?: string
+  /** Nazwa okna przed pierwszym otwarciem, gdy przycisk nie ma `label` (nazwa z widocznego tekstu) */
+  dialogLabel?: string
   children: React.ReactNode
 }
 
@@ -24,7 +26,7 @@ type AssistantDialogProps = {
  * blokadę reszty strony, zamykanie Esc i powrót fokusu na przycisk otwierający.
  * Rozmowa zostaje w pamięci po zamknięciu – ponowne otwarcie wraca do niej.
  */
-export function AssistantDialog({ lang = "pl", events, venue, className, label, children }: AssistantDialogProps) {
+export function AssistantDialog({ lang = "pl", events, venue, className, label, dialogLabel = label, children }: AssistantDialogProps) {
   const dialogRef = useRef<HTMLDialogElement>(null)
   // Dwie instancje (dolna nawigacja i heksagon na desktopie) – każda potrzebuje własnego id nagłówka
   const titleId = useId()
@@ -59,7 +61,9 @@ export function AssistantDialog({ lang = "pl", events, venue, className, label, 
       </button>
       <dialog
         ref={dialogRef}
-        aria-labelledby={titleId}
+        // Nagłówek czatu istnieje dopiero po pierwszym otwarciu – wcześniej nazwa z etykiety przycisku (inaczej aria-labelledby wskazuje nieistniejący id)
+        aria-labelledby={mounted ? titleId : undefined}
+        aria-label={mounted ? undefined : dialogLabel}
         onClose={() => setOpen(false)}
         data-keyboard={viewport?.keyboard || undefined}
         style={viewport ? { height: viewport.height, top: viewport.top } : undefined}

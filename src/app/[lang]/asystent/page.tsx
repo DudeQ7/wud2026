@@ -24,7 +24,7 @@ export default async function AssistantPage({ params }: PageProps<"/[lang]/asyst
       <main>
         <Chat lang={lang} events={eventCards} venue={venue} className="h-[calc(100dvh-var(--bottom-nav-h))]" />
       </main>
-      <BottomNav lang={lang} />
+      <BottomNav lang={lang} assistant={false} />
     </>
   )
 }

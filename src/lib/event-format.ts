@@ -30,7 +30,7 @@ export type FsEvent = {
   url: string
   /** Program koncertu do pobrania (PDF z danych FS); brak = tylko wersja online na stronie */
   programPdf?: string
-  image?: { card: string; large: string }
+  image?: { card: string; large: string; thumb: string }
   lead?: string
 }
 

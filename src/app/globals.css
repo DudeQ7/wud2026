@@ -338,10 +338,11 @@
   html {
     @apply font-sans;
     scroll-padding-top: var(--header-h);
-    scroll-padding-bottom: var(--bottom-nav-h);
+    /* Pływający heksagon asystenta (48 px + 16 px nad dolną nawigacją) nie zasłania elementu z fokusem (WCAG 2.4.11) */
+    scroll-padding-bottom: calc(var(--bottom-nav-h) + 4.5rem);
     -webkit-text-size-adjust: 100%;
   }
-  /* Przycisk asystenta (56 px + 24 px od krawędzi) nie może zasłaniać elementu z fokusem (WCAG 2.4.11) */
+  /* Desktop: heksagon 56 px + 24 px od krawędzi */
   @media (min-width: 64rem) {
     html {
       scroll-padding-bottom: 6rem;

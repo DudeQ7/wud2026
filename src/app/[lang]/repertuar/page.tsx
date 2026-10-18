@@ -43,7 +43,8 @@ function calendarFor(lang: Locale) {
       artists: [],
       program: [],
       lead: undefined,
-      image: undefined,
+      // Wiersz potrzebuje tylko miniatury (§6.7), ale typ wymaga wszystkich wariantów – podstawiamy ten sam URL
+      image: local.image && { card: local.image.thumb, large: local.image.thumb, thumb: local.image.thumb },
     }
   })
   const series = [

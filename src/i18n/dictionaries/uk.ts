@@ -67,6 +67,7 @@ export const uk: Dictionary = {
     planVisit: "Сплануйте візит",
     // Heksagon pokazuje łacińskie „AI”, więc nazwa musi je zawierać (WCAG 2.5.3)
     assistantAi: "AI-асистент",
+    assistantHint: "Маєте питання?",
   },
 
   footerPages: {
