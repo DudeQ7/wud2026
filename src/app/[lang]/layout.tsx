@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next"
 import { notFound } from "next/navigation"
+import { Analytics } from "@vercel/analytics/next"
 
 import { siteUrl } from "@/app/site-url"
 import { fontVariables } from "@/app/fonts"
@@ -47,6 +48,7 @@ export default async function RootLayout({ children, params }: LayoutProps<"/[la
       <body className="min-h-dvh">
         {children}
         <ConsentBanner lang={lang} />
+        <Analytics />
       </body>
     </html>
   )

@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 
 import { buttonVariants } from "@/components/ui/button"
 import { type Locale, getDictionary } from "@/i18n"
@@ -15,19 +15,12 @@ import { cn } from "@/lib/utils"
  */
 export function ConsentBanner({ lang }: { lang: Locale }) {
   const t = getDictionary(lang).consent
-  const [ready, setReady] = useState(false)
-  const [choice, setChoice] = useState<ConsentValue | null>(null)
+  const initialChoice = readConsent()
+  const [choice, setChoice] = useState<ConsentValue | null>(initialChoice)
   const [settings, setSettings] = useState(false)
-  const [analytics, setAnalytics] = useState(true)
+  const [analytics, setAnalytics] = useState(initialChoice !== "essential")
 
-  useEffect(() => {
-    const stored = readConsent()
-    setChoice(stored)
-    setAnalytics(stored !== "essential")
-    setReady(true)
-  }, [])
-
-  if (!ready || choice) return null
+  if (choice) return null
 
   function save(value: ConsentValue) {
     writeConsent(value)
