@@ -7,10 +7,13 @@ import { BottomNav } from "@/components/fs/bottom-nav"
 import { Container } from "@/components/fs/layout"
 import { SiteFooter } from "@/components/fs/site-footer"
 import { SiteHeader } from "@/components/fs/site-header"
+import { OverridesHydrator } from "@/components/fs/overrides-hydrator"
+import { allOverrides } from "@/content/overrides-store"
 import { calendarEditorial } from "@/content/calendar"
 import { type Locale, getDictionary, hasLocale, locales, localizedPath, seriesLabel } from "@/i18n"
 import { fold, toCalendarEvent } from "@/lib/calendar"
 import { events, localizeEvent } from "@/lib/events"
+import { loadOverrides } from "@/lib/overrides"
 
 export async function generateMetadata({ params }: PageProps<"/[lang]/repertuar">): Promise<Metadata> {
   const { lang } = await params
@@ -53,17 +56,14 @@ function calendarFor(lang: Locale) {
   return { calendarEvents, series }
 }
 
-const calendars = Object.fromEntries(locales.map((lang) => [lang, calendarFor(lang)])) as Record<
-  Locale,
-  ReturnType<typeof calendarFor>
->
-
 /** Kalendarz wydarzeń (design.md §7.2): H1, wyszukiwanie, szybkie filtry, licznik, lista dni */
 export default async function RepertuarPage({ params }: PageProps<"/[lang]/repertuar">) {
   const { lang } = await params
   if (!hasLocale(lang)) notFound()
   const t = getDictionary(lang)
-  const { calendarEvents, series } = calendars[lang]
+  // Statusy i ceny z mini-CMS wchodzą do kalendarza, więc liczymy go po wczytaniu nadpisań
+  await loadOverrides()
+  const { calendarEvents, series } = calendarFor(lang)
 
   return (
     <>
@@ -73,6 +73,7 @@ export default async function RepertuarPage({ params }: PageProps<"/[lang]/reper
       >
         {t.common.skipLink}
       </a>
+      <OverridesHydrator entries={allOverrides()} />
       <SiteHeader lang={lang} />
       <main id="tresc" className="pt-8 pb-16 lg:pt-12 lg:pb-24">
         <Container>

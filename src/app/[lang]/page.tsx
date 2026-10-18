@@ -2,6 +2,8 @@ import type { Metadata } from "next"
 import { cacheLife } from "next/cache"
 import { notFound } from "next/navigation"
 
+import { OverridesHydrator } from "@/components/fs/overrides-hydrator"
+import { allOverrides } from "@/content/overrides-store"
 import { BottomNav } from "@/components/fs/bottom-nav"
 import { SiteFooter } from "@/components/fs/site-footer"
 import { SiteHeader } from "@/components/fs/site-header"
@@ -16,6 +18,7 @@ import {
 import { StairsSection } from "@/components/home/stairs"
 import { type Locale, getDictionary, hasLocale, locales, localizedPath } from "@/i18n"
 import { nextConcert, nowKey, todayKey } from "@/lib/events"
+import { loadOverrides } from "@/lib/overrides"
 import { siteJsonLd } from "@/lib/structured-data"
 
 export async function generateMetadata({ params }: PageProps<"/[lang]">): Promise<Metadata> {
@@ -40,6 +43,7 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
 async function HomeContent({ lang }: { lang: Locale }) {
   "use cache"
   cacheLife("hours")
+  await loadOverrides()
 
   const t = getDictionary(lang)
   const now = new Date()
@@ -58,6 +62,7 @@ async function HomeContent({ lang }: { lang: Locale }) {
       >
         {t.common.skipLink}
       </a>
+      <OverridesHydrator entries={allOverrides()} />
       <SiteHeader lang={lang} overlay={Boolean(hero)} />
       <main id="tresc">
         {hero && <Hero event={hero.event} date={hero.date} today={today} lang={lang} />}

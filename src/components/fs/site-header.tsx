@@ -1,6 +1,6 @@
 "use client"
 
-import { ArrowRight, Menu, Search, User, X } from "lucide-react"
+import { ArrowRight, ChevronDown, Menu, Search, User, X } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useEffect, useId, useRef, useState } from "react"
@@ -118,21 +118,63 @@ export function SiteHeader({ lang, overlay = false }: SiteHeaderProps) {
             <X {...iconProps} className="size-6" />
           </button>
         </div>
-        <nav aria-label={t.common.menu} className="grid gap-x-8 px-4 py-6 sm:grid-cols-2 sm:px-6">
-          {getMenuGroups(lang).map((group) => (
-            <section key={group.title} className="mb-6">
-              <h3 className="mb-2 type-h3 text-gold">{group.title}</h3>
-              <ul>
-                {group.links.map(([label, href]) => (
-                  <li key={href} className="border-b border-line">
-                    <Link href={localizedPath(lang, href)} onClick={closeMenu} className="flex min-h-12 cursor-pointer items-center justify-between gap-3 py-3 font-semibold">
-                      <span className="hover-line">{label}</span><ArrowRight {...iconProps} className="size-5 shrink-0" />
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </section>
-          ))}
+        <nav aria-label={t.common.menu} className="px-4 pt-4 pb-8 sm:px-6">
+          {/* Telefon: cztery główne skróty + zwijane grupy – całe menu mieści się na jednym ekranie, bez długiej listy */}
+          <div className="sm:hidden">
+            <ul className="grid grid-cols-2 gap-2">
+              {getMenuShortcuts(lang).map(([label, href]) => (
+                <li key={href}>
+                  <Link href={localizedPath(lang, href)} onClick={closeMenu} className="flex min-h-14 items-center justify-between gap-2 border-[1.5px] border-line-strong px-3 py-2 font-semibold">
+                    <span>{label}</span><ArrowRight {...iconProps} className="size-5 shrink-0" />
+                  </Link>
+                </li>
+              ))}
+            </ul>
+            <div className="mt-4 border-t border-line-strong">
+              {getMenuGroups(lang).map((group) =>
+                group.links.length === 1 ? (
+                  <Link key={group.title} href={localizedPath(lang, group.links[0][1])} onClick={closeMenu} className="flex min-h-12 items-center justify-between gap-3 border-b border-line py-2 type-h4 text-gold">
+                    <span>{group.links[0][0]}</span><ArrowRight {...iconProps} className="size-5 shrink-0 text-text" />
+                  </Link>
+                ) : (
+                  <details key={group.title} name="menu-group" className="group border-b border-line">
+                    <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between gap-3 py-2 type-h4 text-gold [&::-webkit-details-marker]:hidden">
+                      <span>{group.title}</span>
+                      <ChevronDown {...iconProps} className="size-5 shrink-0 text-text transition-transform group-open:rotate-180 motion-reduce:transition-none" />
+                    </summary>
+                    <ul className="pb-2">
+                      {group.links.map(([label, href]) => (
+                        <li key={href}>
+                          <Link href={localizedPath(lang, href)} onClick={closeMenu} className="flex min-h-11 items-center justify-between gap-3 py-2 pl-3 font-semibold">
+                            <span>{label}</span><ArrowRight {...iconProps} className="size-5 shrink-0" />
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </details>
+                )
+              )}
+            </div>
+          </div>
+          {/* Tablet i desktop: wszystkie grupy w dwóch kolumnach */}
+          <div className="hidden gap-x-8 sm:grid sm:grid-cols-2">
+            {getMenuGroups(lang).map((group) => (
+              <section key={group.title} className="mb-6">
+                {!(group.links.length === 1 && group.links[0][0] === group.title) && (
+                  <h3 className="mb-1 type-eyebrow text-gold">{group.title}</h3>
+                )}
+                <ul>
+                  {group.links.map(([label, href]) => (
+                    <li key={href} className="border-b border-line">
+                      <Link href={localizedPath(lang, href)} onClick={closeMenu} className="flex min-h-11 cursor-pointer items-center justify-between gap-3 py-2 font-semibold">
+                        <span className="hover-line">{label}</span><ArrowRight {...iconProps} className="size-5 shrink-0" />
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            ))}
+          </div>
         </nav>
       </dialog>
     </header>
@@ -160,6 +202,17 @@ function HeaderLink({
       <span className="hover-line flex items-center gap-2">{children}</span>
     </Link>
   )
+}
+
+/** Cztery najczęstsze cele (mobile): repertuar, kreator, asystent, planowanie wizyty */
+function getMenuShortcuts(lang: Locale): [string, string][] {
+  const t = getDictionary(lang)
+  return [
+    [t.home.upcoming.all.replace(" →", ""), "/repertuar"],
+    [t.home.forYou.cta.title, "/pomoz-mi-wybrac"],
+    [t.nav.assistant, "/asystent"],
+    [t.nav.plan, "/planuj-wizyte"],
+  ]
 }
 
 function getMenuGroups(lang: Locale) {

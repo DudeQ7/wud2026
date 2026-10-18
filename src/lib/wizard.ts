@@ -145,7 +145,7 @@ const KIEDY_PHRASE: Record<string, string> = {
 }
 
 /** Najniższa cena w zł (0 = wstęp wolny); z danych albo z cennika przykładowego (content/prices.ts), null gdy nieznana */
-export function lowestPrice(event: Pick<FsEvent, "prices" | "type" | "kind" | "kindLabel">) {
+export function lowestPrice(event: Pick<FsEvent, "id" | "prices" | "type" | "kind" | "kindLabel">) {
   return minPrice(event) ?? null
 }
 

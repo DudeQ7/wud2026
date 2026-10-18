@@ -13,7 +13,10 @@ import { SiteHeader } from "@/components/fs/site-header"
 import { buttonVariants } from "@/components/ui/button"
 import { calendarEditorial } from "@/content/calendar"
 import { toCalendarEvent } from "@/lib/calendar"
+import { OverridesHydrator } from "@/components/fs/overrides-hydrator"
+import { allOverrides } from "@/content/overrides-store"
 import { eventDetails, eventHref, events, localizeEvent, todayKey } from "@/lib/events"
+import { loadOverrides } from "@/lib/overrides"
 import { GROUP_LIMITS, type SearchDoc, search, total } from "@/lib/search"
 import { getDictionary, hasLocale, localizedPath } from "@/i18n"
 import { editorialCopy } from "@/i18n/editorial-routes"
@@ -34,6 +37,7 @@ const rowLink = "block min-h-11 py-3 text-text hover:underline hover:underline-o
 /** Wyszukiwarka (design.md §6.15): zwykły formularz GET, więc działa bez JS i daje link do wyników */
 export default async function SearchPage({ searchParams }: PageProps<"/[lang]/szukaj">) {
   const lang = await getLang()
+  await loadOverrides()
   const copy = editorialCopy(lang)
   return (
     <>
@@ -43,6 +47,7 @@ export default async function SearchPage({ searchParams }: PageProps<"/[lang]/sz
       >
         {getDictionary(lang).common.skipLink}
       </a>
+      <OverridesHydrator entries={allOverrides()} />
       <SiteHeader lang={lang} />
       <main id="tresc" className="pt-8 pb-16 lg:pt-12 lg:pb-24">
         <Container className="max-w-3xl">
