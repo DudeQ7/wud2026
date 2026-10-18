@@ -1,5 +1,6 @@
 import { getPostHogAnalytics } from "@/lib/posthog-analytics";
 import Link from "next/link";
+import { RefreshAnalyticsButton } from "./RefreshAnalyticsButton";
 
 // The dashboard reads request-time confirmation state and live PostHog data.
 export const instant = false;
@@ -108,6 +109,12 @@ POSTHOG_PROJECT_ID=123456`}
           <p className="mt-1 text-sm text-muted-foreground">
             Dane z ostatnich {data.periodDays} dni, pobierane bezpośrednio z Query API.
           </p>
+          <p className="mt-3 text-xs text-muted-foreground">
+            Automatyczne odświeżanie co 60 sekund.
+          </p>
+          <div className="mt-4">
+            <RefreshAnalyticsButton />
+          </div>
         </div>
 
         <div className="grid gap-4 sm:grid-cols-3">
