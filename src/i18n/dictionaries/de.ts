@@ -418,11 +418,11 @@ export const de: Dictionary = {
       festiwal: "Festival",
       spotkania: "Film, Debatte, Vortrag",
     },
-    audiences: { dzieci: "Kinder", rodziny: "Familien", szkoly: "Schulen", seniorzy: "Senioren" },
+    audiences: { dzieci: "Kinder", rodziny: "Familien", szkoly: "Schulen", seniorzy: "Senioren", dorosli: "Erwachsene", debiutanci: "Zum ersten Mal" },
     places: { symfoniczna: "Sinfoniesaal", kameralna: "Kammermusiksaal", galerie: "Galerien", hol: "Eingangshalle und Foyer" },
     durations: { "do-45-min": "Bis 45 Min.", "do-90-min": "Bis 90 Min.", dluzej: "Länger als 90 Min." },
     prices: { bezplatne: "Kostenlos", "do-20": "Bis 20 zł", "do-40": "Bis 40 zł" },
-    moods: { filmowa: "Filmmusik", niezwykle: "Etwas Ungewöhnliches" },
+    moods: { hity: "Klassik-Hits", emocje: "Große Gefühle", energia: "Energie", relaks: "Entspannung", filmowa: "Filmmusik", niezwykle: "Etwas Ungewöhnliches" },
     sheet: {
       open: "Alle Filter",
       title: "Filter",

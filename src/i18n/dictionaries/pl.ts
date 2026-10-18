@@ -384,11 +384,11 @@ export const pl = {
       festiwal: "Festiwal",
       spotkania: "Film, debata, wykład",
     },
-    audiences: { dzieci: "Dzieci", rodziny: "Rodziny", szkoly: "Szkoły", seniorzy: "Seniorzy" },
+    audiences: { dzieci: "Dzieci", rodziny: "Rodziny", szkoly: "Szkoły", seniorzy: "Seniorzy", dorosli: "Dorośli", debiutanci: "Na pierwszy raz" },
     places: { symfoniczna: "Sala Symfoniczna", kameralna: "Sala Kameralna", galerie: "Galerie", hol: "Hol i foyer" },
     durations: { "do-45-min": "Do 45 min", "do-90-min": "Do 90 min", dluzej: "Dłużej niż 90 min" },
     prices: { bezplatne: "Bezpłatne", "do-20": "Do 20 zł", "do-40": "Do 40 zł" },
-    moods: { filmowa: "Muzyka filmowa", niezwykle: "Coś niezwykłego" },
+    moods: { hity: "Klasyczne przeboje", emocje: "Wielkie emocje", energia: "Energia", relaks: "Relaks", filmowa: "Muzyka filmowa", niezwykle: "Coś niezwykłego" },
     sheet: {
       open: "Wszystkie filtry",
       title: "Filtry",

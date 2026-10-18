@@ -10,7 +10,7 @@ Legenda: ✅ zrobione · 🟡 częściowo · ❌ brak
 |---|---|---|---|
 | 1 | „Dziś w Filharmonii” (schody) | ✅ | — (dostępność monochromatycznie, poziom słowem) |
 | 2 | Kalendarz | ✅ | — (widok miesiąca jako fasada 3D + lista) |
-| 3 | Filtry kalendarza | 🟡 | Brak ceny i dostępności |
+| 3 | Filtry kalendarza | ✅ | Cena, dostępność (sekcja informacyjna, §6.6), nastroje z briefu, „Dorośli” i „Na pierwszy raz”. Brak „młodzież”, „poza budynkiem” i „wydarzenie zewnętrzne”: w danych FS nie ma takich wydarzeń |
 | 4 | Statusy biletów | ✅ | Mock; docelowo iksoris |
 | 5 | Karta wydarzenia | ✅ | — |
 | 6 | Program PDF | 🟡 | Brak plików w danych; jest wersja online i obsługa PDF |

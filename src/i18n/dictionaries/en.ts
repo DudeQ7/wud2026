@@ -417,11 +417,11 @@ export const en: Dictionary = {
       festiwal: "Festival",
       spotkania: "Film, debate, lecture",
     },
-    audiences: { dzieci: "Children", rodziny: "Families", szkoly: "Schools", seniorzy: "Seniors" },
+    audiences: { dzieci: "Children", rodziny: "Families", szkoly: "Schools", seniorzy: "Seniors", dorosli: "Adults", debiutanci: "First time" },
     places: { symfoniczna: "Symphony Hall", kameralna: "Chamber Hall", galerie: "Galleries", hol: "Lobby and foyer" },
     durations: { "do-45-min": "Up to 45 min", "do-90-min": "Up to 90 min", dluzej: "Longer than 90 min" },
     prices: { bezplatne: "Free", "do-20": "Up to 20 zł", "do-40": "Up to 40 zł" },
-    moods: { filmowa: "Film music", niezwykle: "Something unusual" },
+    moods: { hity: "Classical super hits", emocje: "Emotional", energia: "Energy", relaks: "Relax", filmowa: "Film music", niezwykle: "Something unusual" },
     sheet: {
       open: "All filters",
       title: "Filters",

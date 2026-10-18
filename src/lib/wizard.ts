@@ -129,12 +129,12 @@ const RODZAJ: Record<string, { types: EventType[]; moods: Mood[] }> = {
   film: { types: [], moods: ["filmowa"] },
 }
 
-// Klimat to wybór redakcji (docelowo tag w CMS): który rodzaj wydarzenia najczęściej go daje
-const KLIMAT: Record<string, { types: EventType[]; moods: Mood[]; phrase: string }> = {
-  energia: { types: ["jazz", "muzyka-swiata"], moods: ["filmowa"], phrase: "energetycznie" },
-  cisza: { types: ["kameralny"], moods: [], phrase: "na wyciszenie" },
-  emocje: { types: ["symfoniczny"], moods: [], phrase: "wielkie emocje" },
-  niezwykle: { types: [], moods: ["niezwykle"], phrase: "coś niezwykłego" },
+// Klimat = nastrój z kalendarza (lib/calendar.ts), żeby kreator i filtr „Nastrój” dawały te same wyniki
+const KLIMAT: Record<string, { mood: Mood; phrase: string }> = {
+  energia: { mood: "energia", phrase: "energetycznie" },
+  cisza: { mood: "relaks", phrase: "na wyciszenie" },
+  emocje: { mood: "emocje", phrase: "wielkie emocje" },
+  niezwykle: { mood: "niezwykle", phrase: "coś niezwykłego" },
 }
 
 const KIEDY_PHRASE: Record<string, string> = {
@@ -187,7 +187,7 @@ export function match(events: CalendarEvent[], answers: Answers, today: string):
       const price = lowestPrice(event)
       if (limit !== undefined && price !== null && price > limit) continue
       seen.add(event.id)
-      const fits = klimat && (f.types.some((t) => klimat.types.includes(t)) || f.moods.some((m) => klimat.moods.includes(m)))
+      const fits = klimat && f.moods.includes(klimat.mood)
       result.push({ event, date: day.rows.find((r) => r.event.id === event.id)!.times[0], reasons: fits ? [klimat.phrase] : [] })
     }
   }

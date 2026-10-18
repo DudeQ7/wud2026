@@ -132,6 +132,10 @@ function ageRange(kindLabel: string): [number, number | undefined] | undefined {
 type Editorial = {
   /** Wydarzenia z muzyką filmową – wybór redakcji (docelowo tag w CMS) */
   filmMusicIds: number[]
+  /** „Klasyczne przeboje” – wybór redakcji (docelowo tag w CMS) */
+  superHitIds: number[]
+  /** Cykle polecane na pierwszą wizytę (nazwa cyklu małymi literami) */
+  firstTimeSeries: RegExp
 }
 
 export function toCalendarEvent(event: FsEvent, editorial: Editorial): CalendarEvent {
@@ -170,10 +174,22 @@ export function toCalendarEvent(event: FsEvent, editorial: Editorial): CalendarE
   if (venue.includes("galeria") || venue.includes("art.room")) places.push("galerie")
   if (venue.includes("hol") || venue.includes("foyer")) places.push("hol")
 
+  // Nastroje jak w serwisach streamingowych (brief §6.2); te same reguły ma „Jaki klimat?” w kreatorze
   const moods: Mood[] = []
-  if (editorial.filmMusicIds.includes(event.id)) moods.push("filmowa")
+  if (editorial.superHitIds.includes(event.id)) moods.push("hity")
+  if (types.includes("symfoniczny")) moods.push("emocje")
+  const film = editorial.filmMusicIds.includes(event.id)
+  if (film || types.includes("jazz") || types.includes("muzyka-swiata")) moods.push("energia")
+  if (types.includes("kameralny")) moods.push("relaks")
+  if (film) moods.push("filmowa")
   if (types.includes("spotkania") || types.includes("muzyka-swiata") || /muzyki dawnej/.test(kind))
     moods.push("niezwykle")
+
+  // Dorośli = wszystko, co nie powstało dla dzieci i szkół (ta sama zasada co „Dla mnie” w kreatorze)
+  if (!audiences.includes("dzieci") && !audiences.includes("szkoly")) {
+    audiences.push("dorosli")
+    if (moods.includes("hity") || film || editorial.firstTimeSeries.test(series)) audiences.push("debiutanci")
+  }
 
   const range = event.kindLabel ? ageRange(event.kindLabel) : undefined
 

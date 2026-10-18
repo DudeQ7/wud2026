@@ -404,11 +404,11 @@ export const uk: Dictionary = {
       festiwal: "Фестиваль",
       spotkania: "Кіно, дебати, лекції",
     },
-    audiences: { dzieci: "Діти", rodziny: "Родини", szkoly: "Школи", seniorzy: "Старшим" },
+    audiences: { dzieci: "Діти", rodziny: "Родини", szkoly: "Школи", seniorzy: "Старшим", dorosli: "Дорослим", debiutanci: "Уперше" },
     places: { symfoniczna: "Симфонічна зала", kameralna: "Камерна зала", galerie: "Галереї", hol: "Хол і фойє" },
     durations: { "do-45-min": "До 45 хв", "do-90-min": "До 90 хв", dluzej: "Понад 90 хв" },
     prices: { bezplatne: "Безкоштовно", "do-20": "До 20 зл", "do-40": "До 40 зл" },
-    moods: { filmowa: "Музика з кіно", niezwykle: "Щось незвичайне" },
+    moods: { hity: "Класичні хіти", emocje: "Сильні емоції", energia: "Енергія", relaks: "Релакс", filmowa: "Музика з кіно", niezwykle: "Щось незвичайне" },
     sheet: {
       open: "Усі фільтри",
       title: "Фільтри",
