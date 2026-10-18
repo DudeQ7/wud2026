@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 import { Suspense } from "react"
 
-import { Calendar } from "@/components/calendar/calendar"
+import { Calendar3D } from "@/components/calendar/calendar3d"
 import { BottomNav } from "@/components/fs/bottom-nav"
 import { Container } from "@/components/fs/layout"
 import { SiteFooter } from "@/components/fs/site-footer"
@@ -80,7 +80,7 @@ export default async function RepertuarPage({ params }: PageProps<"/[lang]/reper
           <p className="mt-2 mb-6 type-body max-w-[68ch] text-text">{t.calendar.intro}</p>
           {/* Filtry czytają adres URL w przeglądarce, więc lista renderuje się po stronie klienta */}
           <Suspense fallback={<CalendarSkeleton label={t.calendar.loading} />}>
-            <Calendar events={calendarEvents} series={series} lang={lang} />
+            <Calendar3D events={calendarEvents} series={series} lang={lang} />
           </Suspense>
         </Container>
       </main>
