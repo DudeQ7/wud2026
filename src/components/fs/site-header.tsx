@@ -171,7 +171,7 @@ function getMenuGroups(lang: Locale) {
     { title: t.home.forYou.title, links: [[t.home.forYou.tiles.start.title, "/zacznij-tutaj"], [t.home.forYou.cta.title, "/pomoz-mi-wybrac"], [t.nav.assistant, "/asystent"]] },
     { title: d.edu.title, links: [[d.edu.title, "/edu"], [t.home.forYou.tiles.families.title, "/repertuar?dla-kogo=rodziny"]] },
     { title: t.home.discover.title, links: [[d.orchestra.title, "/orkiestra"], [artists, "/artysci"], [d.building.title, "/budynek"], [d.history.title, "/historia"], [d.exhibitions.title, "/wystawy"], [d.tours.title, "/zwiedzanie"]] },
-    { title: t.nav.plan, links: [[t.nav.plan, "/planuj-wizyte"], [t.footer.links.contact, "/kontakt"], [t.event.buyTicket, "/repertuar"]] },
+    { title: t.nav.plan, links: [[t.nav.plan, "/planuj-wizyte"], [t.footer.links.faq, "/faq"], [t.footer.links.contact, "/kontakt"], [t.event.buyTicket, "/repertuar"]] },
     { title: t.nav.account, links: [[t.nav.account, "/konto"]] },
   ]
 }

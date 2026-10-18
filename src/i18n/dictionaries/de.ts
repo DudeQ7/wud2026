@@ -127,6 +127,7 @@ export const de: Dictionary = {
     boxOfficeHours: "Di–Fr 12:00–18:00, Sa 12:00–16:00\nsowie eine Stunde vor jeder Veranstaltung mit Eintritt",
     navLabel: "Fußzeile",
     links: {
+      faq: "Häufige Fragen (FAQ)",
       partners: "Partner und Unternehmen",
       media: "Presse",
       contact: "Kontakt",

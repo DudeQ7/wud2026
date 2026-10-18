@@ -52,6 +52,7 @@ export const buildingHours = {
 }
 
 export const footerLinks = [
+  { key: "faq", href: "/faq" },
   { key: "partners", href: "/partnerzy" },
   { key: "media", href: "/media" },
   { key: "contact", href: "/kontakt" },

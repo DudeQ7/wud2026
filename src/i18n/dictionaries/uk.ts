@@ -113,6 +113,7 @@ export const uk: Dictionary = {
     boxOfficeHours: "вт–пт 12:00–18:00, сб 12:00–16:00\nта за годину до кожної події з квитками",
     navLabel: "Підвал сторінки",
     links: {
+      faq: "Часті запитання (FAQ)",
       partners: "Партнери та бізнес",
       media: "Для медіа",
       contact: "Контакти",

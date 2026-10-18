@@ -23,6 +23,7 @@ import { fragments, heroFragment } from "@/content/audio"
 import { ticketStatus } from "@/content/availability"
 import { calendarEditorial } from "@/content/calendar"
 import { accessAssistance, accessTickets, buildingAccess, firstVisit } from "@/content/event"
+import { faqPage } from "@/content/faq"
 import { address, boxOffice, recommended } from "@/content/home"
 import { artistByName } from "@/lib/artists"
 import { seriesKey, toCalendarEvent } from "@/lib/calendar"
@@ -372,6 +373,10 @@ async function EventView({ id }: { id: number }) {
                 </li>
               ))}
             </ul>
+            {/* Szatnia, spóźnienie, oklaski, dostępność – reszta odpowiedzi dla debiutanta */}
+            <Link href={localizedPath(lang, "/faq")} className={cn(buttonVariants({ variant: "link" }), "mt-3")}>
+              {faqPage[lang].more}
+            </Link>
           </Block>
         )}
 

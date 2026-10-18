@@ -16,6 +16,7 @@ const staticPaths = [
   "/asystent",
   "/szukaj",
   "/planuj-wizyte",
+  "/faq",
   "/edu",
   "/wystawy",
   "/zwiedzanie",

@@ -131,6 +131,7 @@ export const pl = {
     boxOfficeHours: "wt–pt 12:00–18:00, sob 12:00–16:00\noraz godzinę przed każdym biletowanym wydarzeniem",
     navLabel: "Stopka",
     links: {
+      faq: "Najczęstsze pytania (FAQ)",
       partners: "Partnerzy i biznes",
       media: "Strefa mediów",
       contact: "Kontakt",

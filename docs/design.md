@@ -658,6 +658,7 @@ Strona główna i repertuar to razem ~25% wyświetleń, dlatego **droga do kalen
   9. sale,
   10. dostępność.
 - Plan budynku z opisem tekstowym, nie tylko jako obraz.
+- **Najczęstsze pytania (`/faq`):** te same fakty w formie pytań, w grupach według przebiegu wizyty (bilety i kasa → dojazd i parking → przed koncertem → na sali → dostępność → budynek), ze spisem grup na górze, akordeonami jak wyżej i stałą pomocą na końcu (asystent, kasa). Dane strukturalne `FAQPage`. Wejścia: stopka (pierwsza pozycja), menu (grupa Planuj wizytę), link na „Planuj wizytę” i w bloku „Pierwszy raz w Filharmonii?” na karcie wydarzenia.
 - Ponad 70% użytkowników jest spoza Szczecina, dlatego dojazd i parking są pierwsze po zakupie biletu.
 
 ### 7.4 EDUfilharmonia

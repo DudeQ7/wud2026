@@ -1,7 +1,7 @@
-import { ChevronDown, MapPin, Phone } from "lucide-react"
+import { MapPin, Phone } from "lucide-react"
+import Link from "next/link"
 import type { Metadata } from "next"
-import * as React from "react"
-
+import { Answer } from "@/components/fs/answer"
 import { BottomNav } from "@/components/fs/bottom-nav"
 import { iconProps } from "@/components/fs/icons"
 import { Container, Eyebrow } from "@/components/fs/layout"
@@ -10,10 +10,11 @@ import { SiteHeader } from "@/components/fs/site-header"
 import { buttonVariants } from "@/components/ui/button"
 import { guide } from "@/content/about"
 import { buildingAccess, firstVisit } from "@/content/event"
+import { faqPage } from "@/content/faq"
 import { address, boxOffice } from "@/content/home"
 import { venueInfo } from "@/lib/events"
 import visit from "@/data/visit.json"
-import { getDictionary, hasLocale } from "@/i18n"
+import { getDictionary, hasLocale, localizedPath } from "@/i18n"
 import { getLang } from "@/i18n/server"
 import { visitorRouteCopy } from "@/i18n/visitor-routes"
 
@@ -31,19 +32,6 @@ const phone = boxOffice.phone.replaceAll(" ", "")
 const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`Filharmonia Szczecin, ${address}`)}`
 
 const link = "inline-flex min-h-11 items-center font-semibold text-text underline decoration-[1.5px] underline-offset-[3px]"
-
-/** Odpowiedź w akordeonie (§7.3): <details>, cel dotyku 56 px, bez JS */
-function Answer({ title, open, children }: { title: string; open?: boolean; children: React.ReactNode }) {
-  return (
-    <details open={open} className="group border-b border-line">
-      <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 py-2 font-heading text-lg font-semibold text-text [&::-webkit-details-marker]:hidden">
-        {title}
-        <ChevronDown {...iconProps} className="size-6 shrink-0 transition-transform group-open:rotate-180 motion-reduce:transition-none" />
-      </summary>
-      <div className="flex max-w-[68ch] flex-col gap-3 pb-5 type-body text-text">{children}</div>
-    </details>
-  )
-}
 
 /** Planuj wizytę (design.md §7.3): odpowiedzi w akordeonach w stałej kolejności */
 export default async function PlanVisitPage() {
@@ -77,6 +65,9 @@ export default async function PlanVisitPage() {
             </a>
           </div>
           <p className="mt-3 type-meta text-text-muted">{address}</p>
+          <Link href={localizedPath(lang, "/faq")} className={`${link} mt-2`}>
+            {faqPage[lang].more}
+          </Link>
 
           <div className="mt-8 border-t border-line">
             <Answer title={copy?.ticketTitle ?? "Jak kupić bilet"} open>
