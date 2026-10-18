@@ -128,14 +128,14 @@ Wymagania przekrojowe: każdy typ ma wersje PL/EN/DE/UK (treść, nie tylko menu
 | `/api/artists`, `/api/artists/{slug}` | GET | profile i powiązane wydarzenia | docelowo |
 | `/api/search?q=` | GET | wyniki grupowane: wydarzenia, artyści, utwory, materiały | docelowo (dziś lokalnie) |
 | `/api/chat` | POST | asystent (strumień: odpowiedź, karty, źródło) | **działa** |
-| `/api/me/favorites`, `/api/me/tickets`, `/api/me/notifications` | GET/POST | panel klienta | ulubione **działa** (Supabase); bilety i powiadomienia docelowo |
+| `/api/me/favorites`, `/api/me/tickets`, `/api/me/notifications` | GET/POST | panel klienta | ulubione **działa** (Supabase); bilety i powiadomienia **mock** (`content/tickets.ts`, `panel/notifications.ts`) |
 
 Ta sama warstwa ma zasilać przyszłą aplikację FS (bilety, panel klienta).
 
 ## 6. Wydajność i skalowalność
 
 - **Next.js 16, renderowanie częściowo statyczne**: strony z treścią wstępnie renderowane, dane dynamiczne dociągane strumieniowo. Kalendarz liczy filtry po stronie przeglądarki, więc zmiana filtra nie obciąża serwera.
-- **Szczyt w dniu startu sprzedaży**: strona jest statyczna za CDN; jedyne obciążone punkty to `/api/chat` (limit zapytań, koszt modelu) i przekierowanie do iksoris. W prototypie `/api/chat` nie ma limitu zapytań ani pamięci podręcznej; przed wdrożeniem trzeba dodać limity na adres/konto i cache odpowiedzi na typowe pytania.
+- **Szczyt w dniu startu sprzedaży**: strona jest statyczna za CDN; jedyne obciążone punkty to `/api/chat` (limit zapytań, koszt modelu) i przekierowanie do iksoris. `/api/chat` ma limit 20 zapytań na 10 minut z adresu (`src/lib/rate-limit.ts`, w pamięci instancji – na produkcji wspólny magazyn, np. Redis/KV). Brakuje jeszcze cache odpowiedzi na typowe pytania.
 - **Cel mobilny** (design.md): LCP, CLS i INP do zmierzenia na 360 px, wartości docelowe w `docs/design.md`. Pomiaru jeszcze nie ma (TODO P2).
 - Zdjęcia: `object-fit`, `srcset`, leniwe ładowanie poza pierwszym ekranem; wideo bez dźwięku i bez autoodtwarzania przy `prefers-reduced-motion`.
 

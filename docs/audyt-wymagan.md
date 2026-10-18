@@ -19,7 +19,7 @@ Legenda: ✅ zrobione · 🟡 częściowo · ❌ brak
 | 9 | Podobne wydarzenia | ✅ | — |
 | 10 | Asystent AI | ✅ | — |
 | 11 | Wyszukiwarka | 🟡 | Tylko PL, brak intencji EN/DE |
-| 12 | Panel klienta | 🟡 | Brak biletów i powiadomień (wygląd już w design systemie) |
+| 12 | Panel klienta | 🟡 | Bilety i powiadomienia są (mock iksoris); brak programów PDF i prawdziwych zakupów |
 | 13 | EDUfilharmonia | 🟡 | 4 z 8 grup, brak zapisów (PL/EN/DE/UK gotowe) |
 | 14 | Zwiedzanie | ✅ | PL/EN/DE/UK, fakty i kontakt dla grup (rezerwacja niepotrzebna wg FS) |
 | 15 | Orkiestra i artyści | 🟡 | Brak nagrań i tournée |
@@ -66,7 +66,7 @@ Legenda: ✅ zrobione · 🟡 częściowo · ❌ brak
 
 1. Widok miesiąca.
 2. Filtry ceny i dostępności.
-3. Panel: bilety, programy, powiadomienia.
+3. ~~Panel: bilety, powiadomienia~~ — zrobione na mocku; programy PDF czekają na dane FS.
 4. ~~Link „Ustawienia prywatności” w stopce~~ — zrobione.
 5. Podłączyć prawdziwe statusy z iksoris zamiast mocka.
 
@@ -85,5 +85,5 @@ Legenda: ✅ zrobione · 🟡 częściowo · ❌ brak
 | B. Rodzic | ✅ | Działa filtr weekend + dzieci + wiek |
 | C. Asystent | ✅ | Nakładka i `/asystent` działają; RODO, źródło i CTA gotowe |
 | D. Turysta DE | ✅ | Zwiedzanie po niemiecku: terminy, cena, czas, języki, kontakt dla grup |
-| E. Stały bywalec | 🟡 | Brak biletów i powiadomień |
+| E. Stały bywalec | 🟡 | Panel: ulubione, bilety, powiadomienia (przykładowe dane); nie testowano z zalogowanym kontem |
 | F. Nauczyciel | ❌ | Brak miesiąca i zgłoszenia grupy |
