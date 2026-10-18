@@ -63,11 +63,11 @@ export function SiteHeader({ lang, overlay = false }: SiteHeaderProps) {
           : "border-b border-transparent bg-transparent"
       )}
     >
-      <Container className="flex h-full items-center justify-between gap-4">
-        <div className="flex items-center gap-6">
+      <Container className="flex h-full items-center justify-between gap-2 2xl:gap-4">
+        <div className="flex items-center gap-2 2xl:gap-6">
           <Logo lang={lang} className="h-14" priority />
           <nav aria-label={t.nav.mainLabel} className="hidden lg:block">
-            <ul className="flex items-center gap-1">
+            <ul className="flex items-center gap-0.5 2xl:gap-1">
               {mainLinks.map(({ label, href }) => (
                 <li key={href}>
                   <HeaderLink href={localizedPath(lang, href)} active={isActive(href)}>
@@ -78,7 +78,7 @@ export function SiteHeader({ lang, overlay = false }: SiteHeaderProps) {
             </ul>
           </nav>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1 2xl:gap-2">
           <HeaderLink href={localizedPath(lang, "/szukaj")} active={isActive("/szukaj")} className="hidden lg:flex">
             <Search {...iconProps} className="size-5" />
             {t.nav.search}
@@ -155,7 +155,7 @@ function HeaderLink({
     <Link
       href={href}
       aria-current={active ? "page" : undefined}
-      className={cn("flex h-11 items-center px-3 font-semibold whitespace-nowrap text-ink", className)}
+      className={cn("flex h-11 items-center px-2 2xl:px-3 font-semibold whitespace-nowrap text-ink", className)}
     >
       <span className="hover-line flex items-center gap-2">{children}</span>
     </Link>

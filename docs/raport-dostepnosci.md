@@ -112,6 +112,16 @@ Panel (`/panel/*`) przekierowuje do logowania, więc skan obejmuje stronę logow
 
 Uwaga: lokalny `next dev` bez `NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN` i `NEXT_PUBLIC_POSTHOG_HOST` kończy się błędem w `instrumentation.ts`. Do skanu ustawiono atrapy tych zmiennych (host `http://127.0.0.1:9`), bez zmian w `.env`.
 
+## 10. Powiększenie 200% i kontrola drzewa dostępności AXTree (18.10.2026)
+
+Sprawdzono 12 widoków (`/`, `/repertuar`, `/repertuar?widok=lista`, `/wydarzenia/2608-paulina-przybysz-insides`, `/pomoz-mi-wybrac`, `/planuj-wizyte`, `/asystent`, `/szukaj?q=jazz`, `/en/wystawy`, `/de/zwiedzanie`, `/uk/budynek`, `/konto`) w Chrome headless na dwa sposoby odpowiadające powiększeniu 200% z ekranu 1280 × 800 px (WCAG 1.4.4 i 1.4.10):
+
+1. **Natywny viewport 200% (`640 × 400 px`, `deviceScaleFactor: 2`)** — na wszystkich 12 widokach `scrollWidth = clientWidth = 640 px` (brak poziomego przewijania).
+2. **CSS `zoom: 200%` przy `1280 × 800 px`** — wykryto i naprawiono dwa drobne przepełnienia:
+   - `src/components/fs/site-header.tsx`: w języku angielskim (`Programme & Tickets` + `Plan a visit` + `Search` + `Account`) przy `lg` i `zoom: 200%` nagłówek wystawał o `1,7 px` (`1281,7 px`). Zmniejszono odstępy między linkami poniżej `2xl` (`gap-2 2xl:gap-6`, `px-2 2xl:px-3`) — po poprawce `scrollWidth = 1280 px`.
+   - `src/app/[lang]/zwiedzanie/page.tsx`: w języku niemieckim przyciski kontaktu dla grup (`E-Mail an die Kasse`, `Kasse anrufen`) w kolumnie 5/12 nie miały `flex-wrap`, przez co przy `zoom: 200%` drugi przycisk wystawał poza prawą krawędź. Dodano `flex-wrap` — po poprawce `scrollWidth = 1280 px`.
+3. **Drzewo dostępności (`Accessibility.getFullAXTree` w Chrome DevTools Protocol)** — potwierdzono poprawną ekspozycję punktów orientacyjnych (`banner`, `navigation`, `main`, `contentinfo`, `search`, `region`, `dialog`), hierarchii nagłówków (`h1` → `h2` → `h3`), regionów `aria-live="polite"` (licznik wyników w kalendarzu i wyszukiwarce, log czatu asystenta) oraz dostępnych nazw kontrolek w PL, EN, DE i UK. Odsłuch na fizycznym czytniku ekranu (VoiceOver / TalkBack) pozostaje zaleceniem wdrożeniowym.
+
 ## 5. Jak powtórzyć
 
 1. `pnpm add -D axe-core` (jest w `devDependencies`), skopiować `node_modules/axe-core/axe.min.js` do `public/`.

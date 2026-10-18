@@ -44,7 +44,7 @@ export default async function ToursPage() {
               {t.groupsTitle}
             </h2>
             <p className="type-body text-text">{t.groupsText}</p>
-            <div className="mt-2 flex flex-col gap-3 sm:flex-row lg:flex-col xl:flex-row">
+            <div className="mt-2 flex flex-col flex-wrap gap-3 sm:flex-row lg:flex-col xl:flex-row">
               <a href={mailto} className={buttonVariants({ variant: "secondary", size: "sm" })}>
                 <Mail {...iconProps} />
                 {t.groupsMail}
