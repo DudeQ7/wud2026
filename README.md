@@ -75,20 +75,6 @@ Zasada: **jedno API, wiele kanałów**. Żaden kanał — strona, asystent, wysz
 
 Co jest prawdziwe, a co makietą (np. system biletowy iksoris, odsłuch fragmentów), opisuje [`docs/architektura.md`](docs/architektura.md).
 
-## Struktura repozytorium
-
-```
-src/
-  app/          strony, API (/api/events, /api/chat), panel i admin
-  components/   komponenty interfejsu
-  content/      treści i makiety (ceny, dostępność, audio)
-  data/         koncerty.json — baza wiedzy strony i asystenta
-  i18n/         tłumaczenia PL / EN / DE
-  lib/          logika: wydarzenia, wyszukiwarka, asystent
-supabase/       migracje bazy danych
-docs/           brief, design system, architektura, raporty
-```
-
 ## Dokumentacja
 
 | Dokument | Zawartość |
