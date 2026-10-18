@@ -35,7 +35,7 @@ Legenda: ✅ zrobione · 🟡 częściowo · ❌ brak
 | 25 | API i model treści | 🟡 | Tylko API wydarzeń |
 | 26 | Wydajność | 🟡 | Brak pomiarów |
 | 27 | Dostępność | 🟡 | Brak testów manualnych |
-| 28 | Design system | 🟡 | Panel poza systemem |
+| 28 | Design system | ✅ | — |
 | 29 | Prezentacja | 🟡 | Brak próby na żywo |
 
 ## Co jest gotowe
@@ -46,16 +46,16 @@ Legenda: ✅ zrobione · 🟡 częściowo · ❌ brak
 - Karta wydarzenia: fakty, wykonawcy z linkami, program, czas, podobne, kalendarz, udostępnianie, nawigacja, telefon, ulubione, status biletów i odsłuch demo.
 - Kreator: 5 pytań, pomijanie, wstecz, 3–5 wyników, uzasadnienie, stan braku dopasowania.
 - Asystent: odpowiedzi z danych FS, karty wydarzeń, ulubione, mapa, 4 języki, nota RODO, źródło odpowiedzi, CTA „Zadzwoń do kasy / Napisz do nas” przy braku wiedzy i wygląd zgodny z design systemem.
-- Panel: logowanie, ulubione, historia czatu, profil.
+- Panel: logowanie, ulubione, historia czatu, profil; wygląd zgodny z design systemem.
 - Dostępność bazowa: skip link, fokus, 44 px, axe 0 na 16 widokach.
 - Treści: plan wizyty, dostępność, budynek, historia, artyści, cykle.
 
 ## P0 przed prezentacją
 
-1. Panel: doprowadzić wygląd do design systemu (asystent jest gotowy).
-2. Schody: dostępność opisana słowem, nie tylko kolorem.
-3. Tłumaczenia pod demo: EDU, zwiedzanie i opisy 3–5 wydarzeń.
-4. Program PDF: jeśli FS nie dostarczy plików, wyraźnie oznaczyć program online.
+1. Schody: dostępność opisana słowem, nie tylko kolorem.
+2. Tłumaczenia pod demo: EDU, zwiedzanie i opisy 3–5 wydarzeń.
+3. Program PDF: jeśli FS nie dostarczy plików, wyraźnie oznaczyć program online.
+4. Próba całości demo na żywo (A, B, C).
 
 ## P1 po demo
 

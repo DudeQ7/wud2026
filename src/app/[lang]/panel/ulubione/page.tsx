@@ -1,8 +1,14 @@
+import { Heart } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+
 import { getFavoriteEventIds } from "@/app/actions/panel";
+import { iconProps } from "@/components/fs/icons";
+import { buttonVariants } from "@/components/ui/button";
 import { getDictionary, hasLocale, kindLabel, localizedPath, seriesLabel, venueLabel } from "@/i18n";
-import { findEvent } from "@/lib/events";
+import { eventHref, findEvent } from "@/lib/events";
+import { cn } from "@/lib/utils";
+
 import { FavoriteItem } from "./FavoriteItem";
 
 export default async function FavoritesPage({ params }: PageProps<"/[lang]/panel/ulubione">) {
@@ -16,25 +22,23 @@ export default async function FavoritesPage({ params }: PageProps<"/[lang]/panel
   const favoriteEvents = favoriteIds.map((id) => findEvent(id, lang)).filter(Boolean);
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight">{t.title}</h1>
-        <p className="mt-1 text-sm text-muted-foreground">{t.intro}</p>
-      </div>
+    <div className="space-y-8">
+      <header>
+        <h1 className="type-h1 text-gold">{t.title}</h1>
+        <p className="mt-2 max-w-[68ch] type-body text-text">{t.intro}</p>
+      </header>
 
       {favoriteEvents.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-border p-12 text-center">
-          <span className="text-3xl" aria-hidden>❤️</span>
-          <h2 className="mt-3 text-lg font-semibold">{t.emptyTitle}</h2>
-          <p className="mt-1 text-sm text-muted-foreground">{t.emptyText}</p>
-          <div className="mt-6">
-            <Link
-              href={localizedPath(lang, "/asystent")}
-              className="rounded-xl bg-foreground px-5 py-2.5 text-sm font-semibold text-background hover:opacity-90"
-            >
-              {t.start}
-            </Link>
-          </div>
+        <div className="flex flex-col items-start border border-dashed border-line-strong p-6">
+          <Heart {...iconProps} className="size-6 text-text" />
+          <h2 className="mt-3 type-h3 text-text">{t.emptyTitle}</h2>
+          <p className="mt-1 max-w-[60ch] type-body text-text">{t.emptyText}</p>
+          <Link
+            href={localizedPath(lang, "/asystent")}
+            className={cn(buttonVariants({ variant: "secondary" }), "mt-5 w-fit")}
+          >
+            {t.start}
+          </Link>
         </div>
       ) : (
         <div className="grid gap-4 md:grid-cols-2">
@@ -51,7 +55,7 @@ export default async function FavoritesPage({ params }: PageProps<"/[lang]/panel
                   series: seriesLabel(dict, event.series),
                   dates: event.dates,
                   venue: venueLabel(dict, event.venue),
-                  url: event.url,
+                  href: localizedPath(lang, eventHref(event)),
                   ticketsUrl: event.ticketsUrl,
                 }}
               />

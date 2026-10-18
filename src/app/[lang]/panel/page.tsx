@@ -1,8 +1,13 @@
+import { ArrowRight, CalendarDays, Heart, MessageSquare, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getCurrentUser, getProfile, getFavoriteEventIds, getChatSessions } from "@/app/actions/panel";
+
+import { getChatSessions, getCurrentUser, getFavoriteEventIds, getProfile } from "@/app/actions/panel";
+import { iconProps } from "@/components/fs/icons";
+import { buttonVariants } from "@/components/ui/button";
 import { getDictionary, hasLocale, kindLabel, localizedPath, venueLabel } from "@/i18n";
-import { findEvent } from "@/lib/events";
+import { eventHref, findEvent, formatShortDate, formatTime } from "@/lib/events";
+import { cn } from "@/lib/utils";
 
 export default async function PanelDashboardPage({ params }: PageProps<"/[lang]/panel">) {
   const { lang } = await params;
@@ -19,148 +24,123 @@ export default async function PanelDashboardPage({ params }: PageProps<"/[lang]/
   // Match favorite events with full data (tytuły w języku strony)
   const favoriteEvents = favoriteIds.map((id) => findEvent(id, lang)).filter(Boolean);
 
+  const stats = [
+    {
+      key: "favorites",
+      label: d.favorites,
+      value: favoriteIds.length,
+      href: "/panel/ulubione",
+      link: d.seeFavorites,
+      icon: Heart,
+    },
+    {
+      key: "chats",
+      label: d.chats,
+      value: chatSessions.length,
+      href: "/panel/historia",
+      link: d.seeHistory,
+      icon: MessageSquare,
+    },
+  ];
+
   return (
-    <div className="space-y-8">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">{d.greeting(name)}</h1>
-        <p className="mt-1 text-sm text-muted-foreground">{d.intro}</p>
-      </div>
+    <div className="space-y-12">
+      <header>
+        <h1 className="type-h1 text-gold">{d.greeting(name)}</h1>
+        <p className="mt-2 max-w-[68ch] type-body text-text">{d.intro}</p>
+      </header>
 
-      {/* Metric Cards */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        <div className="rounded-2xl border border-border bg-background p-6">
-          <div className="flex items-center justify-between">
-            <span className="text-sm font-medium text-muted-foreground">{d.favorites}</span>
-            <span className="text-xl">❤️</span>
-          </div>
-          <div className="mt-4">
-            <span className="text-3xl font-extrabold">{favoriteIds.length}</span>
-          </div>
-          <div className="mt-3">
-            <Link
-              href={localizedPath(lang, "/panel/ulubione")}
-              className="text-xs font-semibold text-foreground underline underline-offset-4 hover:opacity-80"
-            >
-              {d.seeFavorites}
+      <section aria-label={t.panel.title} className="grid gap-4 sm:grid-cols-2">
+        {stats.map(({ key, label, value, href, link, icon: Icon }) => (
+          <article key={key} className="flex flex-col border border-line p-5">
+            <div className="flex items-center justify-between gap-3">
+              <p className="type-label text-text-muted">{label}</p>
+              <Icon {...iconProps} className="size-5 shrink-0 text-text" />
+            </div>
+            <p className="mt-4 font-heading text-4xl leading-none font-semibold text-text tabular-nums">{value}</p>
+            <Link href={localizedPath(lang, href)} className={cn(buttonVariants({ variant: "link" }), "mt-4 w-fit")}>
+              {link} <ArrowRight {...iconProps} className="size-4" />
             </Link>
-          </div>
-        </div>
+          </article>
+        ))}
 
-        <div className="rounded-2xl border border-border bg-background p-6">
-          <div className="flex items-center justify-between">
-            <span className="text-sm font-medium text-muted-foreground">{d.chats}</span>
-            <span className="text-xl">💬</span>
+        <article className="flex flex-col border border-line p-5 sm:col-span-2">
+          <div className="flex items-center justify-between gap-3">
+            <p className="type-label text-text-muted">{d.assistant}</p>
+            <Sparkles {...iconProps} className="size-5 shrink-0 text-text" />
           </div>
-          <div className="mt-4">
-            <span className="text-3xl font-extrabold">{chatSessions.length}</span>
-          </div>
-          <div className="mt-3">
-            <Link
-              href={localizedPath(lang, "/panel/historia")}
-              className="text-xs font-semibold text-foreground underline underline-offset-4 hover:opacity-80"
-            >
-              {d.seeHistory}
-            </Link>
-          </div>
-        </div>
+          <p className="mt-3 max-w-[52ch] type-body text-text">{d.assistantText}</p>
+          <Link href={localizedPath(lang, "/asystent")} className={cn(buttonVariants({ variant: "primary" }), "mt-4 w-fit")}>
+            {d.askAi}
+          </Link>
+        </article>
+      </section>
 
-        <div className="rounded-2xl border border-border bg-background p-6 sm:col-span-2 lg:col-span-1">
-          <div className="flex items-center justify-between">
-            <span className="text-sm font-medium text-muted-foreground">{d.assistant}</span>
-            <span className="text-xl">✨</span>
-          </div>
-          <p className="mt-2 text-xs text-muted-foreground">{d.assistantText}</p>
-          <div className="mt-4">
-            <Link
-              href={localizedPath(lang, "/asystent")}
-              className="inline-block rounded-xl bg-foreground px-4 py-2 text-xs font-semibold text-background transition-opacity hover:opacity-90"
-            >
-              {d.askAi}
-            </Link>
-          </div>
-        </div>
-      </div>
-
-      {/* Ulubione koncerty - szybki podgląd */}
-      <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h2 className="text-xl font-bold">{d.yourEvents}</h2>
+      <section aria-labelledby="ulubione-panel">
+        <div className="flex flex-wrap items-end justify-between gap-3">
+          <h2 id="ulubione-panel" className="type-h3 text-gold">
+            {d.yourEvents}
+          </h2>
           {favoriteEvents.length > 0 && (
-            <Link
-              href={localizedPath(lang, "/panel/ulubione")}
-              className="text-xs font-semibold text-muted-foreground hover:text-foreground"
-            >
+            <Link href={localizedPath(lang, "/panel/ulubione")} className={cn(buttonVariants({ variant: "link" }), "w-fit")}>
               {d.all(favoriteEvents.length)}
             </Link>
           )}
         </div>
 
         {favoriteEvents.length === 0 ? (
-          <div className="rounded-2xl border border-dashed border-border p-8 text-center">
-            <p className="text-sm text-muted-foreground">{d.noFavorites}</p>
+          <div className="mt-4 flex flex-col items-start border border-dashed border-line-strong p-6">
+            <Heart {...iconProps} className="size-6 text-text" />
+            <p className="mt-3 type-body text-text">{d.noFavorites}</p>
             <Link
               href={localizedPath(lang, "/asystent")}
-              className="mt-4 inline-block rounded-xl border border-border px-4 py-2 text-xs font-semibold hover:bg-muted"
+              className={cn(buttonVariants({ variant: "secondary" }), "mt-4 w-fit")}
             >
               {d.discover}
             </Link>
           </div>
         ) : (
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="mt-4 grid gap-4 sm:grid-cols-2">
             {favoriteEvents.slice(0, 4).map((event) => {
               if (!event) return null;
-              const nextDate = event.dates?.[0]
-                ? new Date(event.dates[0]).toLocaleString(t.intl, {
-                    dateStyle: "long",
-                    timeStyle: "short",
-                  })
-                : t.panel.noDate;
+              const next = event.dates?.[0];
 
               return (
-                <div
-                  key={event.id}
-                  className="flex flex-col justify-between rounded-2xl border border-border bg-background p-5"
-                >
+                <article key={event.id} className="flex flex-col border-[1.5px] border-line-strong p-4">
                   <div>
-                    {event.kind && (
-                      <span className="text-xs font-medium text-muted-foreground">
-                        {kindLabel(t, event.kind)}
-                      </span>
-                    )}
-                    <h3 className="mt-1 font-semibold leading-snug">{event.title}</h3>
-                    <p className="mt-2 text-xs text-muted-foreground">
-                      <span aria-hidden>📅 </span>
-                      {nextDate}
+                    {event.kind && <p className="type-eyebrow text-gold">{kindLabel(t, event.kind)}</p>}
+                    <h3 className="mt-1 type-title-card text-text">{event.title}</h3>
+                    <p className="mt-2 flex items-center gap-1.5 type-meta text-text-muted">
+                      <CalendarDays {...iconProps} className="size-4 shrink-0" />
+                      {next ? `${formatShortDate(next, t)} · ${formatTime(next)}` : t.panel.noDate}
                       {event.venue && ` · ${venueLabel(t, event.venue)}`}
                     </p>
                   </div>
 
-                  <div className="mt-4 flex items-center justify-between border-t border-border pt-3">
-                    <a
-                      href={event.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-xs font-medium underline underline-offset-4 hover:opacity-80"
+                  <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-line pt-4">
+                    <Link
+                      href={localizedPath(lang, eventHref(event))}
+                      className={buttonVariants({ variant: "secondary", size: "sm" })}
                     >
                       {d.details}
-                    </a>
+                    </Link>
                     {event.ticketsUrl && (
                       <a
                         href={event.ticketsUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="rounded-lg bg-foreground px-3 py-1.5 text-xs font-semibold text-background hover:opacity-90"
+                        className={buttonVariants({ variant: "primary", size: "sm" })}
                       >
                         {d.buyTicket}
                       </a>
                     )}
                   </div>
-                </div>
+                </article>
               );
             })}
           </div>
         )}
-      </div>
+      </section>
     </div>
   );
 }
