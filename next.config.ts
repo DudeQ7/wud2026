@@ -23,6 +23,10 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  // Przeglądarki zawsze pytają o /favicon.ico (404 w logach) – oddajemy tę samą ikonę, co w <link rel="icon">
+  async rewrites() {
+    return [{ source: "/favicon.ico", destination: "/icons/icon.png" }];
+  },
   turbopack: {
     rules: {
       "*.css": {
