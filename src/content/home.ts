@@ -64,7 +64,7 @@ export const address = "ul. Małopolska 48, 70-515 Szczecin"
 
 /** Pierwsza wizyta w trzech krokach (Odkryj Filharmonię) – trasa po budynku jak na zwiedzaniu z przewodnikiem (visit.json → tours) */
 export const firstVisitRoute = [
-  { key: "foyer", href: "/budynek" },
-  { key: "hall", href: "/repertuar" },
-  { key: "gallery", href: "/wystawy" },
+  { key: "foyer", href: "/budynek", photo: "https://filharmonia.szczecin.pl/files/simplesites/pl_6gallery_gallery_5_midi.jpg", position: "50% 40%" },
+  { key: "hall", href: "/repertuar", photo: "https://filharmonia.szczecin.pl/files/simplesites/pl_6gallery_gallery_28_midi.jpg", position: "50% 50%" },
+  { key: "gallery", href: "/wystawy", photo: "https://filharmonia.szczecin.pl/files/simplesites/pl_6gallery_gallery_33_midi.jpg", position: "50% 60%" },
 ] as const

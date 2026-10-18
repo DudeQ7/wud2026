@@ -42,33 +42,35 @@ export default async function StartHerePage() {
       <main id="tresc" className="pt-8 pb-16 lg:pt-12 lg:pb-24">
         <Container className="max-w-3xl">
           <Eyebrow>{copy?.eyebrow ?? "Pierwszy raz w Filharmonii"}</Eyebrow>
-          <h1 className="mt-1 type-h1 text-gold">{copy?.title ?? "Zacznij tutaj"}</h1>
-          <p className="mt-2 type-body-lg max-w-[68ch] text-text">
+          <h1 className="mt-2 type-h1 text-gold">{copy?.title ?? "Zacznij tutaj"}</h1>
+          <p className="mt-4 type-body-lg max-w-[68ch] text-text">
             {copy?.lead ?? "Nie musisz znać muzyki klasycznej. Wystarczy, że masz ochotę posłuchać. Pomożemy wybrać pierwszy koncert i odpowiemy na pytania, które zwykle zadaje się przed wejściem."}
           </p>
 
-          <ol className="mt-10 flex flex-col gap-10">
+          <ol className="mt-12 flex flex-col gap-12 lg:gap-16">
             <li>
               <h2 className="type-h3 text-gold">{copy?.choose ?? "1. Wybierz koncert"}</h2>
               <p className="mt-2 type-body text-text">{copy?.chooseLead ?? "Pięć krótkich pytań, każde możesz pominąć."}</p>
-              <Link href={localizedPath(lang, "/pomoz-mi-wybrac")} className={`${buttonVariants({ variant: "primary", block: true })} mt-4 sm:w-fit`}>
-                {copy?.chooseAction ?? "Pomóż mi wybrać"}
-              </Link>
-              <Link href={localizedPath(lang, "/repertuar")} className="mt-2 inline-flex min-h-11 items-center font-semibold text-text underline decoration-[1.5px] underline-offset-[3px]">
-                {copy?.browse ?? "Albo przejrzyj repertuar →"}
-              </Link>
+              <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-6">
+                <Link href={localizedPath(lang, "/pomoz-mi-wybrac")} className={`${buttonVariants({ variant: "primary", block: true })} sm:w-fit`}>
+                  {copy?.chooseAction ?? "Pomóż mi wybrać"}
+                </Link>
+                <Link href={localizedPath(lang, "/repertuar")} className="inline-flex min-h-11 items-center font-semibold text-text underline decoration-[1.5px] underline-offset-[3px]">
+                  {copy?.browse ?? "Albo przejrzyj repertuar →"}
+                </Link>
+              </div>
             </li>
 
             <li>
               <h2 className="type-h3 text-gold">{copy?.upcoming ?? "2. Najbliższe koncerty"}</h2>
-              <Suspense fallback={<div className="mt-4 h-48 bg-surface-muted" role="status" aria-busy="true" aria-label={route?.ui.loading ?? "Wczytywanie"} />}>
+              <Suspense fallback={<div className="mt-6 h-48 bg-surface-muted" role="status" aria-busy="true" aria-label={route?.ui.loading ?? "Wczytywanie"} />}>
                 <Upcoming />
               </Suspense>
             </li>
 
             <li>
               <h2 className="type-h3 text-gold">{copy?.before ?? "3. Zanim przyjdziesz"}</h2>
-              <ul className="mt-4 grid gap-3 sm:grid-cols-2">
+              <ul className="mt-6 grid gap-3 sm:grid-cols-2">
                 {firstVisit.map((card, index) => {
                   const translated = copy?.cards[index]
                   return (
@@ -79,7 +81,7 @@ export default async function StartHerePage() {
                   )
                 })}
               </ul>
-              <Link href={localizedPath(lang, "/planuj-wizyte")} className={`${buttonVariants({ variant: "secondary", block: true })} mt-4 sm:w-fit`}>
+              <Link href={localizedPath(lang, "/planuj-wizyte")} className={`${buttonVariants({ variant: "secondary", block: true })} mt-6 sm:w-fit`}>
                 {copy?.visit ?? "Planuj wizytę"}
               </Link>
             </li>
@@ -99,7 +101,7 @@ async function Upcoming() {
   // zamiast trzech pełnych kart, które odpychały „Zanim przyjdziesz” daleko w dół
   const concerts = upcomingConcerts(todayKey(new Date()), 4, [], lang)
   return (
-    <div className="mt-4 grid grid-cols-2 gap-x-4 gap-y-8 lg:grid-cols-4 lg:gap-x-6">
+    <div className="mt-6 grid grid-cols-2 gap-x-4 gap-y-8 lg:grid-cols-4 lg:gap-x-6">
       {concerts.map(({ event, date }) => (
         <EventCard lang={lang} key={event.id} event={event} date={date} variant="compact" />
       ))}
