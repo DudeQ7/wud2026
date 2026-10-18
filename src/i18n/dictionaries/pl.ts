@@ -44,6 +44,7 @@ export const pl = {
   consent: {
     label: "Zgody na analitykę",
     text: "Używamy analityki, żeby wiedzieć, które strony i wydarzenia są przydatne. Włączy się dopiero po Twojej zgodzie.",
+    textShort: "Analityka włączy się dopiero po Twojej zgodzie.",
     accept: "Akceptuj",
     reject: "Odrzuć",
     settings: "Ustawienia",

@@ -61,6 +61,18 @@
   }
 }
 
+/* Baner zgód nie zasłania „Kup bilet” w otwarciu (§6.18). --consent-space: pas od górnej krawędzi banera do dołu
+   ekranu. Przed hydratacją przybliżenie (skrypt w <head> ustawia atrybut), potem dokładna wartość z banera. */
+:root[data-consent-pending] {
+  --consent-space: calc(var(--bottom-nav-h) + 7.125rem);
+}
+/* Od 768 px baner jest pływającym panelem 24 px nad dolną nawigacją (a od 1024 px nad krawędzią ekranu) */
+@media (min-width: 48rem) {
+  :root[data-consent-pending] {
+    --consent-space: calc(var(--bottom-nav-h) + 10.25rem);
+  }
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);

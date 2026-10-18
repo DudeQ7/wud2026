@@ -41,6 +41,7 @@ export const en: Dictionary = {
   consent: {
     label: "Analytics consent",
     text: "We use analytics to learn which pages and events are useful. It starts only after you agree.",
+    textShort: "Analytics starts only after you agree.",
     accept: "Accept",
     reject: "Reject",
     settings: "Settings",

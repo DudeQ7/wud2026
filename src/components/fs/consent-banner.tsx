@@ -1,14 +1,24 @@
 "use client"
 
 import Link from "next/link"
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState, useSyncExternalStore } from "react"
 
 import { PRIVACY_BUTTON_ID } from "@/components/fs/privacy-settings-button"
 import { buttonVariants } from "@/components/ui/button"
 import { type Locale, getDictionary } from "@/i18n"
 import { disableAnalytics, initAnalytics } from "@/lib/analytics"
-import { CONSENT_OPEN_EVENT, type ConsentValue, readConsent, writeConsent } from "@/lib/consent"
+import {
+  CONSENT_OPEN_EVENT,
+  CONSENT_PENDING_ATTR,
+  type ConsentValue,
+  readConsent,
+  subscribeConsent,
+  writeConsent,
+} from "@/lib/consent"
 import { cn } from "@/lib/utils"
+
+/** Na serwerze zgody nie znamy – baner pokazuje się dopiero w przeglądarce */
+const UNKNOWN = "unknown"
 
 /**
  * Baner zgód (§6.18): „Odrzuć” i „Akceptuj” mają równą wagę, analityka startuje po zgodzie.
@@ -16,25 +26,21 @@ import { cn } from "@/lib/utils"
  */
 export function ConsentBanner({ lang }: { lang: Locale }) {
   const t = getDictionary(lang).consent
-  const [ready, setReady] = useState(false)
-  const [choice, setChoice] = useState<ConsentValue | null>(null)
+  const stored = useSyncExternalStore(subscribeConsent, readConsent, () => UNKNOWN)
   const [settings, setSettings] = useState(false)
   const [analytics, setAnalytics] = useState(true)
 
   // Baner otwarty ponownie ze stopki: zmiana zgody, nie pierwszy wybór
   const [reopened, setReopened] = useState(false)
   const sectionRef = useRef<HTMLElement>(null)
+  const visible = reopened || stored === null
+  // Miejsce rezerwujemy tylko przy pierwszym wyborze; ponowne otwarcie ze stopki nie przesuwa strony
+  const reserve = visible && !reopened
 
   useEffect(() => {
-    const stored = readConsent()
-    setChoice(stored)
-    setAnalytics(stored !== "essential")
-    setReady(true)
-
     const reopen = () => {
       setAnalytics(readConsent() !== "essential")
       setSettings(true)
-      setChoice(null)
       setReopened(true)
     }
     window.addEventListener(CONSENT_OPEN_EVENT, reopen)
@@ -43,13 +49,40 @@ export function ConsentBanner({ lang }: { lang: Locale }) {
 
   // Fokus przechodzi do otwartego okna ustawień, a po zamknięciu wraca na przycisk w stopce
   useEffect(() => {
-    if (reopened && !choice) sectionRef.current?.querySelector("input")?.focus()
-  }, [reopened, choice])
+    if (reopened) sectionRef.current?.querySelector("input")?.focus()
+  }, [reopened])
 
-  if (!ready || choice) return null
+  // Baner nie zasłania treści (§6.18): --consent-space to pas od górnej krawędzi banera do dołu ekranu.
+  // Otwarcie strony głównej odejmuje go od wysokości, więc „Kup bilet / Zobacz” stoją nad banerem.
+  // Skrypt w <head> ustawia przybliżoną wartość przed pierwszym malowaniem, tu ją doprecyzowujemy.
+  const hydrated = stored !== UNKNOWN
+  useEffect(() => {
+    // Render hydratacji ma migawkę z serwera – nie zdejmujemy wtedy rezerwacji ze skryptu w <head>
+    if (!hydrated) return
+    const root = document.documentElement
+    const section = sectionRef.current
+    if (!reserve || !section) {
+      root.removeAttribute(CONSENT_PENDING_ATTR)
+      root.style.removeProperty("--consent-space")
+      return
+    }
+    const update = () =>
+      root.style.setProperty("--consent-space", `${Math.max(0, window.innerHeight - section.getBoundingClientRect().top)}px`)
+    update()
+    const observer = new ResizeObserver(update)
+    observer.observe(section)
+    window.addEventListener("resize", update)
+    return () => {
+      observer.disconnect()
+      window.removeEventListener("resize", update)
+      root.removeAttribute(CONSENT_PENDING_ATTR)
+      root.style.removeProperty("--consent-space")
+    }
+  }, [reserve, hydrated])
 
-  function close(value: ConsentValue | null) {
-    setChoice(value)
+  if (!visible) return null
+
+  function close() {
     if (reopened) {
       setReopened(false)
       setSettings(false)
@@ -59,22 +92,22 @@ export function ConsentBanner({ lang }: { lang: Locale }) {
 
   function save(value: ConsentValue) {
     writeConsent(value)
-    close(value)
+    close()
     if (value === "analytics") initAnalytics()
     else disableAnalytics()
   }
 
-  // Kompaktowo na telefonie (≈ 1/5 ekranu): tekst z linkiem w zdaniu, dwa przyciski równej wagi w jednym
-  // rzędzie i „Ustawienia” obok. Wcześniej baner zasłaniał „Kup bilet” na otwarciu strony.
+  // Na telefonie cienki pasek: jedno krótkie zdanie z linkiem i jeden rząd przycisków równej wagi
   return (
     <section
       ref={sectionRef}
       role="region"
       aria-label={t.label}
-      className="fixed inset-x-0 bottom-[calc(4rem+env(safe-area-inset-bottom))] z-50 mx-auto w-full max-w-3xl border-t border-line bg-background px-4 py-3 shadow-[0_-4px_16px_rgba(26,26,26,.08)] md:bottom-6 md:border md:p-5 lg:bottom-6"
+      className="fixed inset-x-0 bottom-[calc(4rem+env(safe-area-inset-bottom))] z-50 mx-auto w-full max-w-3xl border-t border-line bg-background px-4 py-2.5 shadow-[0_-4px_16px_rgba(26,26,26,.08)] md:bottom-[calc(5.5rem+env(safe-area-inset-bottom))] md:border md:p-5 lg:bottom-6"
     >
       <p className="type-meta text-text">
-        {t.text}{" "}
+        <span className="sm:hidden">{t.textShort}</span>
+        <span className="hidden sm:inline">{t.text}</span>{" "}
         <Link
           href="https://filharmonia.szczecin.pl/polityka_prywatnosci"
           target="_blank"
@@ -102,7 +135,7 @@ export function ConsentBanner({ lang }: { lang: Locale }) {
           <div className="grid grid-cols-2 gap-2 sm:flex">
             <button
               type="button"
-              onClick={() => (reopened ? close(readConsent()) : setSettings(false))}
+              onClick={() => (reopened ? close() : setSettings(false))}
               className={buttonVariants({ variant: "secondary", size: "sm" })}
             >
               {t.back}
@@ -117,7 +150,7 @@ export function ConsentBanner({ lang }: { lang: Locale }) {
           </div>
         </div>
       ) : (
-        <div className="mt-3 grid grid-cols-[1fr_1fr_auto] items-center gap-2 sm:flex">
+        <div className="mt-2 grid grid-cols-[1fr_1fr_auto] items-center gap-2 sm:mt-3 sm:flex">
           <button type="button" onClick={() => save("essential")} className={cn(buttonVariants({ variant: "secondary", size: "sm" }), "px-3 sm:flex-1")}>
             {t.reject}
           </button>

@@ -42,6 +42,7 @@ export const de: Dictionary = {
   consent: {
     label: "Einwilligung zur Analyse",
     text: "Wir nutzen Analysen, um zu sehen, welche Seiten und Veranstaltungen hilfreich sind. Sie starten erst nach Ihrer Zustimmung.",
+    textShort: "Analysen starten erst nach Ihrer Zustimmung.",
     accept: "Akzeptieren",
     reject: "Ablehnen",
     settings: "Einstellungen",

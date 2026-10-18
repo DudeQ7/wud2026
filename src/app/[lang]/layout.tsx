@@ -6,6 +6,7 @@ import { fontVariables } from "@/app/fonts"
 import { ConsentAnalytics } from "@/components/fs/consent-analytics"
 import { ConsentBanner } from "@/components/fs/consent-banner"
 import { getDictionary, hasLocale, locales } from "@/i18n"
+import { consentPendingScript } from "@/lib/consent"
 
 import "../globals.css"
 
@@ -44,7 +45,12 @@ export default async function RootLayout({ children, params }: LayoutProps<"/[la
   if (!hasLocale(lang)) notFound()
 
   return (
-    <html lang={lang} className={fontVariables}>
+    // suppressHydrationWarning: skrypt zgód dopisuje atrybut do <html> przed hydratacją
+    <html lang={lang} className={fontVariables} suppressHydrationWarning>
+      <head>
+        {/* Przed pierwszym malowaniem: brak zgody = miejsce na baner pod otwarciem strony (bez skoku układu) */}
+        <script dangerouslySetInnerHTML={{ __html: consentPendingScript }} />
+      </head>
       <body className="min-h-dvh">
         {children}
         <ConsentBanner lang={lang} />

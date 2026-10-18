@@ -38,7 +38,7 @@ export function Hero({ event, date, today, lang, photoPosition = "50% 30%" }: He
 
   return (
     <section aria-labelledby="hero-title">
-      <div className="relative h-[calc(100svh-var(--bottom-nav-h))] max-h-[56rem] min-h-[34rem] overflow-hidden bg-surface-muted landscape-short:min-h-[calc(100svh-var(--bottom-nav-h))]">
+      <div className="relative h-[calc(100svh-max(var(--bottom-nav-h),var(--consent-space,0px)))] max-h-[56rem] min-h-[34rem] overflow-hidden bg-surface-muted landscape-short:min-h-[calc(100svh-var(--bottom-nav-h))]">
         {/* Poziomo: zdjęcie po lewej, treść po prawej – inaczej tytuł i przyciski lądują poza ekranem */}
         <div className="absolute inset-0 landscape-short:right-1/2">
           {event.image && (
