@@ -12,10 +12,8 @@ import {
   NewsletterSection,
   PartnersSection,
   RecommendedSection,
-  TodaySection,
-  UpcomingSection,
 } from "@/components/home/sections"
-import { recommended } from "@/content/home"
+import { StairsSection } from "@/components/home/stairs"
 import { type Locale, getDictionary, hasLocale, locales, localizedPath } from "@/i18n"
 import { nextConcert, nowKey, todayKey } from "@/lib/events"
 
@@ -58,12 +56,7 @@ async function HomeContent({ lang }: { lang: Locale }) {
       <SiteHeader lang={lang} overlay={Boolean(hero)} />
       <main id="tresc">
         {hero && <Hero event={hero.event} date={hero.date} lang={lang} />}
-        <TodaySection today={today} lang={lang} />
-        <UpcomingSection
-          today={today}
-          lang={lang}
-          excludeIds={[...(hero ? [hero.event.id] : []), recommended.featuredId, ...recommended.otherIds]}
-        />
+        <StairsSection today={today} lang={lang} />
         <RecommendedSection today={today} lang={lang} />
         <ForYouSection lang={lang} />
         <DiscoverSection lang={lang} />

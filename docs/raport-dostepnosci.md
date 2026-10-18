@@ -55,6 +55,20 @@ Uwaga metodyczna: strony z Suspense podmieniają treść dopiero, gdy karta prze
 - Strony panelu klienta i asystent AI.
 - Komponenty ładowane po interakcji (np. nakładka asystenta).
 
+## 6. Uzupełnienie: testy ręczne (18.10.2026, wbudowana przeglądarka, `next dev`)
+
+| Sprawdzenie | Wynik |
+|---|---|
+| Reflow przy 320 px, 10 widoków (`/`, `/repertuar`, karta wydarzenia, `/pomoz-mi-wybrac`, `/planuj-wizyte`, `/szukaj`, `/edu`, `/asystent`, `/en`, `/de/repertuar`) | OK, `scrollWidth` = 320 na każdym. Elementy szersze niż ekran to wyłącznie przewijany poziomo pasek szybkich filtrów (celowy, §6.6 design.md) |
+| Cele dotykowe < 24 px | Tylko linki „Polityka prywatności” wewnątrz zdania zgody w newsletterze (wyjątek „inline”, 2.5.8) |
+| `h1` na stronie | Znalezione: `/asystent` nie miał `h1` (tylko `h2`). **Naprawione**: tytuł jest `h1` na stronie, a w nakładce zostaje `h2` |
+| Skip link | Pierwszy Tab → „Przejdź do treści”, obrys 2 px `#1A1A1A` |
+| Fokus w wierszu kalendarza | Obrys rysowany na wrapperze wiersza (rozciągnięty link), widoczny; fokus poza paskiem nagłówka |
+| `prefers-reduced-motion: reduce` | Reguła globalna skraca przejścia do 1 ms i wyłącza `scroll-behavior` |
+| Menu (hamburger) | Otwiera się i zamyka na 375, 768 i 1440 px |
+
+Nadal niesprawdzone: czytniki ekranu (VoiceOver, TalkBack), wtyczka WAVE (wymaga przeglądarki użytkownika) i zoom 200% w prawdziwej przeglądarce.
+
 ## 5. Jak powtórzyć
 
 1. `pnpm add -D axe-core` (jest w `devDependencies`), skopiować `node_modules/axe-core/axe.min.js` do `public/`.
