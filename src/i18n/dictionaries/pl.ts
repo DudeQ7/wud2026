@@ -33,6 +33,14 @@ export const pl = {
     breadcrumbs: "Ścieżka nawigacji",
   },
 
+  notFound: {
+    eyebrow: "404",
+    title: "Ta strona nie istnieje",
+    text: "Może wydarzenie już się odbyło albo adres się zmienił. Sprawdź aktualny repertuar.",
+    home: "Strona główna",
+    repertoire: "Repertuar",
+  },
+
   consent: {
     label: "Zgody na analitykę",
     text: "Używamy analityki, żeby wiedzieć, które strony i wydarzenia są przydatne. Włączy się dopiero po Twojej zgodzie.",

@@ -30,6 +30,14 @@ export const en: Dictionary = {
     breadcrumbs: "Breadcrumb",
   },
 
+  notFound: {
+    eyebrow: "404",
+    title: "This page does not exist",
+    text: "The event may have already taken place or the address has changed. Check the current programme.",
+    home: "Home",
+    repertoire: "What's on",
+  },
+
   consent: {
     label: "Analytics consent",
     text: "We use analytics to learn which pages and events are useful. It starts only after you agree.",

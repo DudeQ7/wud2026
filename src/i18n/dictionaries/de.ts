@@ -31,6 +31,14 @@ export const de: Dictionary = {
     breadcrumbs: "Navigationspfad",
   },
 
+  notFound: {
+    eyebrow: "404",
+    title: "Diese Seite gibt es nicht",
+    text: "Die Veranstaltung ist vielleicht schon vorbei oder die Adresse hat sich geändert. Prüfen Sie den aktuellen Spielplan.",
+    home: "Startseite",
+    repertoire: "Spielplan",
+  },
+
   consent: {
     label: "Einwilligung zur Analyse",
     text: "Wir nutzen Analysen, um zu sehen, welche Seiten und Veranstaltungen hilfreich sind. Sie starten erst nach Ihrer Zustimmung.",
