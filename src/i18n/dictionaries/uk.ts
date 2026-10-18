@@ -415,6 +415,7 @@ export const uk: Dictionary = {
 
   auth: {
     back: "Повернутися на головну",
+    errorLabel: "Помилка:",
     email: "Адреса електронної пошти",
     emailPlaceholder: "you@email.com",
     password: "Пароль",

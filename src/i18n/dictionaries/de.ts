@@ -430,6 +430,7 @@ export const de: Dictionary = {
 
   auth: {
     back: "Zurück zur Startseite",
+    errorLabel: "Fehler:",
     email: "E-Mail-Adresse",
     emailPlaceholder: "ihre@email.de",
     password: "Passwort",

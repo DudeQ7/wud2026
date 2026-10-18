@@ -396,6 +396,7 @@ export const pl = {
 
   auth: {
     back: "Wróć na stronę główną",
+    errorLabel: "Błąd:",
     email: "Adres e-mail",
     emailPlaceholder: "twoj@email.pl",
     password: "Hasło",

@@ -46,7 +46,7 @@ Legenda: ✅ zrobione · 🟡 częściowo · ❌ brak
 - Karta wydarzenia: fakty, wykonawcy z linkami, program, czas, podobne, kalendarz, udostępnianie, nawigacja, telefon, ulubione, status biletów i odsłuch demo.
 - Kreator: 5 pytań, pomijanie, wstecz, 3–5 wyników, uzasadnienie, stan braku dopasowania.
 - Asystent: odpowiedzi z danych FS, karty wydarzeń, ulubione, mapa, 4 języki, nota RODO, źródło odpowiedzi, CTA „Zadzwoń do kasy / Napisz do nas” przy braku wiedzy i wygląd zgodny z design systemem.
-- Panel: logowanie, ulubione, historia czatu, profil; wygląd zgodny z design systemem.
+- Panel i logowanie/rejestracja: ulubione, historia czatu, profil; wygląd zgodny z design systemem.
 - Dostępność bazowa: skip link, fokus, 44 px, axe 0 na 16 widokach.
 - Treści: plan wizyty, dostępność, budynek, historia, artyści, cykle.
 - SEO: `schema.org/Event` na kartach wydarzeń, `Organization` i `WebSite` na stronie głównej oraz sitemap z hreflang dla tras, wydarzeń, artystów i cykli.
