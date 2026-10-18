@@ -243,7 +243,7 @@ async function ResultList({ answers, matches, lang }: { answers: Answers; matche
           getLabel("rodzaj"),
           getLabel("klimat"),
           // Budżet wymieniamy tylko, gdy znamy cenę wydarzenia – bez tego „do 50 zł” byłoby zgadywaniem
-          answers.budzet && answers.budzet !== "bez-limitu" && lowestPrice(m.event.prices) !== null
+          answers.budzet && answers.budzet !== "bez-limitu" && lowestPrice(m.event) !== null
             ? (ui?.budgetUpTo(answers.budzet) ?? `do ${answers.budzet} zł`)
             : undefined,
         ].filter(Boolean)

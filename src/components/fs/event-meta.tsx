@@ -4,6 +4,7 @@ import * as React from "react"
 import { iconProps } from "@/components/fs/icons"
 import { Badge } from "@/components/ui/badge"
 import { ticketStatus } from "@/content/availability"
+import { priceInfo } from "@/content/prices"
 import type { Dictionary } from "@/i18n"
 import { type FsEvent, formatDayMonth, isExhibition, lastDate } from "@/lib/event-format"
 import { cn } from "@/lib/utils"
@@ -61,7 +62,17 @@ export function TicketStatusBadge({
 export function eventPrice(event: FsEvent, t: Dictionary) {
   if (event.prices.length) return event.prices.join(", ")
   if (isExhibition(event)) return t.event.galleryPrice
-  return undefined
+  // Pozostałe: cennik przykładowy (MOCK systemu biletowego, content/prices.ts), dopóki nie ma API iksoris
+  const info = priceInfo(event)
+  if (!info) return undefined
+  return info.free ? t.event.free : t.event.priceRange(info.min, info.max)
+}
+
+/** Krótka cena do paska zakupu (§6.11): „od 40 zł” / „Wstęp wolny” */
+export function eventPriceFrom(event: FsEvent, t: Dictionary) {
+  const info = priceInfo(event)
+  if (!info) return undefined
+  return info.free ? t.event.free : t.event.priceFrom(info.min)
 }
 
 /**
