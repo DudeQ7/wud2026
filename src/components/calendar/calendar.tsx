@@ -1,10 +1,11 @@
 "use client"
 
-import { Search, X } from "lucide-react"
+import { Check, Search, X } from "lucide-react"
 import { useSearchParams } from "next/navigation"
 import { useEffect, useMemo, useState } from "react"
 
 import { FilterSheet } from "@/components/calendar/filter-sheet"
+import { MonthView, monthEnd } from "@/components/calendar/month-view"
 import { EventRow } from "@/components/fs/event-row"
 import { iconProps } from "@/components/fs/icons"
 import { Button } from "@/components/ui/button"
@@ -26,6 +27,7 @@ import {
   toQuery,
 } from "@/lib/calendar"
 import { todayKey } from "@/lib/event-format"
+import { cn } from "@/lib/utils"
 
 const PAGE_SIZE = 30
 
@@ -47,7 +49,19 @@ export function Calendar({ events, series, lang }: CalendarProps) {
   const [today] = useState(() => todayKey(new Date()))
 
   const seriesLabels = useMemo(() => Object.fromEntries(series.map((s) => [s.key, s.label])), [series])
-  const days = useMemo(() => calendarDays(events, filters, today, t), [events, filters, today, t])
+  // Widok miesiąca (§6.16): ten sam zestaw filtrów, ale okno dat = wybrany miesiąc
+  const monthMode = filters.widok === "miesiac"
+  const month = filters.miesiac ?? today.slice(0, 7)
+  const days = useMemo(
+    () =>
+      calendarDays(
+        events,
+        monthMode ? { ...filters, kiedy: undefined, od: `${month}-01`, do: monthEnd(month) } : filters,
+        today,
+        t
+      ),
+    [events, filters, today, t, monthMode, month]
+  )
   const count = countRows(days)
   const active = activeFilters(filters, seriesLabels, t)
 
@@ -138,7 +152,28 @@ export function Calendar({ events, series, lang }: CalendarProps) {
         />
       </div>
 
-      <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-line-strong pb-3">
+      <div role="group" aria-label={t.calendar.view} className="mt-6 flex w-fit border-[1.5px] border-line-strong">
+        {(["lista", "miesiac"] as const).map((view) => {
+          const on = view === "miesiac" ? monthMode : !monthMode
+          return (
+            <button
+              key={view}
+              type="button"
+              aria-pressed={on}
+              onClick={() => navigate({ ...filters, widok: view === "miesiac" ? "miesiac" : undefined })}
+              className={cn(
+                "flex h-11 cursor-pointer items-center gap-1.5 px-4 text-[0.9375rem]",
+                on ? "bg-ink font-bold text-on-dark" : "font-semibold text-text hover:bg-bg-subtle"
+              )}
+            >
+              {on && <Check {...iconProps} className="size-4" />}
+              {view === "miesiac" ? t.calendar.viewMonth : t.calendar.viewList}
+            </button>
+          )
+        })}
+      </div>
+
+      <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-line-strong pb-3">
         <p className="type-ui text-text" aria-hidden>
           {countText}
         </p>
@@ -149,11 +184,20 @@ export function Calendar({ events, series, lang }: CalendarProps) {
       </div>
 
       <div id="repertuar-lista">
-        {count === 0 ? (
+        {monthMode ? (
+          <MonthView
+            days={days}
+            month={month}
+            today={today}
+            lang={lang}
+            t={t}
+            onMonthChange={(miesiac) => navigate({ ...filters, miesiac })}
+          />
+        ) : count === 0 ? (
           <EmptyState
             options={alternatives(events, filters, today, seriesLabels, t)}
             onChange={navigate}
-            onClear={() => navigate(emptyFilters)}
+            onClear={() => navigate({ ...emptyFilters, widok: filters.widok, miesiac: filters.miesiac })}
             t={t}
           />
         ) : (
@@ -282,7 +326,7 @@ function ActiveFilterList({
       ))}
       {filters.length > 1 && (
         <li>
-          <Button variant="link" onClick={() => onChange({ ...emptyFilters })}>
+          <Button variant="link" onClick={() => onChange({ ...emptyFilters, widok: current.widok, miesiac: current.miesiac })}>
             {t.calendar.clearAll}
           </Button>
         </li>

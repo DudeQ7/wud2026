@@ -19,3 +19,5 @@ Każdy skończony kawałek = osobny commit na `main` (tsc + eslint + build przed
 ## Dziennik
 
 - 03:58:21 — start. Czytam kod kalendarza, zaczynam od widoku miesiąca.
+- 05:48:43 — gotowe: widok miesiąca (Lista | Miesiąc, `?widok=miesiac&miesiac=2026-11`), strzałki/Home/End, dziś = obrys + „dziś”, lista dnia pod siatką. Filtry ceny (bezpłatne / do 50 / do 100 zł) i dostępności (wózki, PJM, znany czas trwania). Cennik = MOCK iksoris w `src/content/prices.ts` (reguły wg rodzaju; prawdziwe ceny z danych mają pierwszeństwo; schema.org dalej tylko prawdziwe ceny). Cena trafia też do wierszy, karty wydarzenia, paska „od X zł” i kreatora (budżet).
+- 05:48:43 — zaczynam EDU: 8 grup, sposób zapisu, formularz zgłoszenia grupy.

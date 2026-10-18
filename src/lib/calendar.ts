@@ -11,6 +11,7 @@ import {
   isExhibition,
   weekendKeys,
 } from "@/lib/event-format"
+import { minPrice } from "@/content/prices"
 
 // Kalendarz wydarzeń (brief §6.2, design.md §6.6–6.7). Filtry działają wyłącznie na tym,
 // co da się wyprowadzić z koncerty.json – bez zgadywania cen, statusów biletów i nastrojów.
@@ -20,8 +21,16 @@ import {
 // Klucze = wartości w adresie URL (po polsku we wszystkich językach, żeby linki działały wszędzie).
 // Etykiety są w słowniku: t.calendar.when, t.calendar.types itd.
 
-const { when: WHEN, types: TYPES, audiences: AUDIENCES, places: PLACES, durations: DURATIONS, moods: MOODS } =
-  pl.calendar
+const {
+  when: WHEN,
+  types: TYPES,
+  audiences: AUDIENCES,
+  places: PLACES,
+  durations: DURATIONS,
+  moods: MOODS,
+  prices: PRICES,
+  access: ACCESS,
+} = pl.calendar
 
 export type When = keyof typeof WHEN
 export type EventType = keyof typeof TYPES
@@ -29,6 +38,8 @@ export type Audience = keyof typeof AUDIENCES
 export type Place = keyof typeof PLACES
 export type Duration = keyof typeof DURATIONS
 export type Mood = keyof typeof MOODS
+export type Price = keyof typeof PRICES
+export type Access = keyof typeof ACCESS
 
 export type Filters = {
   kiedy?: When
@@ -46,9 +57,16 @@ export type Filters = {
   cykl?: string
   /** Wykonawca, kompozytor, tytuł, cykl */
   q?: string
+  /** Najtańszy bilet: bezpłatne / do 50 zł / do 100 zł */
+  cena?: Price
+  dostepnosc: Access[]
+  /** Widok listy (domyślny) albo siatki miesiąca (§6.16) – nie jest filtrem, ale żyje w tym samym adresie */
+  widok?: "miesiac"
+  /** Miesiąc siatki YYYY-MM; brak = bieżący */
+  miesiac?: string
 }
 
-export const emptyFilters: Filters = { rodzaj: [], dlaKogo: [], miejsce: [], nastroj: [] }
+export const emptyFilters: Filters = { rodzaj: [], dlaKogo: [], miejsce: [], nastroj: [], dostepnosc: [] }
 
 /** sessionStorage: ostatnie filtry kalendarza („?rodzaj=jazz”) – dla „← Repertuar” na karcie wydarzenia */
 export const LAST_CALENDAR_QUERY_KEY = "fs-repertuar-filtry"
@@ -66,6 +84,9 @@ export type Facets = {
   /** Czas trwania do filtra; wystawy są otwarte w godzinach galerii, więc pasują do każdego limitu */
   duration?: number | "dowolny"
   seriesKey?: string
+  /** Najtańszy bilet w zł (0 = wstęp wolny); z danych albo z cennika (mock iksoris, content/prices.ts) */
+  priceMin?: number
+  access: Access[]
   /** Tekst do wyszukiwania: bez polskich znaków, małymi literami */
   search: string
 }
@@ -145,6 +166,13 @@ export function toCalendarEvent(event: FsEvent, editorial: Editorial): CalendarE
 
   const range = event.kindLabel ? ageRange(event.kindLabel) : undefined
 
+  // Dostępność (brief §6.2): wszystkie sale FS mają wejście bez progów i windy (venue_info),
+  // PJM – gdy dane mówią o tłumaczeniu, „znany czas trwania” – informacja sensoryczna o długości.
+  const access: Access[] = []
+  if (places.length) access.push("ruchowa")
+  if (/pjm|migow/i.test(`${event.title} ${event.kindLabel ?? ""}`)) access.push("pjm")
+  if (event.durationMin) access.push("sensoryczne")
+
   return {
     ...event,
     facets: {
@@ -156,6 +184,8 @@ export function toCalendarEvent(event: FsEvent, editorial: Editorial): CalendarE
       moods,
       duration: isExhibition(event) ? "dowolny" : event.durationMin,
       seriesKey: seriesKey(event.series),
+      priceMin: minPrice(event),
+      access,
       search: fold(
         [event.title, event.kindLabel, event.series, event.venue, ...event.artists, ...event.program].join(" ")
       ),
@@ -176,6 +206,7 @@ const dayKey = (value: string | null) => (value && /^\d{4}-\d{2}-\d{2}$/.test(va
 export function parseFilters(params: URLSearchParams): Filters {
   const kiedy = params.get("kiedy") ?? ""
   const czas = params.get("czas") ?? ""
+  const cena = params.get("cena") ?? ""
   const wiek = Number(params.get("wiek"))
   const od = dayKey(params.get("od"))
   const to = dayKey(params.get("do"))
@@ -191,6 +222,10 @@ export function parseFilters(params: URLSearchParams): Filters {
     nastroj: list(params, "nastroj", MOODS),
     cykl: params.get("cykl") || undefined,
     q: params.get("q")?.trim() || undefined,
+    cena: isKey(PRICES)(cena) ? cena : undefined,
+    dostepnosc: list(params, "dostepnosc", ACCESS),
+    widok: params.get("widok") === "miesiac" ? "miesiac" : undefined,
+    miesiac: /^\d{4}-\d{2}$/.test(params.get("miesiac") ?? "") ? params.get("miesiac")! : undefined,
   }
 }
 
@@ -209,6 +244,10 @@ export function toQuery(filters: Filters) {
   set("czas", filters.czas)
   set("nastroj", filters.nastroj.join(","))
   set("cykl", filters.cykl)
+  set("cena", filters.cena)
+  set("dostepnosc", filters.dostepnosc.join(","))
+  set("widok", filters.widok)
+  set("miesiac", filters.widok ? filters.miesiac : undefined)
   // Przecinki zostawiamy czytelne: ?rodzaj=jazz,kameralny
   return params.toString().replaceAll("%2C", ",")
 }
@@ -249,6 +288,13 @@ function matchesDuration(duration: Facets["duration"], limit?: Duration) {
   return duration > 90
 }
 
+function matchesPrice(priceMin: number | undefined, limit?: Price) {
+  if (!limit) return true
+  if (priceMin === undefined) return false
+  if (limit === "bezplatne") return priceMin === 0
+  return priceMin <= (limit === "do-50" ? 50 : 100)
+}
+
 function matchesAge({ ageMin, ageMax }: Facets, age?: number) {
   if (!age) return true
   if (ageMin === undefined) return false
@@ -264,6 +310,8 @@ export function matchesEvent(event: CalendarEvent, filters: Filters) {
   if (!matchesDuration(f.duration, filters.czas)) return false
   if (!some(filters.nastroj, f.moods)) return false
   if (filters.cykl && f.seriesKey !== filters.cykl) return false
+  if (!matchesPrice(f.priceMin, filters.cena)) return false
+  if (!filters.dostepnosc.every((a) => f.access.includes(a))) return false
   if (filters.q) {
     const words = fold(filters.q).split(/\s+/).filter(Boolean)
     if (!words.every((w) => f.search.includes(w))) return false
@@ -327,7 +375,7 @@ export function activeFilters(filters: Filters, seriesLabels: Record<string, str
       .join(" ")
     result.push({ id: "zakres", label: label.charAt(0).toUpperCase() + label.slice(1), remove: (f) => ({ ...f, od: undefined, do: undefined }) })
   }
-  const multi = <K extends "rodzaj" | "dlaKogo" | "miejsce" | "nastroj">(key: K, names: Record<Filters[K][number], string>) => {
+  const multi = <K extends "rodzaj" | "dlaKogo" | "miejsce" | "nastroj" | "dostepnosc">(key: K, names: Record<Filters[K][number], string>) => {
     for (const value of filters[key] as Filters[K][number][]) {
       result.push({
         id: `${key}-${value}`,
@@ -342,6 +390,8 @@ export function activeFilters(filters: Filters, seriesLabels: Record<string, str
   multi("miejsce", labels.places)
   if (filters.czas) result.push({ id: "czas", label: labels.durations[filters.czas], remove: without("czas") })
   multi("nastroj", labels.moods)
+  if (filters.cena) result.push({ id: "cena", label: labels.prices[filters.cena], remove: without("cena") })
+  multi("dostepnosc", labels.access)
   if (filters.cykl) result.push({ id: "cykl", label: seriesLabels[filters.cykl] ?? filters.cykl, remove: without("cykl") })
   return result
 }

@@ -12,7 +12,7 @@ import { FavoriteButton } from "@/components/event/favorite-button"
 import { FragmentPlayer } from "@/components/event/fragment-player"
 import { Breadcrumbs } from "@/components/fs/breadcrumbs"
 import { EventCard } from "@/components/fs/event-card"
-import { FactList, TicketStatusBadge, eventPrice } from "@/components/fs/event-meta"
+import { FactList, TicketStatusBadge, eventPrice, eventPriceFrom } from "@/components/fs/event-meta"
 import { iconProps } from "@/components/fs/icons"
 import { Container, Eyebrow } from "@/components/fs/layout"
 import { Photo } from "@/components/fs/photo"
@@ -399,7 +399,7 @@ async function EventView({ id }: { id: number }) {
         </Container>
       )}
 
-      {!past && <BuyBar event={event} date={date} price={price} t={t} />}
+      {!past && <BuyBar event={event} date={date} price={eventPriceFrom(event, t)} t={t} />}
     </>
   )
 }

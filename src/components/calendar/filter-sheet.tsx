@@ -57,7 +57,9 @@ export function FilterSheet({ events, series, filters, today, t, activeCount, on
       draft.nastroj.length +
       draft.miejsce.length +
       Number(Boolean(draft.czas)) +
-      Number(Boolean(draft.cykl))
+      Number(Boolean(draft.cykl)) +
+      Number(Boolean(draft.cena)) +
+      draft.dostepnosc.length
     posthog.capture("calendar_filters_applied", {
       result_count: count,
       selected_filter_count: selectedFilterCount,
@@ -68,7 +70,7 @@ export function FilterSheet({ events, series, filters, today, t, activeCount, on
 
   const update = (patch: Partial<Filters>) => setDraft((d) => ({ ...d, ...patch }))
 
-  function toggleIn<K extends "rodzaj" | "dlaKogo" | "miejsce" | "nastroj">(key: K, value: Filters[K][number]) {
+  function toggleIn<K extends "rodzaj" | "dlaKogo" | "miejsce" | "nastroj" | "dostepnosc">(key: K, value: Filters[K][number]) {
     setDraft((d) => {
       const values = d[key] as string[]
       return { ...d, [key]: values.includes(value) ? values.filter((v) => v !== value) : [...values, value] }
@@ -211,6 +213,28 @@ export function FilterSheet({ events, series, filters, today, t, activeCount, on
                 <p className="mt-4 type-meta text-text-muted">{s.durationNote}</p>
               </Group>
 
+              <Group title={s.price} count={draft.cena ? 1 : 0} selected={s.selected}>
+                <Options>
+                  {entries(labels.prices).map(([key, label]) => (
+                    <Toggle key={key} pressed={draft.cena === key} onPressedChange={(on) => update({ cena: on ? key : undefined })}>
+                      {label}
+                    </Toggle>
+                  ))}
+                </Options>
+                <p className="mt-4 type-meta text-text-muted">{s.priceNote}</p>
+              </Group>
+
+              <Group title={s.accessibility} count={draft.dostepnosc.length} selected={s.selected}>
+                <Options>
+                  {entries(labels.access).map(([key, label]) => (
+                    <Toggle key={key} pressed={draft.dostepnosc.includes(key)} onPressedChange={() => toggleIn("dostepnosc", key)}>
+                      {label}
+                    </Toggle>
+                  ))}
+                </Options>
+                <p className="mt-4 type-meta text-text-muted">{s.accessNote}</p>
+              </Group>
+
               <Group title={s.series} count={draft.cykl ? 1 : 0} selected={s.selected}>
                 <label htmlFor="filtr-cykl" className="mb-2 block text-[0.9375rem] font-semibold text-text">
                   {s.chooseSeries}
@@ -238,7 +262,7 @@ export function FilterSheet({ events, series, filters, today, t, activeCount, on
             </div>
 
             <div className="flex items-center justify-between gap-4 border-t border-line bg-background px-4 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] shadow-[0_-4px_16px_rgba(26,26,26,.08)]">
-              <Button variant="link" onClick={() => setDraft({ ...emptyFilters, q: draft.q })}>
+              <Button variant="link" onClick={() => setDraft({ ...emptyFilters, q: draft.q, widok: draft.widok, miesiac: draft.miesiac })}>
                 {s.clear}
               </Button>
               <Button onClick={apply} className="min-w-0 flex-1 sm:flex-none">
