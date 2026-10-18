@@ -89,28 +89,33 @@ export function Calendar({ events, series, lang, displayMode = "list", monthView
 
   const visibleDays = useMemo(() => firstRows(days, limit), [days, limit])
 
-  const quick: { label: string; on: boolean; toggle: (on: boolean) => Filters }[] = [
+  const quick: { key: keyof typeof t.calendar.quick; label: string; on: boolean; toggle: (on: boolean) => Filters }[] = [
     {
+      key: "today",
       label: t.calendar.quick.today,
       on: filters.kiedy === "dzis",
       toggle: (on) => ({ ...filters, kiedy: on ? "dzis" : undefined, od: undefined, do: undefined }),
     },
     {
+      key: "weekend",
       label: t.calendar.quick.weekend,
       on: filters.kiedy === "weekend",
       toggle: (on) => ({ ...filters, kiedy: on ? "weekend" : undefined, od: undefined, do: undefined }),
     },
     {
+      key: "kids",
       label: t.calendar.quick.kids,
       on: filters.dlaKogo.includes("dzieci"),
       toggle: (on) => ({ ...filters, dlaKogo: toggled(filters.dlaKogo, "dzieci", on) }),
     },
     {
+      key: "jazz",
       label: t.calendar.quick.jazz,
       on: filters.rodzaj.includes("jazz"),
       toggle: (on) => ({ ...filters, rodzaj: toggled(filters.rodzaj, "jazz", on) }),
     },
     {
+      key: "exhibitions",
       label: t.calendar.quick.exhibitions,
       on: filters.rodzaj.includes("wystawa"),
       toggle: (on) => ({ ...filters, rodzaj: toggled(filters.rodzaj, "wystawa", on) }),
@@ -137,11 +142,20 @@ export function Calendar({ events, series, lang, displayMode = "list", monthView
       <div
         role="group"
         aria-label={t.calendar.quickFilters}
-        className="-mx-4 mt-3 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0"
+        className="-mx-4 mt-1 flex gap-1 overflow-x-auto px-4 py-2 md:mx-0 md:gap-2 md:px-0"
       >
+        {/* Zawsze jedna linia, bez zawijania. Na telefonie krótkie etykiety i zwarty rozmiar, żeby wszystkie pięć chipów
+            (także z ✓ po zaznaczeniu) mieściło się na ekranie; gdy ekran jest za wąski (np. DE na 360 px), linia się przewija. */}
         {quick.map((q) => (
-          <Toggle key={q.label} pressed={q.on} onPressedChange={(on) => navigate(q.toggle(on))} aria-controls="repertuar-lista">
-            {q.label}
+          <Toggle
+            key={q.key}
+            pressed={q.on}
+            onPressedChange={(on) => navigate(q.toggle(on))}
+            aria-controls="repertuar-lista"
+            className="min-w-11 px-2 text-[0.875rem] md:px-4 md:text-[0.9375rem]"
+          >
+            <span className="md:hidden">{t.calendar.quickShort[q.key]}</span>
+            <span className="hidden md:inline">{q.label}</span>
           </Toggle>
         ))}
       </div>

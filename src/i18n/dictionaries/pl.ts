@@ -345,6 +345,8 @@ export const pl = {
     markLegend: "Symbol pod datą pokazuje rodzaj wydarzenia",
     quickFilters: "Szybkie filtry",
     quick: { today: "Dziś", weekend: "Ten weekend", kids: "Dla dzieci", jazz: "Jazz", exhibitions: "Wystawy" },
+    /** Krótkie etykiety szybkich filtrów na telefonie: wszystkie pięć chipów musi się zmieścić w jednej linii */
+    quickShort: { today: "Dziś", weekend: "Weekend", kids: "Dzieci", jazz: "Jazz", exhibitions: "Wystawy" },
     count: (n: number) => `${n} ${plural(n, "wydarzenie", "wydarzenia", "wydarzeń")}`,
     shown: (limit: number, count: number) => `Widzisz ${limit} z ${count}`,
     showMore: "Pokaż kolejne wydarzenia",

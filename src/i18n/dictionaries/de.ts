@@ -379,6 +379,8 @@ export const de: Dictionary = {
     markLegend: "Das Symbol unter dem Datum zeigt die Art der Veranstaltung",
     quickFilters: "Schnellfilter",
     quick: { today: "Heute", weekend: "Dieses Wochenende", kids: "Für Kinder", jazz: "Jazz", exhibitions: "Ausstellungen" },
+    /** Krótkie etykiety szybkich filtrów na telefonie: wszystkie pięć chipów musi się zmieścić w jednej linii */
+    quickShort: { today: "Heute", weekend: "Wochenende", kids: "Kinder", jazz: "Jazz", exhibitions: "Galerie" },
     count: (n) => `${n} ${s(n, "Veranstaltung", "Veranstaltungen")}`,
     shown: (limit, count) => `${limit} von ${count} angezeigt`,
     showMore: "Weitere Veranstaltungen anzeigen",
