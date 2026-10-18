@@ -278,6 +278,8 @@ export const en: Dictionary = {
     stairs: {
       title: "Upcoming events",
       all: "Full programme →",
+      /** Podpowiedź pod nagłówkiem: tytuł, godzina i zakup są w dymku po wybraniu plakatu */
+      cue: "Select a poster to see the details and buy tickets.",
       listLabel: "Upcoming concerts",
       outfit: "Dress",
       access: "Accessibility",
@@ -418,6 +420,7 @@ export const en: Dictionary = {
     audiences: { dzieci: "Children", rodziny: "Families", szkoly: "Schools", seniorzy: "Seniors" },
     places: { symfoniczna: "Symphony Hall", kameralna: "Chamber Hall", galerie: "Galleries", hol: "Lobby and foyer" },
     durations: { "do-45-min": "Up to 45 min", "do-90-min": "Up to 90 min", dluzej: "Longer than 90 min" },
+    prices: { bezplatne: "Free", "do-20": "Up to 20 zł", "do-40": "Up to 40 zł" },
     moods: { filmowa: "Film music", niezwykle: "Something unusual" },
     sheet: {
       open: "All filters",
@@ -436,6 +439,11 @@ export const en: Dictionary = {
       placeNote: "All halls and galleries have step-free access and a lift.",
       duration: "Duration",
       durationNote: "We include events with a stated duration. You can view exhibitions for as long as you like.",
+      price: "Price",
+      priceNote: "We use the lowest ticket price. Prices other than tours are examples until we connect to the ticketing system.",
+      access: "Accessibility",
+      accessNote: "Every event in the building: step-free entrance, lifts to all floors, accessible toilet. For a wheelchair space, an assistant, a hearing loop or Polish Sign Language, ask the box office.",
+      accessCall: "Call the box office",
       series: "Series and festival",
       chooseSeries: "Choose a series",
       allSeries: "All series",

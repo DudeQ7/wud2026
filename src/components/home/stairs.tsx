@@ -58,7 +58,7 @@ export function StairsSection({ today, lang }: { today: string; lang: Locale }) 
     // Nagłówek i przycisk w kolumnie treści, a schody od krawędzi do krawędzi ekranu na każdej szerokości
     <section aria-labelledby="najblizsze" className="bg-background pt-8 pb-16 lg:pt-12 lg:pb-24">
       <Container>
-        <SectionHeading id="najblizsze" title={text.title} />
+        <SectionHeading id="najblizsze" title={text.title} lead={text.cue} />
       </Container>
       <StairsClient items={items} access={stairsAccess} outfit={stairsOutfit} text={clientText} />
       <Container>

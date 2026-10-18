@@ -1,14 +1,15 @@
-// Sekcja „Schody” (docs/schody/schody_design.md). Poziomy dostępności i strój to na razie
-// PRZYKŁADOWE wartości z makiety (§6.4, §6.5, §10): realne dane musi potwierdzić FS.
-// Docelowo pola w modelu wydarzenia / sali; do tego czasu jedna wartość dla wszystkich koncertów.
+// Sekcja „Schody” (docs/schody/schody_design.md). Docelowo pola w modelu wydarzenia / sali; do tego czasu jedna
+// wartość dla wszystkich koncertów. Dostępność według danych FS (visit.json): wejście bez progów i windy wszędzie,
+// więc ruchowa = dostępne; o audiodeskrypcji i pętli dane milczą, więc „brak informacji – zapytaj obsługę”, a nie
+// przykładowe „częściowo / tak / nie” z makiety, które przeczyły karcie wydarzenia i FAQ. Strój: przykład z makiety.
 
 export type AccessKind = "motor" | "visual" | "hearing"
 export type AccessLevel = "full" | "partial" | "none" | "unknown"
 
 export const stairsAccess: Record<AccessKind, AccessLevel> = {
-  motor: "partial",
-  visual: "full",
-  hearing: "none",
+  motor: "full",
+  visual: "unknown",
+  hearing: "unknown",
 }
 
 export const stairsOutfit = "shirt" as const

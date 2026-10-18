@@ -225,13 +225,14 @@ Zasada przyjęta w projekcie: decyzje zespołu są ważniejsze od docs, a każdy
 
 ## 10. Otwarte kwestie
 
-1. **Realne dane o dostępności** per wydarzenie i sala (wózek, wzrok, słuch). Kolory w mockupie są przykładowe.
+1. **Realne dane o dostępności** per wydarzenie i sala (wózek, wzrok, słuch). Do czasu danych z FS hint pokazuje to, co wynika z `visit.json`: ruchowa **Tak** (wejście bez progów, windy wszędzie), wzrokowa i słuchowa **Brak info** („Zapytaj obsługę”). Przykładowe „częściowo / tak / nie” z makiety przeczyły karcie wydarzenia i FAQ (18.10.2026).
 2. **Wybór polecanego stroju** per wydarzenie (obecnie koszula jako przykład). Do ustalenia z FS.
 3. ~~**Poziom dostępności** tylko kolorem~~: rozwiązane, poziom jest słowem pod ikoną i w `aria-label` (§6.5).
 4. **Obrót schodów** (§9, punkt 3): do potwierdzenia przez zespół w kontekście wydajności i `prefers-reduced-motion`.
 5. **Treści podpowiedzi o dostępności** i numer kontaktowy do asystenta: do ustalenia z FS (§6.6).
 6. **Liczba pięter**: makiety podpowiedzi pokazują 3 piętra, ten dokument i pozostałe screeny w §11 opisują 5. Do ujednolicenia.
-7. **Desktop**: nie projektowany.
+7. **Desktop**: nie projektowany. Tymczasowo (18.10.2026): od 1024 px schody stoją w środkowej kolumnie do 900 px, a skala rośnie do 2,2 (plakat ~175×277 px). Rozciągnięte na 1440 px były puste, a plakaty miały ~135 px. Telefon bez zmian (skala 1–1,2).
+8. **Podpowiedź pod nagłówkiem** (18.10.2026): „Wybierz plakat, żeby zobaczyć szczegóły i kupić bilet.” Plakaty pokazują tylko zdjęcie i datę, więc bez tego zdania nowy użytkownik nie wie, że tytuł, godzina i zakup są w hincie.
 
 ## 11. Pliki
 
