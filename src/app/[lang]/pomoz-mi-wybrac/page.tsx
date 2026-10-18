@@ -13,7 +13,7 @@ import { SiteHeader } from "@/components/fs/site-header"
 import { buttonVariants } from "@/components/ui/button"
 import { calendarEditorial } from "@/content/calendar"
 import { toCalendarEvent } from "@/lib/calendar"
-import { eventHref, events, localizeEvent, todayKey } from "@/lib/events"
+import { eventHref, events, localizeEvent, ticketHref, todayKey } from "@/lib/events"
 import {
   ANSWER_KEYS,
   type AnswerKey,
@@ -265,9 +265,9 @@ async function ResultList({ answers, matches, lang }: { answers: Answers; matche
               <Link href={localizedPath(lang, eventHref(m.event))} className={buttonVariants({ variant: "secondary" })}>
                 {copy?.show ?? "Zobacz"}
               </Link>
-              <a href={m.event.ticketsUrl} className={buttonVariants({ variant: "primary" })}>
+              <Link href={localizedPath(lang, ticketHref(m.event))} className={buttonVariants({ variant: "primary" })}>
                 {copy?.buy ?? "Kup bilet"}
-              </a>
+              </Link>
             </div>
           </li>
         )

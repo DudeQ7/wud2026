@@ -7,6 +7,7 @@ import {
   formatTime,
   lastDate,
   nextDate,
+  ticketHref,
   todayKey,
 } from "@/lib/event-format";
 
@@ -34,7 +35,7 @@ export function panelEvent(event: FsEvent, lang: Locale, t: Dictionary): PanelEv
     when: date ? `${formatShortDate(date, t)} · ${formatTime(date)}` : undefined,
     venue: venueLabel(t, event.venue),
     href: localizedPath(lang, eventHref(event)),
-    ticketsUrl: event.ticketsUrl || undefined,
+    ticketsUrl: localizedPath(lang, ticketHref(event)),
     status,
     statusLabel: t.event.status[status],
   };

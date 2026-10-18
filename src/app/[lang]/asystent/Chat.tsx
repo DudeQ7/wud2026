@@ -242,14 +242,12 @@ export default function Chat({ lang, events, venue, titleId, onClose, className 
                         >
                           {t.details}
                         </Link>
-                        <a
-                          href={event.ticketsUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
+                        <Link
+                          href={localizedPath(lang, `/kup-bilet/${id}`)}
                           className={cn(buttonVariants({ variant: "primary", size: "sm" }), "w-full")}
                         >
                           {t.tickets}
-                        </a>
+                        </Link>
                       </div>
                     </article>
                   );

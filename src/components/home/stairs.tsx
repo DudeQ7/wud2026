@@ -12,6 +12,7 @@ import {
   formatDateBadge,
   formatDuration,
   formatTime,
+  ticketHref,
   upcomingConcerts,
 } from "@/lib/events"
 import { cn } from "@/lib/utils"
@@ -47,7 +48,7 @@ export function StairsSection({ today, lang }: { today: string; lang: Locale }) 
         lead: eventLead(event, lang),
         image: event.image?.card,
         href: localizedPath(lang, eventHref(event)),
-        ticketsUrl: event.ticketsUrl || undefined,
+        buyHref: localizedPath(lang, ticketHref(event)),
         status,
         statusLabel: t.event.status[status],
       }

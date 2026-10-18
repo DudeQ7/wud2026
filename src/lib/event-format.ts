@@ -155,6 +155,14 @@ export function eventHref(event: Pick<FsEvent, "id" | "title">) {
   return `/wydarzenia/${eventSlug(event)}`
 }
 
+/**
+ * „Kup bilet” w serwisie: ekran zakupu (w prototypie makieta przed obecną kasą online FS, docelowo API iksoris).
+ * Wystarczy samo id („/kup-bilet/2608”) – tekst po id jest tylko dla ludzi, jak w adresie wydarzenia.
+ */
+export function ticketHref(event: Pick<FsEvent, "id"> & Partial<Pick<FsEvent, "title">>) {
+  return `/kup-bilet/${event.title ? eventSlug({ id: event.id, title: event.title }) : event.id}`
+}
+
 /** Id z adresu – tekst po id jest tylko dla ludzi i SEO */
 export function eventIdFromSlug(slug: string) {
   const id = Number(slug.match(/^\d+/)?.[0])

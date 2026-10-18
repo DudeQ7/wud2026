@@ -506,6 +506,8 @@ To wyróżnik konceptu: prawie żaden serwis z inspiracji tego nie ma (wyjątki 
    - docelowo bilet w portfelu.
 9. **Podobne wydarzenia.** 3–4 karty, z pierwszeństwem dla wydarzeń promowanych przez FS.
 
+**Ekran „Kup bilet” (`/kup-bilet/[slug]`, prototyp):** każdy „Kup bilet” w serwisie prowadzi tu, a nie od razu do kasy online FS (link w danych to strona główna kasy, więc trzeba było szukać wydarzenia od nowa). Ekran pokazuje podsumowanie (co, kiedy, gdzie, za ile, status), trzy kroki docelowego zakupu w serwisie (miejsca → płatność → bilet) wyraźnie podpisane jako prototyp, przycisk „Przejdź do kasy online ↗” i telefon do kasy. Docelowo w tym miejscu działa zakup przez API iksoris. Dane strukturalne i plik `.ics` zachowują prawdziwy adres kasy.
+
 **Wydarzenie zewnętrzne** (organizowane przez kogoś innego): wyraźny znacznik „Organizator zewnętrzny”. CTA prowadzi do sprzedawcy i ma etykietę „Kup bilet u organizatora ↗”. Transkrypcja podkreśla, że dla użytkownika nie ma znaczenia, kto organizuje, ale musi wiedzieć, gdzie kupić bilet.
 
 ### 6.12 Odtwarzacz fragmentu (ok. 1 min)

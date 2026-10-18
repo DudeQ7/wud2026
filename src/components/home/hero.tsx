@@ -1,4 +1,5 @@
 import Image from "next/image"
+import Link from "next/link"
 
 import { FactList, TicketStatusBadge } from "@/components/fs/event-meta"
 import { Container, Eyebrow } from "@/components/fs/layout"
@@ -7,7 +8,7 @@ import { buttonVariants } from "@/components/ui/button"
 import { heroFragment } from "@/content/audio"
 import { type Locale, getDictionary, kindLabel, localizedPath, seriesLabel, venueLabel } from "@/i18n"
 import { eventLead } from "@/i18n/events/descriptions"
-import { type FsEvent, eventHref, formatLineup, formatShortDate, formatTime, relativeDay } from "@/lib/event-format"
+import { type FsEvent, eventHref, formatLineup, formatShortDate, formatTime, relativeDay, ticketHref } from "@/lib/event-format"
 import { cn } from "@/lib/utils"
 
 type HeroProps = {
@@ -68,9 +69,9 @@ export function Hero({ event, date, today, lang, photoPosition = "50% 30%" }: He
               </h1>
               {event.subtitle && <p className="font-heading text-xl font-semibold text-text">{event.subtitle}</p>}
               <div className="mt-4 grid grid-cols-2 gap-2">
-                <a href={event.ticketsUrl} className={cn(buttonVariants({ variant: "primary" }))}>
+                <Link href={localizedPath(lang, ticketHref(event))} className={cn(buttonVariants({ variant: "primary" }))}>
                   {t.event.buyTicket}
-                </a>
+                </Link>
                 <a href={localizedPath(lang, eventHref(event))} className={cn(buttonVariants({ variant: "secondary" }))}>
                   {t.event.see}
                 </a>

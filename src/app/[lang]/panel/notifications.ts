@@ -2,7 +2,7 @@ import { mockTickets } from "@/content/tickets"
 import { ticketStatus } from "@/content/availability"
 import type { Dictionary, Locale } from "@/i18n"
 import { findEvent } from "@/lib/events"
-import { eventHref, nextDate, todayKey } from "@/lib/event-format"
+import { eventHref, nextDate, ticketHref, todayKey } from "@/lib/event-format"
 import { localizedPath } from "@/i18n"
 
 export type PanelNotification = {
@@ -48,10 +48,10 @@ export function buildNotifications(favoriteIds: number[], lang: Locale, t: Dicti
       id: `${status}-${id}`,
       text: status === "last" ? n.almostSold(event.title) : n.soldOut(event.title),
       actions:
-        status === "last" && event.ticketsUrl
+        status === "last"
           ? [
               { label: n.details, href },
-              { label: n.buy, href: event.ticketsUrl, primary: true, external: true },
+              { label: n.buy, href: localizedPath(lang, ticketHref(event)), primary: true },
             ]
           : [{ label: n.details, href }],
     })

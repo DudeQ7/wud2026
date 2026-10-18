@@ -44,6 +44,7 @@ import {
   localizeEvent,
   nowKey,
   similarEvents,
+  ticketHref,
 } from "@/lib/events"
 import { eventJsonLd } from "@/lib/structured-data"
 import { cn } from "@/lib/utils"
@@ -225,9 +226,9 @@ async function EventView({ id }: { id: number }) {
             {
               label: copy.price,
               value: price ?? (
-                <a href={event.ticketsUrl} className="inline-flex min-h-11 items-center underline underline-offset-4">
+                <Link href={localizedPath(lang, ticketHref(event))} className="inline-flex min-h-11 items-center underline underline-offset-4">
                   {copy.pricesOnline}
-                </a>
+                </Link>
               ),
             },
             ...(audience ? [{ label: copy.forWhom, value: audience }] : []),
@@ -423,7 +424,7 @@ async function EventView({ id }: { id: number }) {
         </Container>
       )}
 
-      {!past && <BuyBar event={event} date={date} price={eventPriceFrom(event, t)} t={t} />}
+      {!past && <BuyBar event={event} date={date} price={eventPriceFrom(event, t)} t={t} lang={lang} />}
     </>
   )
 }
@@ -492,7 +493,19 @@ function OtherDates({ dates, t }: { dates: string[]; t: Dictionary }) {
  * Przyklejony pasek zakupu (§6.11): czerń, 76 px + safe area. Na karcie wydarzenia zastępuje dolną
  * nawigację (§6.4) – nawigacja wraca po przejściu do innej strony.
  */
-function BuyBar({ event, date, price, t }: { event: FsEvent; date: string; price?: string; t: Dictionary }) {
+function BuyBar({
+  event,
+  date,
+  price,
+  t,
+  lang,
+}: {
+  event: FsEvent
+  date: string
+  price?: string
+  t: Dictionary
+  lang: Locale
+}) {
   const status = ticketStatus(event.id)
   const statusLabel = t.event.status[status]
   const soldout = status === "soldout"
@@ -515,9 +528,9 @@ function BuyBar({ event, date, price, t }: { event: FsEvent; date: string; price
             {statusLabel}
           </span>
         ) : (
-          <a href={event.ticketsUrl} className={cn(buttonVariants({ variant: "inverted" }), "shrink-0")}>
+          <Link href={localizedPath(lang, ticketHref(event))} className={cn(buttonVariants({ variant: "inverted" }), "shrink-0")}>
             {t.event.buyTicket}
-          </a>
+          </Link>
         )}
       </Container>
     </div>
@@ -570,9 +583,9 @@ function TicketPanel({
             {t.event.status.soldout}
           </span>
         ) : (
-          <a href={event.ticketsUrl} className={buttonVariants({ variant: "primary", block: true })}>
+          <Link href={localizedPath(lang, ticketHref(event))} className={buttonVariants({ variant: "primary", block: true })}>
             {t.event.buyTicket}
-          </a>
+          </Link>
         )}
 
         <EventActions

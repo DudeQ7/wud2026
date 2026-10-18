@@ -28,7 +28,8 @@ export type StairsItem = {
   lead?: string
   image?: string
   href: string
-  ticketsUrl?: string
+  /** „Kup bilet” – ekran zakupu w serwisie (/kup-bilet/…) */
+  buyHref: string
   status: TicketStatus
   statusLabel: string
 }
@@ -213,13 +214,12 @@ export function StairsClient({ items, access, outfit, text }: Props) {
                 {active.statusLabel}
               </span>
             ) : (
-              <a
-                href={active.ticketsUrl ?? active.href}
-                {...(active.ticketsUrl ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+              <Link
+                href={active.buyHref}
                 className="mt-4 flex h-11 items-center justify-center bg-white font-semibold text-ink hover:underline"
               >
                 {text.buy}
-              </a>
+              </Link>
             )}
           </div>
         </section>

@@ -73,14 +73,9 @@ export function FavoriteItem({ lang, event, removable = false }: FavoriteItemPro
           {t.details}
         </Link>
         {event.ticketsUrl && event.status !== "soldout" && (
-          <a
-            href={event.ticketsUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={buttonVariants({ variant: "primary", size: "sm" })}
-          >
+          <Link href={event.ticketsUrl} className={buttonVariants({ variant: "primary", size: "sm" })}>
             {t.buyTicket}
-          </a>
+          </Link>
         )}
       </div>
     </article>
