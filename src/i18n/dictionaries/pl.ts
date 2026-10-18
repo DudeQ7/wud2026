@@ -308,7 +308,7 @@ export const pl = {
       title: "Bądź na bieżąco",
       lead: "Nowe koncerty i start sprzedaży biletów prosto na Twój e-mail.",
     },
-    partners: { title: "Partnerzy", logo: "logo partnera", link: "Partnerzy i biznes →" },
+    partners: { title: "Partnerzy", lead: "Partnerstwo z Filharmonią to wspólna odpowiedzialność za kulturę w Szczecinie: koncerty dla dzieci, projekty dla młodych muzyków i miejsce otwarte dla wszystkich.", logo: "logo partnera", link: "Partnerzy i biznes →" },
   },
 
   newsletter: {

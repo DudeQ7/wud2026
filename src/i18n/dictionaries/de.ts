@@ -342,7 +342,7 @@ export const de: Dictionary = {
       title: "Bleiben Sie auf dem Laufenden",
       lead: "Neue Konzerte und Vorverkaufsstarts direkt in Ihr Postfach.",
     },
-    partners: { title: "Partner", logo: "Partnerlogo", link: "Partner und Unternehmen →" },
+    partners: { title: "Partner", lead: "Partnerschaft mit der Philharmonie heißt gemeinsame Verantwortung für die Kultur in Szczecin: Konzerte für Kinder, Projekte für junge Musiker und ein Haus, das allen offensteht.", logo: "Partnerlogo", link: "Partner und Unternehmen →" },
   },
 
   newsletter: {

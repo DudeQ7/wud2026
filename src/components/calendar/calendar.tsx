@@ -124,11 +124,7 @@ export function Calendar({ events, series, lang, displayMode = "list", monthView
         aria-label={t.calendar.quickFilters}
         className="mt-4 flex flex-wrap gap-2"
       >
-        {quick.map((q) => (
-          <Toggle key={q.label} pressed={q.on} onPressedChange={(on) => navigate(q.toggle(on))} aria-controls="repertuar-lista">
-            {q.label}
-          </Toggle>
-        ))}
+        {/* „Wszystkie filtry” na początku: na telefonie pasek się przewija i przycisk na końcu był ucięty */}
         <FilterSheet
           events={events}
           series={series}
@@ -138,6 +134,11 @@ export function Calendar({ events, series, lang, displayMode = "list", monthView
           activeCount={active.length}
           onApply={navigate}
         />
+        {quick.map((q) => (
+          <Toggle key={q.label} pressed={q.on} onPressedChange={(on) => navigate(q.toggle(on))} aria-controls="repertuar-lista">
+            {q.label}
+          </Toggle>
+        ))}
       </div>
 
       <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-line-strong pb-3">

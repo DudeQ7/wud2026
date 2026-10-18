@@ -341,7 +341,7 @@ export const en: Dictionary = {
       title: "Stay up to date",
       lead: "New concerts and ticket sale openings straight to your inbox.",
     },
-    partners: { title: "Partners", logo: "partner logo", link: "Partners and business →" },
+    partners: { title: "Partners", lead: "Partnering with the Philharmonic means sharing responsibility for culture in Szczecin: concerts for children, projects for young musicians and a building open to everyone.", logo: "partner logo", link: "Partners and business →" },
   },
 
   newsletter: {

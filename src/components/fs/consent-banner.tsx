@@ -64,83 +64,75 @@ export function ConsentBanner({ lang }: { lang: Locale }) {
     else disableAnalytics()
   }
 
+  // Kompaktowo na telefonie (≈ 1/5 ekranu): tekst z linkiem w zdaniu, dwa przyciski równej wagi w jednym
+  // rzędzie i „Ustawienia” obok. Wcześniej baner zasłaniał „Kup bilet” na otwarciu strony.
   return (
     <section
       ref={sectionRef}
       role="region"
       aria-label={t.label}
-      className="fixed inset-x-0 bottom-20 z-50 mx-auto w-full max-w-3xl border border-line bg-background p-4 md:bottom-6 md:p-5"
+      className="fixed inset-x-0 bottom-[calc(4rem+env(safe-area-inset-bottom))] z-50 mx-auto w-full max-w-3xl border-t border-line bg-background px-4 py-3 shadow-[0_-4px_16px_rgba(26,26,26,.08)] md:bottom-6 md:border md:p-5 lg:bottom-6"
     >
-      <div className="flex flex-col gap-4">
-        <div>
-          <p className="type-body text-text">{t.text}</p>
-          <Link
-            href="https://filharmonia.szczecin.pl/polityka_prywatnosci"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-1 inline-flex min-h-11 items-center type-meta text-text underline underline-offset-2 hover:no-underline"
-          >
-            {t.privacy}
-          </Link>
-        </div>
+      <p className="type-meta text-text">
+        {t.text}{" "}
+        <Link
+          href="https://filharmonia.szczecin.pl/polityka_prywatnosci"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="font-semibold underline underline-offset-2 hover:no-underline"
+        >
+          {t.privacy}
+        </Link>
+      </p>
 
-        {settings ? (
-          <div className="flex flex-col gap-4">
-            <label className="flex items-start gap-3">
-              <input
-                type="checkbox"
-                checked={analytics}
-                onChange={(event) => setAnalytics(event.target.checked)}
-                className="mt-1 size-5 shrink-0 accent-ink"
-              />
-              <span>
-                <span className="block font-semibold text-text">{t.analytics}</span>
-                <span className="mt-1 block type-meta text-text-muted">{t.analyticsText}</span>
-              </span>
-            </label>
-            <div className="flex flex-wrap gap-2">
-              <button
-                type="button"
-                onClick={() => (reopened ? close(readConsent()) : setSettings(false))}
-                className={cn(buttonVariants({ variant: "secondary", size: "sm" }), "flex-1 sm:flex-none")}
-              >
-                {t.back}
-              </button>
-              <button
-                type="button"
-                onClick={() => save(analytics ? "analytics" : "essential")}
-                className={cn(buttonVariants({ variant: "primary", size: "sm" }), "flex-1 sm:flex-none")}
-              >
-                {t.save}
-              </button>
-            </div>
-          </div>
-        ) : (
-          <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+      {settings ? (
+        <div className="mt-3 flex flex-col gap-3">
+          <label className="flex items-start gap-3">
+            <input
+              type="checkbox"
+              checked={analytics}
+              onChange={(event) => setAnalytics(event.target.checked)}
+              className="mt-1 size-5 shrink-0 accent-ink"
+            />
+            <span>
+              <span className="block font-semibold text-text">{t.analytics}</span>
+              <span className="mt-1 block type-meta text-text-muted">{t.analyticsText}</span>
+            </span>
+          </label>
+          <div className="grid grid-cols-2 gap-2 sm:flex">
             <button
               type="button"
-              onClick={() => save("essential")}
-              className={cn(buttonVariants({ variant: "secondary", size: "sm" }), "flex-1")}
+              onClick={() => (reopened ? close(readConsent()) : setSettings(false))}
+              className={buttonVariants({ variant: "secondary", size: "sm" })}
             >
-              {t.reject}
+              {t.back}
             </button>
             <button
               type="button"
-              onClick={() => save("analytics")}
-              className={cn(buttonVariants({ variant: "secondary", size: "sm" }), "flex-1")}
+              onClick={() => save(analytics ? "analytics" : "essential")}
+              className={buttonVariants({ variant: "primary", size: "sm" })}
             >
-              {t.accept}
-            </button>
-            <button
-              type="button"
-              onClick={() => setSettings(true)}
-              className="min-h-11 px-2 text-sm font-semibold text-text underline decoration-[1.5px] underline-offset-[3px] hover:decoration-2"
-            >
-              {t.settings}
+              {t.save}
             </button>
           </div>
-        )}
-      </div>
+        </div>
+      ) : (
+        <div className="mt-3 grid grid-cols-[1fr_1fr_auto] items-center gap-2 sm:flex">
+          <button type="button" onClick={() => save("essential")} className={cn(buttonVariants({ variant: "secondary", size: "sm" }), "px-3 sm:flex-1")}>
+            {t.reject}
+          </button>
+          <button type="button" onClick={() => save("analytics")} className={cn(buttonVariants({ variant: "secondary", size: "sm" }), "px-3 sm:flex-1")}>
+            {t.accept}
+          </button>
+          <button
+            type="button"
+            onClick={() => setSettings(true)}
+            className="min-h-11 px-1 text-[0.9375rem] font-semibold text-text underline decoration-[1.5px] underline-offset-[3px] hover:decoration-2"
+          >
+            {t.settings}
+          </button>
+        </div>
+      )}
     </section>
   )
 }

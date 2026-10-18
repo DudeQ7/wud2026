@@ -25,7 +25,7 @@ export const discoverTiles: {
   imageFromEventId?: number
 }[] = [
   { key: "orchestra", href: "/orkiestra", imageFromEventId: 2612 },
-  // Brak zdjęcia budynku w danych FS – placeholder do czasu pozyskania materiałów.
+  // Brak zdjęcia budynku w danych FS – kafel pokazuje fragment ilustracji schodów (motyw strony głównej)
   { key: "building", href: "/budynek" },
   { key: "history", href: "/historia", imageFromEventId: 2634 },
   { key: "exhibitions", href: "/wystawy", imageFromEventId: 2642 },

@@ -63,7 +63,7 @@ async function HomeContent({ lang }: { lang: Locale }) {
         {hero && <Hero event={hero.event} date={hero.date} today={today} lang={lang} />}
         <StairsSection today={today} lang={lang} />
         <RecommendedSection today={today} lang={lang} />
-        <ForYouSection lang={lang} />
+        <ForYouSection lang={lang} today={today} />
         <DiscoverSection lang={lang} />
         <NewsletterSection lang={lang} />
         <PartnersSection lang={lang} />

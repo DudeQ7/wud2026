@@ -4,12 +4,15 @@ import { EventCard } from "@/components/fs/event-card"
 import { Section, SectionHeading } from "@/components/fs/layout"
 import { NewsletterForm } from "@/components/fs/newsletter-form"
 import { CtaTile, DiscoverTile, LinkTile } from "@/components/fs/tiles"
+import { StairsArt } from "@/components/home/stairs-art"
 import { buttonVariants } from "@/components/ui/button"
+import { calendarEditorial } from "@/content/calendar"
 import { boxOffice, buildingHours, discoverTiles, moodTiles, recommended } from "@/content/home"
 import { type Dictionary, type Locale, getDictionary, localizedPath } from "@/i18n"
 import {
   type FsEvent,
   addDays,
+  events,
   eventsOnDay,
   formatLongDate,
   getEvent,
@@ -17,7 +20,10 @@ import {
   upcomingConcerts,
   weekendKeys,
 } from "@/lib/events"
+import { calendarDays, countRows, parseFilters, toCalendarEvent } from "@/lib/calendar"
 import { cn } from "@/lib/utils"
+
+const calendarEvents = events.map((event) => toCalendarEvent(event, calendarEditorial))
 
 import { FirstVisitRoute } from "./first-visit-route"
 import { type DayGroup, type DayTab, DayFilter } from "./day-filter"
@@ -136,8 +142,15 @@ export function RecommendedSection({ today, lang }: { today: string; lang: Local
 }
 
 /** 5. Dla Ciebie (§6.18): „Pomóż mi wybrać” + kafle nastrojów */
-export function ForYouSection({ lang }: { lang: Locale }) {
-  const t = getDictionary(lang).home.forYou
+export function ForYouSection({ lang, today }: { lang: Locale; today: string }) {
+  const dict = getDictionary(lang)
+  const t = dict.home.forYou
+  // Ile wydarzeń czeka za kaflem – te same filtry co w kalendarzu (link kafla = adres z filtrami)
+  const countFor = (href: string) => {
+    const [path, query] = href.split("?")
+    if (path !== "/repertuar") return undefined
+    return dict.calendar.count(countRows(calendarDays(calendarEvents, parseFilters(new URLSearchParams(query)), today, dict)))
+  }
   return (
     <Section aria-labelledby="dla-ciebie">
       <SectionHeading id="dla-ciebie" title={t.title} lead={t.lead} />
@@ -151,12 +164,22 @@ export function ForYouSection({ lang }: { lang: Locale }) {
         <ul className="grid grid-cols-2 gap-4 lg:grid-cols-3">
           {moodTiles.map(({ key, href }) => (
             <li key={key} className="flex">
-              <LinkTile {...t.tiles[key]} href={localizedPath(lang, href)} className="flex-1" />
+              <LinkTile {...t.tiles[key]} href={localizedPath(lang, href)} meta={countFor(href)} className="flex-1" />
             </li>
           ))}
         </ul>
       </div>
     </Section>
+  )
+}
+
+/** Fragment ilustracji schodów (jedno piętro) – zastępuje brakujące zdjęcie budynku */
+function BuildingVisual() {
+  return (
+    // Ilustracja ma proporcje 300 × 1010; kadr 3:2 pokazuje spód pierwszego piętra i balustradę drugiego (y ≈ 230–430)
+    <div aria-hidden="true" className="absolute inset-x-0 top-[-115%] h-[505%]">
+      <StairsArt shadowId="stairs-shadow-tile" />
+    </div>
   )
 }
 
@@ -175,6 +198,7 @@ export function DiscoverSection({ lang }: { lang: Locale }) {
               href={localizedPath(lang, href)}
               image={imageFromEventId ? getEvent(imageFromEventId).image?.card : undefined}
               placeholder={t.event.photoPlaceholder}
+              visual={key === "building" ? <BuildingVisual /> : undefined}
             />
           </li>
         ))}
@@ -200,20 +224,11 @@ export function NewsletterSection({ lang }: { lang: Locale }) {
  */
 export function PartnersSection({ lang }: { lang: Locale }) {
   const t = getDictionary(lang).home.partners
+  // Bez zastępczych logotypów: do czasu materiałów od FS sekcja mówi, po co jest partnerstwo (brief §6.11–6.14)
   return (
     <Section aria-labelledby="partnerzy" className="border-t border-line pb-12">
-      <SectionHeading id="partnerzy" title={t.title} as="h3" />
-      <ul className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-        {Array.from({ length: 4 }, (_, i) => (
-          <li
-            key={i}
-            className="flex h-16 items-center justify-center border border-dashed border-line type-meta text-text-muted"
-          >
-            {t.logo}
-          </li>
-        ))}
-      </ul>
-      <Link href={localizedPath(lang, "/partnerzy")} className={cn(buttonVariants({ variant: "link" }), "mt-4")}>
+      <SectionHeading id="partnerzy" title={t.title} lead={t.lead} as="h3" />
+      <Link href={localizedPath(lang, "/partnerzy")} className={cn(buttonVariants({ variant: "secondary", block: true }), "sm:w-fit")}>
         {t.link}
       </Link>
     </Section>

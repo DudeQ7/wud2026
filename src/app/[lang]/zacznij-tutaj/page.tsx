@@ -95,9 +95,11 @@ export default async function StartHerePage() {
 async function Upcoming() {
   const lang = await getLang()
   await connection()
-  const concerts = upcomingConcerts(todayKey(new Date()), 3, [], lang)
+  // 4 kafle w 2 kolumnach (jak „Polecamy”): na telefonie cała lista mieści się na ok. 1,5 ekranu,
+  // zamiast trzech pełnych kart, które odpychały „Zanim przyjdziesz” daleko w dół
+  const concerts = upcomingConcerts(todayKey(new Date()), 4, [], lang)
   return (
-    <div className="mt-4 grid gap-10 sm:grid-cols-2 sm:gap-x-4 lg:grid-cols-3">
+    <div className="mt-4 grid grid-cols-2 gap-x-4 gap-y-8 lg:grid-cols-4 lg:gap-x-6">
       {concerts.map(({ event, date }) => (
         <EventCard lang={lang} key={event.id} event={event} date={date} variant="compact" />
       ))}

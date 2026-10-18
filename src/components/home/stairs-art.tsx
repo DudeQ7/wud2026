@@ -67,7 +67,8 @@ function gapPolygon(floor: number) {
   return points([...top, ...bottom])
 }
 
-export function StairsArt() {
+/** `shadowId` – osobny id filtra, gdy ilustracja stoi na stronie drugi raz (kafel „Budynek”) */
+export function StairsArt({ shadowId = "stairs-shadow" }: { shadowId?: string } = {}) {
   const floors = Array.from({ length: FLOORS }, (_, i) => i)
   const seams = Array.from({ length: 5 }, (_, i) => LEFT + ((RIGHT - LEFT) * (i + 1)) / 6)
   const wallSeams = Array.from({ length: 4 }, (_, i) => LEFT + 60 * (i + 1))
@@ -83,7 +84,7 @@ export function StairsArt() {
       className="absolute inset-0 size-full"
     >
       <defs>
-        <filter id="stairs-shadow" x="-10%" y="-10%" width="120%" height="130%">
+        <filter id={shadowId} x="-10%" y="-10%" width="120%" height="130%">
           <feDropShadow dx="0" dy="16" stdDeviation="13" floodColor="#1A1A1A" floodOpacity="0.4" />
         </filter>
       </defs>
@@ -119,7 +120,7 @@ export function StairsArt() {
       {floors.map((floor) => (
         <g key={floor}>
           <polygon vectorEffect="non-scaling-stroke" points={stripPolygon(floor, 12)} fill="#DEDAD2" />
-          <g filter="url(#stairs-shadow)">
+          <g filter={`url(#${shadowId})`}>
             <polygon vectorEffect="non-scaling-stroke" points={stripPolygon(floor)} fill="#FFFFFF" stroke="#DEDAD2" strokeWidth={1} />
           </g>
           {seams.map((x) => (
