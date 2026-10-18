@@ -64,6 +64,7 @@ export const de: Dictionary = {
     mainLabel: "Haupt",
     planVisit: "Besuch planen",
     assistantAi: "AI-Assistent",
+    assistantHint: "Eine Frage?",
   },
 
   footerPages: {

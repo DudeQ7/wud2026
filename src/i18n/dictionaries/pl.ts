@@ -68,6 +68,8 @@ export const pl = {
     planVisit: "Planuj wizytę",
     /** Przycisk asystenta w prawym dolnym rogu (desktop) – musi zawierać widoczne „AI” (WCAG 2.5.3) */
     assistantAi: "Asystent AI",
+    /** Podpis pływającego heksagonu przy pierwszej wizycie (§6.4), zwija się po pierwszym przewinięciu */
+    assistantHint: "Masz pytanie?",
   },
 
   footerPages: {

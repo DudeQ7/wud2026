@@ -66,7 +66,7 @@ export function Hero({ event, date, today, lang, photoPosition = "50% 30%" }: He
               <h1 id="hero-title" className="type-h1 text-gold">
                 {event.headline}
               </h1>
-              {event.subtitle && <p className="font-heading text-xl font-semibold text-text">{event.subtitle}</p>}
+              {event.subtitle && <div className="font-heading text-xl font-semibold text-text">{event.subtitle}</div>}
               <div className="mt-4 grid grid-cols-2 gap-2">
                 <a href={event.ticketsUrl} className={cn(buttonVariants({ variant: "primary" }))}>
                   {t.event.buyTicket}

@@ -20,9 +20,9 @@ export function FirstVisitRoute({ lang }: { lang: Locale }) {
           const step = t.steps[key]
           return (
             <li key={key} className="flex flex-col gap-2 border-t-[1.5px] border-line-strong pt-4">
-              <p className="font-heading text-[2rem] leading-none font-semibold text-text tabular-nums" aria-hidden="true">
+              <span className="block font-heading text-[2rem] leading-none font-semibold text-text tabular-nums" aria-hidden="true">
                 {i + 1}
-              </p>
+              </span>
               <h4 className="type-h4 text-text">
                 <span className="sr-only">{i + 1}. </span>
                 {step.title}

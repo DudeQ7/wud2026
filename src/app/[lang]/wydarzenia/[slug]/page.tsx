@@ -214,7 +214,7 @@ async function EventView({ id }: { id: number }) {
             <h1 className="type-h1 text-gold">{event.headline}</h1>
             {!past && <FavoriteButton eventId={event.id} lang={lang} className="mt-1" />}
           </div>
-          {event.subtitle && <p className="font-heading text-xl font-semibold text-text">{event.subtitle}</p>}
+          {event.subtitle && <div className="font-heading text-xl font-semibold text-text">{event.subtitle}</div>}
         </div>
 
         <FactList

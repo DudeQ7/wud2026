@@ -59,6 +59,7 @@ export function BottomNav({ lang, current }: { lang: Locale; current?: string })
                     lang={lang}
                     events={eventCards}
                     venue={venue}
+                    dialogLabel={t.nav.assistantAi}
                     className="press flex h-full w-full cursor-pointer flex-col items-center justify-end gap-1 pb-2 text-xs font-semibold text-text"
                   >
                     <AiHexagon className="-mt-4" />
