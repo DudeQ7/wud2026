@@ -387,7 +387,7 @@ export const pl = {
       fullNamePlaceholder: "Jan Kowalski",
       phone: "Numer telefonu (opcjonalnie)",
       contactLang: "Domyślny język kontaktu",
-      langOptions: { pl: "Polski", en: "English (angielski)", de: "Deutsch (niemiecki)" },
+      langOptions: { pl: "Polski", en: "English (angielski)", de: "Deutsch (niemiecki)", uk: "Українська (ukraiński)" },
       save: "Zapisz zmiany w profilu",
       saving: "Zapisywanie zmian...",
       notLoggedIn: "Musisz być zalogowany",

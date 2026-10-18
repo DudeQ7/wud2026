@@ -110,7 +110,7 @@ export function SiteHeader({ lang, overlay = false }: SiteHeaderProps) {
       >
         <div className="flex items-center justify-between border-b border-line px-4 py-3 sm:px-6">
           <h2 id={`${menuId}-title`} className="type-h2 text-gold">{t.common.menu}</h2>
-          <button type="button" autoFocus onClick={closeMenu} aria-label={lang === "pl" ? "Zamknij menu" : lang === "en" ? "Close menu" : "Menü schließen"} className="flex size-11 cursor-pointer items-center justify-center">
+          <button type="button" autoFocus onClick={closeMenu} aria-label={{ pl: "Zamknij menu", en: "Close menu", de: "Menü schließen", uk: "Закрити меню" }[lang]} className="flex size-11 cursor-pointer items-center justify-center">
             <X {...iconProps} className="size-6" />
           </button>
         </div>
@@ -160,7 +160,7 @@ function HeaderLink({
 
 function getMenuGroups(lang: Locale) {
   const t = getDictionary(lang)
-  const artists = { pl: "Artyści", en: "Artists", de: "Künstler" }[lang]
+  const artists = { pl: "Artyści", en: "Artists", de: "Künstler", uk: "Артисти" }[lang]
   const d = t.home.discover.tiles
   return [
     { title: t.nav.calendar, links: [[t.home.upcoming.all.replace(" →", ""), "/repertuar"], [t.nav.search, "/szukaj"]] },

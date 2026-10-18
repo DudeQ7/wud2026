@@ -286,3 +286,8 @@
     }
   }
 }
+
+/* Titillium Web nie ma cyrylicy – ukraińskie nagłówki dostają Open Sans zamiast czcionki systemowej */
+html:lang(uk) {
+  --font-heading: var(--font-open-sans), system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}

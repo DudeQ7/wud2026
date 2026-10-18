@@ -1,12 +1,12 @@
-// Wersje językowe (brief: PL / EN / DE). Polski jest domyślny i nie ma prefiksu w adresie,
-// EN i DE mają: /en/repertuar, /de/repertuar. Moduł jest czysty – działa na serwerze, w proxy i w przeglądarce.
+// Wersje językowe (brief: PL / EN / DE / UK). Polski jest domyślny i nie ma prefiksu w adresie,
+// EN, DE i UK mają: /en/repertuar, /de/repertuar, /uk/repertuar. Moduł jest czysty – działa na serwerze, w proxy i w przeglądarce.
 
-export const locales = ["pl", "en", "de"] as const
+export const locales = ["pl", "en", "de", "uk"] as const
 export type Locale = (typeof locales)[number]
 export const defaultLocale: Locale = "pl"
 
 /** Nazwy języków w ich własnym języku – w przełączniku i dla czytników ekranu */
-export const languageNames: Record<Locale, string> = { pl: "Polski", en: "English", de: "Deutsch" }
+export const languageNames: Record<Locale, string> = { pl: "Polski", en: "English", de: "Deutsch", uk: "Українська" }
 
 export const hasLocale = (value: string): value is Locale => (locales as readonly string[]).includes(value)
 

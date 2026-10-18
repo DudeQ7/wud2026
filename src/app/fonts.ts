@@ -10,7 +10,7 @@ const titillium = Titillium_Web({
 
 const openSans = Open_Sans({
   variable: "--font-open-sans",
-  subsets: ["latin", "latin-ext"],
+  subsets: ["latin", "latin-ext", "cyrillic"],
   weight: ["400", "600", "700"],
   display: "swap",
 })

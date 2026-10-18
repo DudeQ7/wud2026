@@ -39,7 +39,7 @@ const { meta, events } = koncerty;
 
 export type Lang = keyof typeof locales;
 const langSchema = z.enum(Object.keys(locales) as [Lang, ...Lang[]]);
-const LANG_NAMES: Record<Lang, string> = { pl: "polski", en: "angielski", de: "niemiecki" };
+const LANG_NAMES: Record<Lang, string> = { pl: "polski", en: "angielski", de: "niemiecki", uk: "ukraiński" };
 
 // Pola kart, których model nie może zmyślić (terminy, linki) – tytuł, rodzaj i miejsce tłumaczy model.
 export const eventCards = events.map(({ id, dates, url, tickets_url }) => ({ id, dates, url, ticketsUrl: tickets_url }));

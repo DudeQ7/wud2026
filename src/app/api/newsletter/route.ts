@@ -3,7 +3,7 @@ import { z } from "zod"
 
 const signupSchema = z.object({
   email: z.string().trim().toLowerCase().max(254).email(),
-  lang: z.enum(["pl", "en", "de"]),
+  lang: z.enum(["pl", "en", "de", "uk"]),
   consent: z.literal(true),
 })
 

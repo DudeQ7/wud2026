@@ -422,7 +422,7 @@ export const de: Dictionary = {
       fullNamePlaceholder: "Max Mustermann",
       phone: "Telefonnummer (optional)",
       contactLang: "Bevorzugte Kontaktsprache",
-      langOptions: { pl: "Polski (Polnisch)", en: "English (Englisch)", de: "Deutsch" },
+      langOptions: { pl: "Polski (Polnisch)", en: "English (Englisch)", de: "Deutsch", uk: "Українська (Ukrainisch)" },
       save: "Profiländerungen speichern",
       saving: "Änderungen werden gespeichert...",
       notLoggedIn: "Sie müssen angemeldet sein",

@@ -49,7 +49,7 @@ export async function updateProfile(formData: FormData) {
 
   const fullName = formData.get("fullName") as string;
   const phone = formData.get("phone") as string;
-  const lang = (formData.get("lang") as "pl" | "en" | "de") || "pl";
+  const lang = (formData.get("lang") as "pl" | "en" | "de" | "uk") || "pl";
 
   const { error } = await supabase
     .from("profiles")

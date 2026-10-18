@@ -4,15 +4,16 @@ import type { Locale } from "./config"
 import { de } from "./dictionaries/de"
 import { en } from "./dictionaries/en"
 import { type Dictionary, pl } from "./dictionaries/pl"
+import { uk } from "./dictionaries/uk"
 
 export * from "./config"
 export type { Dictionary }
 
-const dictionaries: Record<Locale, Dictionary> = { pl, en, de }
+const dictionaries: Record<Locale, Dictionary> = { pl, en, de, uk }
 
 /**
  * Słownik interfejsu dla danego języka. Synchroniczny, żeby działał tak samo w komponentach
- * serwerowych i klienckich (te dostają `lang` jako prop – słowniki są małe, ładujemy wszystkie trzy).
+ * serwerowych i klienckich (te dostają `lang` jako prop – słowniki są małe, ładujemy wszystkie).
  */
 export function getDictionary(lang: Locale): Dictionary {
   return dictionaries[lang]

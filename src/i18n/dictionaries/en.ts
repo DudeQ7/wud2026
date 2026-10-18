@@ -421,7 +421,7 @@ export const en: Dictionary = {
       fullNamePlaceholder: "Jane Smith",
       phone: "Phone number (optional)",
       contactLang: "Preferred contact language",
-      langOptions: { pl: "Polski (Polish)", en: "English", de: "Deutsch (German)" },
+      langOptions: { pl: "Polski (Polish)", en: "English", de: "Deutsch (German)", uk: "Українська (Ukrainian)" },
       save: "Save profile changes",
       saving: "Saving changes...",
       notLoggedIn: "You must be logged in",

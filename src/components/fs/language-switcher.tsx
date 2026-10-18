@@ -68,7 +68,7 @@ export function LanguageSwitcher({ lang }: { lang: Locale }) {
         inert={!open}
         className={cn(
           "flex flex-row-reverse overflow-hidden transition-[max-width,opacity] duration-200 ease-out motion-reduce:transition-none",
-          open ? "max-w-24 opacity-100" : "max-w-0 opacity-0"
+          open ? "max-w-36 opacity-100" : "max-w-0 opacity-0"
         )}
       >
         {others.map((code) => (

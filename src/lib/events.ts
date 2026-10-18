@@ -3,6 +3,7 @@ import { calendarEditorial } from "@/content/calendar"
 import { type Locale, locales } from "@/i18n/config"
 import titlesDe from "@/i18n/events/de.json"
 import titlesEn from "@/i18n/events/en.json"
+import titlesUk from "@/i18n/events/uk.json"
 import { toCalendarEvent } from "@/lib/calendar"
 import { type FsEvent, addDays, datesOn, nextDate } from "@/lib/event-format"
 
@@ -88,7 +89,7 @@ export const events: FsEvent[] = koncerty.events.map(toEvent)
 
 // Tłumaczenia tytułów (src/i18n/events/*.json, klucz = id). Wydarzenie bez tłumaczenia zostaje z tytułem z danych,
 // więc nowe wydarzenia po odświeżeniu koncerty.json pokazują się po polsku, dopóki ktoś nie doda tłumaczenia.
-const TITLES: Record<Exclude<Locale, "pl">, Record<string, string>> = { en: titlesEn, de: titlesDe }
+const TITLES: Record<Exclude<Locale, "pl">, Record<string, string>> = { en: titlesEn, de: titlesDe, uk: titlesUk }
 
 /** Wydarzenie z tytułem w danym języku */
 export function localizeEvent<T extends FsEvent>(event: T, lang: Locale): T {
