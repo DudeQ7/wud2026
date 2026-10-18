@@ -25,6 +25,7 @@ import {
   optionLabel,
   parseAnswers,
   parseStep,
+  lowestPrice,
   reasonLine,
   suggest,
   wizardHref,
@@ -241,9 +242,19 @@ async function ResultList({ answers, matches, lang }: { answers: Answers; matche
           getLabel("dla"),
           getLabel("rodzaj"),
           getLabel("klimat"),
-          answers.budzet && answers.budzet !== "bez-limitu" ? (ui?.budgetUpTo(answers.budzet) ?? `do ${answers.budzet} zł`) : undefined,
+          // Budżet wymieniamy tylko, gdy znamy cenę wydarzenia – bez tego „do 50 zł” byłoby zgadywaniem
+          answers.budzet && answers.budzet !== "bez-limitu" && lowestPrice(m.event.prices) !== null
+            ? (ui?.budgetUpTo(answers.budzet) ?? `do ${answers.budzet} zł`)
+            : undefined,
         ].filter(Boolean)
-        const reason = reasonParts.length ? `${copy?.reason ?? "Pasuje do wyboru: "}${reasonParts.join(" · ")}` : lang === "pl" ? reasonLine(answers, m) : undefined
+        // Po polsku uzasadnienie składa reasonLine (etykiety odpowiedzi, klimat z dopasowania, budżet tylko ze znanej ceny);
+        // wcześniej polska wersja pokazywała samo „do 50 zł” przy każdej karcie, także bez znanej ceny
+        const reason =
+          lang === "pl"
+            ? reasonLine(answers, m)
+            : reasonParts.length
+              ? `${copy?.reason ?? "Pasuje do wyboru: "}${reasonParts.join(" · ")}`
+              : undefined
         return (
           <li key={m.event.id} className="flex flex-col gap-4">
             <EventCard lang={lang} event={m.event} date={m.date} showAccess />
