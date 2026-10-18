@@ -88,7 +88,7 @@ Nadal niesprawdzone: czytniki ekranu (VoiceOver, TalkBack), wtyczka WAVE (wymaga
 | Widok o szerokości 640 px | Na „Planuj wizytę” `clientWidth` i `scrollWidth` wynoszą 640 px; nie ma przewijania poziomego. To nie potwierdza testu zoomu 200% w przeglądarce. |
 | Kreator → wydarzenie | Pięć kroków kończy się rekomendacją; karta wydarzenia pokazuje opis i informacje o dostępności. W szczegółach nie znaleziono odsłuchu audio; przycisk zakupu i dodania do kalendarza są obecne. Nie otwierano zewnętrznego zakupu. |
 | Filtr rodzinny | `weekend` + `dla-kogo=dzieci` + `wiek=5` zwraca jedno wydarzenie: „Jak w baroku brzmiały pory roku?” (5+). |
-| Asystent AI | Nakładka nie otworzyła się po kliknięciu. Na `/asystent` wpisana treść nie aktywowała przycisku „Wyślij”; rozmowy nie udało się zweryfikować. |
+| Asystent AI | Działa: nakładka się otwiera, a asystent odpowiada (potwierdzone przez zespół 18.10.2026). Wcześniejszy wynik negatywny pochodził z narzędzia testowego, które nie obsłużyło interakcji. Audytu axe dla otwartej nakładki nadal brak. |
 | Panel | `/en/panel` przekierowuje do logowania. Nie wpisywano danych logowania. |
 
 To ręczna próba tras, nie pełny audyt axe. Drzewo dostępności potwierdza etykiety i strukturę, ale nie zastępuje testu na VoiceOver/TalkBack. EN/DE nadal zawierają polskie opisy części wydarzeń i niektóre teksty z danych źródłowych.

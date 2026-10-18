@@ -285,6 +285,7 @@ export const de: Dictionary = {
       kinds: { motor: "Mobilität", visual: "Sehen", hearing: "Hören" },
       kindTitles: { motor: "Barrierefreiheit Mobilität", visual: "Barrierefreiheit Sehen", hearing: "Barrierefreiheit Hören" },
       levels: { full: "Verfügbar", partial: "Teilweise verfügbar", none: "Nicht verfügbar", unknown: "Keine Angaben" },
+      levelsShort: { full: "Ja", partial: "Teilweise", none: "Nein", unknown: "Keine Info" },
       details: {
         motor: { full: "Eingang, Saal und Toiletten ohne Stufen.", partial: "Aufzug oder Rampe, Rollstuhlplätze begrenzt.", none: "Eingang nur über Treppen.", unknown: "Fragen Sie das Personal." },
         visual: { full: "Audiodeskription und Hilfe vor Ort.", partial: "Hilfe des Personals auf Anfrage.", none: "Keine Audiodeskription und Hilfe.", unknown: "Fragen Sie das Personal." },

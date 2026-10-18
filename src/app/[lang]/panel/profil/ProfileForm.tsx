@@ -1,12 +1,12 @@
 "use client";
 
-import { AlertCircle, Check } from "lucide-react";
-import posthog from "posthog-js";
 import { useActionState } from "react";
-
+import posthog from "posthog-js";
 import { updateProfile } from "@/app/actions/panel";
-import { iconProps } from "@/components/fs/icons";
+import { FormMessage } from "@/components/fs/form-message";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { type Locale, getDictionary, locales } from "@/i18n";
 import type { Profile } from "@/types/database";
 
@@ -16,12 +16,10 @@ interface ProfileFormProps {
   userEmail: string;
 }
 
-const field =
-  "h-13 w-full border-[1.5px] border-line-strong bg-background px-3 text-base text-text placeholder:text-text-muted disabled:cursor-not-allowed disabled:bg-surface-muted disabled:text-text-muted";
-const label = "mb-1.5 block text-[0.9375rem] font-semibold text-text";
-
+/** Formularz profilu (§6.17): etykieta nad polem, kontur 1,5 px, komunikaty bez czerwieni i zieleni */
 export function ProfileForm({ lang, profile, userEmail }: ProfileFormProps) {
-  const t = getDictionary(lang).panel.profile;
+  const dict = getDictionary(lang);
+  const t = dict.panel.profile;
   const [state, formAction, isPending] = useActionState(
     async (_prevState: unknown, formData: FormData) => {
       const result = await updateProfile(formData);
@@ -34,68 +32,56 @@ export function ProfileForm({ lang, profile, userEmail }: ProfileFormProps) {
   );
 
   return (
-    <form action={formAction} className="space-y-5">
+    <form action={formAction} className="flex flex-col gap-6">
       <input type="hidden" name="uiLang" value={lang} />
-
       {state?.error && (
-        <div role="alert" className="flex gap-3 border-[3px] border-ink p-4">
-          <AlertCircle {...iconProps} className="mt-0.5 size-5 shrink-0 text-text" />
-          <p className="type-body text-text">
-            <strong>{t.errorLabel}</strong> {state.error}
-          </p>
-        </div>
+        <FormMessage tone="error" errorPrefix={dict.newsletter.error}>
+          {state.error}
+        </FormMessage>
       )}
+      {state?.success && <FormMessage tone="success">{state.message}</FormMessage>}
 
-      {state?.success && (
-        <div role="status" className="flex gap-3 border-[1.5px] border-line-strong p-4">
-          <Check {...iconProps} className="mt-0.5 size-5 shrink-0 text-text" />
-          <p className="type-body text-text">{state.message}</p>
-        </div>
-      )}
-
-      <div>
-        <label htmlFor="email" className={label}>
-          {t.email}
-        </label>
-        <input id="email" type="email" value={userEmail} disabled className={field} aria-describedby="email-hint" />
-        <p id="email-hint" className="mt-1 type-meta text-text-muted">
+      <div className="flex flex-col gap-2">
+        <Label htmlFor="email">{t.email}</Label>
+        <Input id="email" type="email" value={userEmail} disabled aria-describedby="email-hint" />
+        <p id="email-hint" className="type-meta text-text-muted">
           {t.emailHint}
         </p>
       </div>
 
-      <div>
-        <label htmlFor="fullName" className={label}>
-          {t.fullName}
-        </label>
-        <input
+      <div className="flex flex-col gap-2">
+        <Label htmlFor="fullName">{t.fullName}</Label>
+        <Input
           id="fullName"
           name="fullName"
           type="text"
+          autoComplete="name"
           defaultValue={profile?.full_name || ""}
           placeholder={t.fullNamePlaceholder}
-          className={field}
         />
       </div>
 
-      <div>
-        <label htmlFor="phone" className={label}>
-          {t.phone}
-        </label>
-        <input
+      <div className="flex flex-col gap-2">
+        <Label htmlFor="phone">{t.phone}</Label>
+        <Input
           id="phone"
           name="phone"
           type="tel"
+          inputMode="tel"
+          autoComplete="tel"
           defaultValue={profile?.phone || ""}
           placeholder="+48 123 456 789"
-          className={field}
         />
       </div>
 
-      <div>
-        <label htmlFor="lang" className={label}>
-          {t.contactLang}
-        </label>
-        <select id="lang" name="lang" defaultValue={profile?.lang || "pl"} className={field}>
+      <div className="flex flex-col gap-2">
+        <Label htmlFor="lang">{t.contactLang}</Label>
+        <select
+          id="lang"
+          name="lang"
+          defaultValue={profile?.lang || "pl"}
+          className="h-13 w-full border-[1.5px] border-line-strong bg-background px-4 text-base text-text"
+        >
           {locales.map((code) => (
             <option key={code} value={code}>
               {t.langOptions[code]}
@@ -104,11 +90,9 @@ export function ProfileForm({ lang, profile, userEmail }: ProfileFormProps) {
         </select>
       </div>
 
-      <div className="pt-2">
-        <Button type="submit" disabled={isPending}>
-          {isPending ? t.saving : t.save}
-        </Button>
-      </div>
+      <Button type="submit" disabled={isPending} aria-busy={isPending || undefined} className="self-start">
+        {isPending ? t.saving : t.save}
+      </Button>
     </form>
   );
 }

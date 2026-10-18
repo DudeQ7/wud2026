@@ -251,6 +251,7 @@ export const pl = {
       kinds: { motor: "Ruchowa", visual: "Wzrokowa", hearing: "Słuchowa" },
       kindTitles: { motor: "Dostępność ruchowa", visual: "Dostępność wzrokowa", hearing: "Dostępność słuchowa" },
       levels: { full: "Dostępne", partial: "Częściowo dostępne", none: "Niedostępne", unknown: "Brak informacji" },
+      levelsShort: { full: "Tak", partial: "Częściowo", none: "Nie", unknown: "Brak info" },
       details: {
         motor: { full: "Wejście, sala i toalety bez schodów.", partial: "Winda lub podjazd, miejsca dla wózków ograniczone.", none: "Wejście tylko po schodach.", unknown: "Zapytaj obsługę." },
         visual: { full: "Audiodeskrypcja i pomoc na miejscu.", partial: "Pomoc personelu na życzenie.", none: "Brak audiodeskrypcji i pomocy.", unknown: "Zapytaj obsługę." },

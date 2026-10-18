@@ -5,6 +5,7 @@ import { AccessibilityNote, MetaLine, TicketStatusBadge } from "@/components/fs/
 import { Eyebrow } from "@/components/fs/layout"
 import { Photo, PhotoDateBadge } from "@/components/fs/photo"
 import { type Locale, getDictionary, kindLabel, localizedPath, venueLabel } from "@/i18n"
+import { eventLead } from "@/i18n/events/descriptions"
 import { type FsEvent, datesOn, eventHref, formatDateBadge, formatDuration, formatTime } from "@/lib/event-format"
 import { cn } from "@/lib/utils"
 
@@ -46,7 +47,7 @@ export function EventCard({
   const t = getDictionary(lang)
   const compact = variant === "compact"
   const times = datesOn(event, date.slice(0, 10)).map(formatTime)
-  const sentence = compact ? undefined : (lead ?? (lang === "pl" ? event.lead : undefined))
+  const sentence = compact ? undefined : (lead ?? eventLead(event, lang))
 
   return (
     <article className={cn("group press relative flex flex-col enter", compact ? "gap-3" : "gap-4", className)}>

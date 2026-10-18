@@ -53,6 +53,7 @@ export function StairsClient({ items, access, outfit, text }: Props) {
   const [selected, setSelected] = useState<number | null>(null)
   const hintId = useId()
   const artRef = useRef<HTMLDivElement>(null)
+  const hintRef = useRef<HTMLElement>(null)
   // Skala całej ilustracji: 1 na telefonie w pionie, do 1,5 na szerszych ekranach (większe plakaty)
   const [scale, setScale] = useState(1)
 
@@ -66,12 +67,22 @@ export function StairsClient({ items, access, outfit, text }: Props) {
     return () => observer.disconnect()
   }, [])
 
-  // Esc zamyka hint i oddaje fokus plakatowi, z którego go otwarto
+  // Esc zamyka hint i oddaje fokus plakatowi, z którego go otwarto.
+  // Kliknięcie (lub dotknięcie) poza hintem i plakatami też go zamyka; klik w inny plakat przełącza hint.
   useEffect(() => {
     if (selected === null) return
     const onKey = (event: KeyboardEvent) => event.key === "Escape" && setSelected(null)
+    const onPointerDown = (event: PointerEvent) => {
+      const target = event.target as Element | null
+      if (hintRef.current?.contains(target) || target?.closest("[data-stairs-poster]")) return
+      setSelected(null)
+    }
     document.addEventListener("keydown", onKey)
-    return () => document.removeEventListener("keydown", onKey)
+    document.addEventListener("pointerdown", onPointerDown)
+    return () => {
+      document.removeEventListener("keydown", onKey)
+      document.removeEventListener("pointerdown", onPointerDown)
+    }
   }, [selected])
 
   const active = selected === null ? undefined : items[selected]
@@ -101,6 +112,7 @@ export function StairsClient({ items, access, outfit, text }: Props) {
               <li key={item.id} className="contents">
                 <button
                   type="button"
+                  data-stairs-poster
                   aria-expanded={expanded}
                   aria-label={item.label}
                   aria-controls={expanded ? hintId : undefined}
@@ -152,6 +164,7 @@ export function StairsClient({ items, access, outfit, text }: Props) {
         )}
         {active && selected !== null && (
         <section
+          ref={hintRef}
           key={active.id}
           id={hintId}
           aria-label={active.title}

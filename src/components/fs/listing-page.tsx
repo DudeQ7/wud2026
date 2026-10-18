@@ -9,6 +9,7 @@ import { Container, Eyebrow } from "@/components/fs/layout"
 import { SiteFooter } from "@/components/fs/site-footer"
 import { SiteHeader } from "@/components/fs/site-header"
 import { type Locale, getDictionary } from "@/i18n"
+import { listingCopy } from "@/i18n/listing-routes"
 import { getLang } from "@/i18n/server"
 import { type FsEvent, formatDuration, nextDate, nowKey, lastDate } from "@/lib/event-format"
 import { localizeEvent } from "@/lib/events"
@@ -23,12 +24,15 @@ type ListingProps = {
   empty: string
   /** Treść nad listą, np. kafle grup lub informacje praktyczne */
   intro?: React.ReactNode
+  /** Nagłówek listy (domyślnie ukryty „Nadchodzące wydarzenia”) */
+  listTitle?: string
   footer?: React.ReactNode
 }
 
 /** Podstrona tematyczna: nagłówek + opis + lista kart z najbliższymi terminami (design.md §6.10) */
 export async function ListingPage({ eyebrow, title, lead, intro, footer, ...rest }: ListingProps) {
   const lang = await getLang()
+  const ui = listingCopy(lang).ui
   return (
     <>
       <a
@@ -44,7 +48,7 @@ export async function ListingPage({ eyebrow, title, lead, intro, footer, ...rest
           <h1 className="mt-1 type-h1 text-gold">{title}</h1>
           <p className="mt-2 type-body-lg max-w-[68ch] text-text">{lead}</p>
           {intro}
-          <Suspense fallback={<div className="mt-8 h-64 bg-surface-muted" aria-busy="true" aria-label="Wczytywanie" />}>
+          <Suspense fallback={<div role="status" className="mt-8 h-64 bg-surface-muted" aria-busy="true" aria-label={ui.loading} />}>
             <List {...rest} lang={lang} />
           </Suspense>
           {footer}
@@ -56,7 +60,13 @@ export async function ListingPage({ eyebrow, title, lead, intro, footer, ...rest
   )
 }
 
-async function List({ events, select, empty, lang }: Pick<ListingProps, "events" | "select" | "empty"> & { lang: Locale }) {
+async function List({
+  events,
+  select,
+  empty,
+  listTitle,
+  lang,
+}: Pick<ListingProps, "events" | "select" | "empty" | "listTitle"> & { lang: Locale }) {
   await connection()
   const t = getDictionary(lang)
   const now = nowKey(new Date())
@@ -70,7 +80,11 @@ async function List({ events, select, empty, lang }: Pick<ListingProps, "events"
 
   return (
     <>
-      <h2 className="sr-only">Nadchodzące wydarzenia</h2>
+      {listTitle ? (
+        <h2 className="mt-12 type-h2 text-gold">{listTitle}</h2>
+      ) : (
+        <h2 className="sr-only">{listingCopy(lang).ui.upcoming}</h2>
+      )}
       <ul className="mt-8 grid gap-10 sm:grid-cols-2 sm:gap-x-4 lg:grid-cols-3 lg:gap-x-6">
         {items.map(({ event, date }) => (
           <li key={event.id} className="flex flex-col gap-2">

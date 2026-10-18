@@ -5,6 +5,7 @@ import { buttonVariants } from "@/components/ui/button"
 import { ticketStatus } from "@/content/availability"
 import { STAIRS_EVENT_COUNT, stairsAccess, stairsOutfit } from "@/content/stairs"
 import { type Locale, getDictionary, kindLabel, localizedPath, venueLabel } from "@/i18n"
+import { eventLead } from "@/i18n/events/descriptions"
 import {
   addDays,
   eventHref,
@@ -42,8 +43,8 @@ export function StairsSection({ today, lang }: { today: string; lang: Locale }) 
         time: formatTime(date),
         venue: venueLabel(t, event.venue),
         duration: formatDuration(event.durationMin),
-        // Zdanie „dlaczego warto” jest w danych tylko po polsku (jak w EventCard)
-        lead: lang === "pl" ? event.lead : undefined,
+        // Zdanie „dlaczego warto”: po polsku z danych, w EN/DE/UK tylko przetłumaczone (jak w EventCard)
+        lead: eventLead(event, lang),
         image: event.image?.card,
         href: localizedPath(lang, eventHref(event)),
         ticketsUrl: event.ticketsUrl || undefined,

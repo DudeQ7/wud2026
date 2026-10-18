@@ -1,14 +1,11 @@
-import { Heart } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-
 import { getFavoriteEventIds } from "@/app/actions/panel";
-import { iconProps } from "@/components/fs/icons";
 import { buttonVariants } from "@/components/ui/button";
-import { getDictionary, hasLocale, kindLabel, localizedPath, seriesLabel, venueLabel } from "@/i18n";
-import { eventHref, findEvent } from "@/lib/events";
-import { cn } from "@/lib/utils";
-
+import { getDictionary, hasLocale, localizedPath } from "@/i18n";
+import { findEvent } from "@/lib/events";
+import { PanelHeading } from "../PanelHeading";
+import { panelEvent } from "../panel-event";
 import { FavoriteItem } from "./FavoriteItem";
 
 export default async function FavoritesPage({ params }: PageProps<"/[lang]/panel/ulubione">) {
@@ -18,49 +15,29 @@ export default async function FavoritesPage({ params }: PageProps<"/[lang]/panel
   const t = dict.panel.favorites;
   const favoriteIds = await getFavoriteEventIds();
 
-  // Tytuły, rodzaje, sale i cykle w języku strony – do komponentu klienckiego idą gotowe teksty
-  const favoriteEvents = favoriteIds.map((id) => findEvent(id, lang)).filter(Boolean);
+  // Tytuły, rodzaje i sale w języku strony – do komponentu klienckiego idą gotowe teksty
+  const favoriteEvents = favoriteIds.flatMap((id) => {
+    const event = findEvent(id, lang);
+    return event ? [panelEvent(event, lang, dict)] : [];
+  });
 
   return (
-    <div className="space-y-8">
-      <header>
-        <h1 className="type-h1 text-gold">{t.title}</h1>
-        <p className="mt-2 max-w-[68ch] type-body text-text">{t.intro}</p>
-      </header>
+    <div>
+      <PanelHeading lang={lang} title={t.title} intro={t.intro} />
 
       {favoriteEvents.length === 0 ? (
-        <div className="flex flex-col items-start border border-dashed border-line-strong p-6">
-          <Heart {...iconProps} className="size-6 text-text" />
-          <h2 className="mt-3 type-h3 text-text">{t.emptyTitle}</h2>
-          <p className="mt-1 max-w-[60ch] type-body text-text">{t.emptyText}</p>
-          <Link
-            href={localizedPath(lang, "/asystent")}
-            className={cn(buttonVariants({ variant: "secondary" }), "mt-5 w-fit")}
-          >
+        <div className="border-y border-line py-8">
+          <h2 className="type-h4 text-gold">{t.emptyTitle}</h2>
+          <p className="mt-2 max-w-[68ch] type-body text-text">{t.emptyText}</p>
+          <Link href={localizedPath(lang, "/asystent")} className={buttonVariants({ className: "mt-6" })}>
             {t.start}
           </Link>
         </div>
       ) : (
-        <div className="grid gap-4 md:grid-cols-2">
-          {favoriteEvents.map((event) => {
-            if (!event) return null;
-            return (
-              <FavoriteItem
-                key={event.id}
-                lang={lang}
-                event={{
-                  id: event.id,
-                  title: event.title,
-                  kind: kindLabel(dict, event.kind),
-                  series: seriesLabel(dict, event.series),
-                  dates: event.dates,
-                  venue: venueLabel(dict, event.venue),
-                  href: localizedPath(lang, eventHref(event)),
-                  ticketsUrl: event.ticketsUrl,
-                }}
-              />
-            );
-          })}
+        <div className="grid border-t border-line md:grid-cols-2 md:gap-x-6">
+          {favoriteEvents.map((event) => (
+            <FavoriteItem key={event.id} lang={lang} event={event} removable />
+          ))}
         </div>
       )}
     </div>

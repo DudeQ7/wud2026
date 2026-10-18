@@ -40,11 +40,11 @@ Skrypt do krótkiego demo i zapis próby w lokalnym podglądzie (`:3100`, 18.10.
 
 **Punkt demo:** asystent podaje źródło i prowadzi do karty wydarzenia, zamiast zgadywać.
 
-**Próba:** scenariusz zablokowany w lokalnym podglądzie. Nakładka nie otwiera się, a formularz strony `/asystent` pozostawia przycisk wysyłki nieaktywny po wpisaniu pytania. Nie pokazuj tego scenariusza jako działającego przed naprawą.
+**Próba:** działa. Nakładka otwiera się z heksagonu (mobile) i z nagłówka (desktop), a asystent odpowiada na `/asystent` i w nakładce (potwierdzone przez zespół 18.10.2026). Wcześniejszy zapis o blokadzie dotyczył lokalnego podglądu w narzędziu testowym, nie aplikacji.
 
 ## Lista przed pokazem
 
-- Otworzyć te trasy w przeglądarce przy szerokości 360–390 px; dla asystenta przygotować też widok desktopowy po naprawie formularza.
+- Otworzyć te trasy w przeglądarce przy szerokości 360–390 px; dla asystenta przygotować też widok desktopowy.
 - Sprawdzić, że wybory kreatora i filtry zachowują się po użyciu „Wstecz”.
 - Zatrzymać demo przed przejściem do zewnętrznej płatności.
 - Jeśli brak wyników lub nie działa audio, pokazać widoczny stan interfejsu i opisać go, bez dopowiadania niepotwierdzonych danych.

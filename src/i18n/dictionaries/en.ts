@@ -284,6 +284,7 @@ export const en: Dictionary = {
       kinds: { motor: "Mobility", visual: "Visual", hearing: "Hearing" },
       kindTitles: { motor: "Mobility access", visual: "Visual access", hearing: "Hearing access" },
       levels: { full: "Available", partial: "Partly available", none: "Not available", unknown: "No information" },
+      levelsShort: { full: "Yes", partial: "Partly", none: "No", unknown: "No info" },
       details: {
         motor: { full: "Entrance, hall and toilets without steps.", partial: "Lift or ramp, wheelchair spaces are limited.", none: "Entrance by stairs only.", unknown: "Ask the staff." },
         visual: { full: "Audio description and on-site help.", partial: "Staff help on request.", none: "No audio description or help.", unknown: "Ask the staff." },

@@ -144,9 +144,9 @@ Treść hintu dla Slavic Sessions pochodzi z istniejącej karty sekcji 3 („Dwi
 ### 6.5 Dostępność (trzy ikony)
 
 - Trzy ikony 36×36 px, rozmieszczone co 68 px: **wózek** (dostęp ruchowy), **okulary** (wzrokowy), **ucho** (słuchowy).
-- Kolor ikony oznacza poziom dostępności dla danego wydarzenia: zielony `#5BD16A`, żółty `#FFC400`, czerwony `#FF6B6B`.
-- Pod ikoną podpis rodzaju: „Ruchowa”, „Wzrokowa”, „Słuchowa”. **Nie ma opisu słownego poziomu ani legendy kolorów.**
-- Wartości w mockupie (żółty wózek, zielone okulary, czerwone ucho) są **przykładowe**. Realne poziomy musi potwierdzić FS (`design.md` §13).
+- **Monochrom (decyzja 18.10.2026, zgodnie z `design.md` D3/D5/D6):** ikony są białe `#FFFFFF`, bez kolorów funkcjonalnych. Wcześniejsze kolory z makiety (zielony `#5BD16A`, żółty `#FFC400`, czerwony `#FF6B6B`) są odrzucone.
+- Pod ikoną dwie linie: podpis rodzaju („Ruchowa”, „Wzrokowa”, „Słuchowa”) i **poziom słowem**, pogrubiony: „Tak” / „Częściowo” / „Nie” / „Brak info” (EN: Yes / Partly / No / No info; DE: Ja / Teilweise / Nein / Keine Info; UK: Так / Частково / Ні / Невідомо). Pełny opis poziomu jest w `aria-label` ikony i w podpowiedzi (§6.6).
+- Wartości w mockupie (wózek częściowo, okulary tak, ucho nie) są **przykładowe**. Realne poziomy musi potwierdzić FS (`design.md` §13).
 
 ### 6.6 Podpowiedzi przy ikonach stroju i dostępności (uzupełnienie)
 
@@ -179,7 +179,7 @@ Nagłówek podpowiedzi to „Dostępność ruchowa / wzrokowa / słuchowa”. St
 
 Dodatkowe warianty:
 
-- **Brak informacji** (4. stan): szary obrys ikony zamiast koloru, tekst „Brak informacji. Zapytaj obsługę.”. Nie zgadujemy koloru.
+- **Brak informacji** (4. stan): pod ikoną „Brak info”, w podpowiedzi „Brak informacji. Zapytaj obsługę.”. Nie zgadujemy poziomu.
 - Druga linia z krokiem do wykonania, np. „Zgłoś asystenta: numer do ustalenia z FS”.
 - Zakres w nagłówku, np. „Dostępność ruchowa · Sala kameralna”, bo sale mają różne warunki.
 - Wydarzenie bez barier dla grupy: „Brak barier dla tej grupy.”
@@ -202,7 +202,7 @@ Dodatkowe warianty:
 - Znaczniki dat: biały tekst na `#1A1A1A` (17,4:1).
 - Hint: biały na `#1A1A1A` (17,4:1). Złoto `#AD9450` na `#1A1A1A` ma 5,91:1 (AA), ale według reguły zespołu jest ciemniejsze niż `#BBBBBB`. To świadomy wyjątek (§6.3).
 - Cele dotykowe: przycisk „Kup bilet” ma 44 px wysokości (minimum dotyku). Ikony stroju i dostępności są przyciskami z podpowiedzią (§6.6), cel dotyku min. 44 px.
-- Poziomy dostępności są oznaczone **tylko kolorem** (patrz §9 punkt 4 i §10).
+- Poziomy dostępności są oznaczone **słowem** pod ikoną, a nie kolorem (WCAG 1.4.1, §6.5).
 - Treść hintu da się odczytać czytnikiem ekranu: tytuł, data, sala, zdanie, strój, trzy poziomy dostępności z nazwami rodzaju. Kolejność w DOM jest taka sama jak wizualna.
 
 ## 9. Konflikty z `docs/design.md` i jak zostały rozwiązane
@@ -214,7 +214,7 @@ Zasada przyjęta w projekcie: decyzje zespołu są ważniejsze od docs, a każdy
 | 1 | §5.1, §5.4: brak cieni | Cienie są pod pasami schodów (decyzja zespołu: schody mają odróżniać się od białego tła). |
 | 2 | §2.3, §5.4: brak gradientów i poświat | Wszystkie gradienty i poświaty zostały usunięte z ostatecznych ekranów. |
 | 3 | §8: zakaz animacji przy przewijaniu | Obrót schodów przy scrollu zostaje jako decyzja zespołu. Brakuje wariantu `prefers-reduced-motion` (opisany w §7), do dopracowania w kodzie. |
-| 4 | §2.3, D5: brak kolorów funkcjonalnych | Wózek, okulary i ucho mają kolor zielony, żółty lub czerwony (decyzja zespołu). Kolory są tylko na ikonach i rozjaśnione, żeby były czytelne na ciemnym tle. Brak opisu słownego poziomu łamie WCAG 1.4.1 (kolor jako jedyny nośnik informacji). Słowne są tylko podpisy rodzaju (Ruchowa/Wzrokowa/Słuchowa). |
+| 4 | §2.3, D5: brak kolorów funkcjonalnych | **Rozwiązane 18.10.2026:** ikony są monochromatyczne (białe), a poziom stoi słowem pod ikoną (§6.5). Konflikt z `design.md` i WCAG 1.4.1 już nie występuje. |
 | 5 | §2.1: złoto na czerni `#AD9450` a reguła kontrastu ≥ `#BBBBBB` | Złoto `#AD9450` jest używane tylko w etykietach i ikonie stroju (decyzja zespołu). Cały pozostały tekst na czerni to czysta biel. |
 | 6 | §5.6: zdjęcia w oryginale | Plakaty boczne mają zniekształcony kadr (zwężenie i skos perspektywy). Samego pliku zdjęcia nie edytujemy, zmienia się tylko kształt kadru. |
 | 7 | §5.4: ozdobniki | Balustrada, szwy i linie stopni należą do ilustracji schodów (motyw architektury Filharmonii). Złoto jest w cienkich liniach (`#8A6D2F` na białym), co jest dozwolonym wyjątkiem z §2.3. |
@@ -227,7 +227,7 @@ Zasada przyjęta w projekcie: decyzje zespołu są ważniejsze od docs, a każdy
 
 1. **Realne dane o dostępności** per wydarzenie i sala (wózek, wzrok, słuch). Kolory w mockupie są przykładowe.
 2. **Wybór polecanego stroju** per wydarzenie (obecnie koszula jako przykład). Do ustalenia z FS.
-3. **Poziom dostępności** jest w stanie spoczynku tylko kolorem (§9, punkt 4), a słowem dopiero w podpowiedzi (§6.6). Do rozstrzygnięcia z zespołem: dodać `aria-label` z poziomem na samych ikonach.
+3. ~~**Poziom dostępności** tylko kolorem~~: rozwiązane, poziom jest słowem pod ikoną i w `aria-label` (§6.5).
 4. **Obrót schodów** (§9, punkt 3): do potwierdzenia przez zespół w kontekście wydajności i `prefers-reduced-motion`.
 5. **Treści podpowiedzi o dostępności** i numer kontaktowy do asystenta: do ustalenia z FS (§6.6).
 6. **Liczba pięter**: makiety podpowiedzi pokazują 3 piętra, ten dokument i pozostałe screeny w §11 opisują 5. Do ujednolicenia.

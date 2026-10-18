@@ -6,6 +6,7 @@ import { HeroListen } from "@/components/home/hero-listen"
 import { buttonVariants } from "@/components/ui/button"
 import { heroFragment } from "@/content/audio"
 import { type Locale, getDictionary, kindLabel, localizedPath, seriesLabel, venueLabel } from "@/i18n"
+import { eventLead } from "@/i18n/events/descriptions"
 import { type FsEvent, eventHref, formatLineup, formatShortDate, formatTime, relativeDay } from "@/lib/event-format"
 import { cn } from "@/lib/utils"
 
@@ -22,7 +23,7 @@ type HeroProps = {
 /**
  * Otwarcie strony głównej (§6.5): jedno zdjęcie w oryginale + najbliższe wydarzenie.
  * Tekst nie leży na zdjęciu – stoi na białym panelu ze ściętym narożnikiem.
- * Zdanie „dlaczego warto” pochodzi z polskiego opisu, więc w EN/DE go nie pokazujemy.
+ * Zdanie „dlaczego warto”: po polsku z opisu, w EN/DE/UK tylko gdy jest tłumaczenie (i18n/events/descriptions).
  */
 export function Hero({ event, date, today, lang, photoPosition = "50% 30%" }: HeroProps) {
   const t = getDictionary(lang)
@@ -33,6 +34,7 @@ export function Hero({ event, date, today, lang, photoPosition = "50% 30%" }: He
   const fragment = heroFragment(event.id)
   const lineup = formatLineup(event, t)
   const series = seriesLabel(t, event.series)
+  const lead = eventLead(event, lang)
 
   return (
     <section aria-labelledby="hero-title">
@@ -87,7 +89,7 @@ export function Hero({ event, date, today, lang, photoPosition = "50% 30%" }: He
 
       <Container>
         <div className="flex max-w-xl flex-col gap-6 pt-2 pb-16">
-          {lang === "pl" && event.lead && <p className="type-body text-text">{event.lead}</p>}
+          {lead && <p className="type-body text-text">{lead}</p>}
           <FactList
             facts={[
               { label: t.event.facts.when, value: when },

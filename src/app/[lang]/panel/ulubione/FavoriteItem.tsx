@@ -1,33 +1,26 @@
 "use client";
 
-import { CalendarDays, MapPin, X } from "lucide-react";
-import Link from "next/link";
-import posthog from "posthog-js";
 import { useTransition } from "react";
-
+import Link from "next/link";
+import { X } from "lucide-react";
+import posthog from "posthog-js";
 import { toggleFavorite } from "@/app/actions/panel";
 import { iconProps } from "@/components/fs/icons";
+import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { type Locale, getDictionary } from "@/i18n";
-import { cn } from "@/lib/utils";
+import type { PanelEvent } from "../panel-event";
 
 interface FavoriteItemProps {
   lang: Locale;
-  /** Teksty już w języku strony */
-  event: {
-    id: number;
-    title: string;
-    kind?: string;
-    dates: string[];
-    venue?: string;
-    href: string;
-    ticketsUrl?: string;
-    series?: string;
-  };
+  event: PanelEvent;
+  /** Przycisk „Usuń z ulubionych” (lista ulubionych); na pulpicie sam podgląd */
+  removable?: boolean;
 }
 
-export function FavoriteItem({ lang, event }: FavoriteItemProps) {
-  const { intl, panel } = getDictionary(lang);
+/** Wiersz wydarzenia w panelu – jak wiersz kalendarza (§6.7): data, tytuł, meta, status, CTA */
+export function FavoriteItem({ lang, event, removable = false }: FavoriteItemProps) {
+  const { panel } = getDictionary(lang);
   const t = panel.favorites;
   const [isPending, startTransition] = useTransition();
 
@@ -40,54 +33,46 @@ export function FavoriteItem({ lang, event }: FavoriteItemProps) {
     });
   };
 
-  const nextDate = event.dates?.[0]
-    ? new Date(event.dates[0]).toLocaleString(intl, {
-        dateStyle: "full",
-        timeStyle: "short",
-      })
-    : panel.noDate;
-
   return (
-    <article className="flex flex-col justify-between border-[1.5px] border-line-strong p-5">
-      <div>
-        <div className="flex items-start justify-between gap-3">
-          <div className="min-w-0">
-            {event.kind && <p className="type-eyebrow text-gold">{event.kind}</p>}
-            {event.series && <p className="mt-1 type-meta text-text-muted">{event.series}</p>}
-          </div>
+    <article className="flex flex-col gap-3 border-b border-line py-4 lg:py-5">
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex min-w-0 flex-col gap-1">
+          {event.kind && <p className="type-label text-text-muted">{event.kind}</p>}
+          <h3 className="type-title-card text-text">
+            <Link href={event.href} className="underline-offset-4 hover:underline">
+              {event.title}
+            </Link>
+          </h3>
+          <p className="type-meta text-text-muted tabular-nums">
+            {[event.when ?? panel.noDate, event.venue].filter(Boolean).join(" · ")}
+          </p>
+          <Badge
+            variant={event.status === "last" ? "solid" : event.status === "soldout" ? "muted" : "outline"}
+            className="mt-1"
+          >
+            {event.statusLabel}
+          </Badge>
+        </div>
+        {removable && (
           <button
             type="button"
             onClick={handleRemove}
             disabled={isPending}
-            aria-label={t.remove}
-            className={cn(buttonVariants({ variant: "secondary", size: "sm" }), "shrink-0 gap-1.5 disabled:opacity-50")}
+            aria-busy={isPending || undefined}
+            aria-label={`${t.remove}: ${event.title}`}
+            title={t.remove}
+            className={buttonVariants({ variant: "icon", className: "-mt-2 -mr-2 disabled:opacity-50" })}
           >
-            <X {...iconProps} className="size-4" />
-            {isPending ? "…" : t.removeButton}
+            <X {...iconProps} className="size-5" />
           </button>
-        </div>
-
-        <h2 className="mt-2 type-title-card text-text">{event.title}</h2>
-
-        <div className="mt-3 space-y-1">
-          <p className="flex items-center gap-1.5 type-meta text-text-muted">
-            <CalendarDays {...iconProps} className="size-4 shrink-0" />
-            {nextDate}
-          </p>
-          {event.venue && (
-            <p className="flex items-center gap-1.5 type-meta text-text-muted">
-              <MapPin {...iconProps} className="size-4 shrink-0" />
-              {event.venue}
-            </p>
-          )}
-        </div>
+        )}
       </div>
 
-      <div className="mt-5 flex flex-wrap items-center gap-2 border-t border-line pt-4">
+      <div className="flex flex-wrap gap-2">
         <Link href={event.href} className={buttonVariants({ variant: "secondary", size: "sm" })}>
           {t.details}
         </Link>
-        {event.ticketsUrl && (
+        {event.ticketsUrl && event.status !== "soldout" && (
           <a
             href={event.ticketsUrl}
             target="_blank"

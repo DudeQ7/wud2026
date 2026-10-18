@@ -13,14 +13,8 @@ type TipKey = "outfit" | AccessKind
 
 const ICONS = { motor: Accessibility, visual: Glasses, hearing: Ear } as const
 const ORDER: AccessKind[] = ["motor", "visual", "hearing"]
-// Kolor oznacza poziom dostępności (docs/schody §6.5), ale nie jest jedynym nośnikiem:
-// poziom jest też w aria-label ikony i w podpowiedzi. Brak informacji = szary, nie zgadujemy koloru (§6.6).
-const LEVEL_COLOR: Record<AccessLevel, string> = {
-  full: "#5BD16A",
-  partial: "#FFC400",
-  none: "#FF6B6B",
-  unknown: "#BBBBBB",
-}
+// Monochrom (design.md D3/D6): ikony są białe, a poziom dostępności niesie słowo pod ikoną,
+// nie kolor (WCAG 1.4.1). Pełny opis jest w aria-label i w podpowiedzi.
 
 type Props = {
   access: Record<AccessKind, AccessLevel>
@@ -43,9 +37,20 @@ export function StairsHintIcons({ access, outfit, text }: Props) {
     if (row) setTailX(button.left - row.left + button.width / 2)
     setTip(key)
   }, [])
+  // Hover myszą otwiera podpowiedź po 150 ms (docs/schody §6.6) – krótkie przejechanie kursorem nic nie robi
+  const hoverTimer = useRef<ReturnType<typeof setTimeout>>(undefined)
   const close = useCallback(() => {
+    clearTimeout(hoverTimer.current)
     setTip(null)
   }, [])
+  const hover = useCallback(
+    (key: TipKey, target: HTMLElement) => {
+      clearTimeout(hoverTimer.current)
+      hoverTimer.current = setTimeout(() => open(key, target), 150)
+    },
+    [open]
+  )
+  useEffect(() => () => clearTimeout(hoverTimer.current), [])
 
   // Esc albo dotknięcie poza ikonami zamyka podpowiedź
   useEffect(() => {
@@ -80,7 +85,12 @@ export function StairsHintIcons({ access, outfit, text }: Props) {
         : null
 
   return (
-    <div ref={rowRef} className="relative flex gap-4">
+    // Zjechanie myszą z wiersza (ikon i podpowiedzi) zamyka podpowiedź; na podpowiedź można najechać (WCAG 1.4.13)
+    <div
+      ref={rowRef}
+      className="relative flex gap-4"
+      onPointerLeave={(event) => event.pointerType === "mouse" && close()}
+    >
       <div className="flex flex-col gap-2">
         <p className="type-label text-gold-on-dark">{text.outfit}</p>
         <div className="flex w-11 flex-col items-center gap-1">
@@ -88,6 +98,7 @@ export function StairsHintIcons({ access, outfit, text }: Props) {
             tipKey="outfit"
             tipId={tip === "outfit" ? tipId : undefined}
             onOpen={open}
+            onHover={hover}
             onClose={close}
             aria-label={`${text.outfits[outfit]}. ${text.outfitTip}`}
             className={tileClass("outfit")}
@@ -101,23 +112,27 @@ export function StairsHintIcons({ access, outfit, text }: Props) {
 
       <div className="flex flex-1 flex-col gap-2">
         <p className="type-label text-gold-on-dark">{text.access}</p>
-        <ul className="flex gap-4">
+        <ul className="flex gap-2">
           {ORDER.map((kind) => {
             const Icon = ICONS[kind]
             return (
-              <li key={kind} className="flex w-13 flex-col items-center gap-1">
+              <li key={kind} className="flex min-w-13 flex-1 flex-col items-center gap-1 text-center">
                 <TipButton
                   tipKey={kind}
                   tipId={tip === kind ? tipId : undefined}
                   onOpen={open}
+                  onHover={hover}
                   onClose={close}
                   aria-label={`${text.kinds[kind]}: ${text.levels[access[kind]]}`}
                   className={tileClass(kind)}
                 >
-                  <Icon {...iconProps} strokeWidth={1.8} className="size-9 p-1" style={{ color: LEVEL_COLOR[access[kind]] }} />
+                  <Icon {...iconProps} strokeWidth={1.8} className="size-9 p-1 text-on-dark" />
                   <InfoMark />
                 </TipButton>
-                <span className="text-xs text-on-dark">{text.kinds[kind]}</span>
+                <span className="text-xs text-on-dark">
+                  {text.kinds[kind]}
+                  <span className="block font-semibold">{text.levelsShort[access[kind]]}</span>
+                </span>
               </li>
             )
           })}
@@ -160,6 +175,7 @@ type TipButtonProps = {
   tipKey: TipKey
   tipId?: string
   onOpen: (key: TipKey, target: HTMLElement) => void
+  onHover: (key: TipKey, target: HTMLElement) => void
   onClose: () => void
   "aria-label": string
   className: string
@@ -167,16 +183,21 @@ type TipButtonProps = {
 }
 
 /**
- * Przycisk z podpowiedzią: dotknięcie/kliknięcie i fokus klawiatury (§6.6). Bez hovera: przy przewijaniu
- * treść jedzie pod stojącym kursorem i podpowiedź wysuwałaby się sama.
+ * Przycisk z podpowiedzią (§6.6): mysz – hover, telefon – dotknięcie, klawiatura – fokus.
+ * Kliknięcie myszą niczego nie przełącza, żeby nie zamykało podpowiedzi otwartej hoverem.
  */
-function TipButton({ tipKey, tipId, onOpen, onClose, children, ...rest }: TipButtonProps) {
+function TipButton({ tipKey, tipId, onOpen, onHover, onClose, children, ...rest }: TipButtonProps) {
+  const pointerType = useRef("")
   return (
     <button
       type="button"
       aria-describedby={tipId}
-      onClick={(event) => onOpen(tipKey, event.currentTarget)}
-      // Fokus otwiera podpowiedź tylko z klawiatury; kliknięcie myszą obsługuje onClick
+      onPointerDown={(event) => {
+        pointerType.current = event.pointerType
+      }}
+      onPointerEnter={(event) => event.pointerType === "mouse" && onHover(tipKey, event.currentTarget)}
+      onClick={(event) => pointerType.current !== "mouse" && onOpen(tipKey, event.currentTarget)}
+      // Fokus otwiera podpowiedź tylko z klawiatury
       onFocus={(event) => event.currentTarget.matches(":focus-visible") && onOpen(tipKey, event.currentTarget)}
       onBlur={onClose}
       {...rest}

@@ -46,6 +46,7 @@ import { eventJsonLd } from "@/lib/structured-data"
 import { cn } from "@/lib/utils"
 import { type Dictionary, getDictionary, hasLocale, kindLabel, localizedPath, seriesLabel, venueLabel } from "@/i18n"
 import { getLang } from "@/i18n/server"
+import { eventDescription, eventLead } from "@/i18n/events/descriptions"
 import { visitorRouteCopy } from "@/i18n/visitor-routes"
 
 export function generateStaticParams() {
@@ -66,7 +67,9 @@ export async function generateMetadata({ params }: PageProps<"/[lang]/wydarzenia
   return {
     title: t.event.details.eventTitle(event.title),
     // Opisy wydarzeń w danych FS są tylko po polsku – w innych językach podajemy przetłumaczony rodzaj i salę.
-    description: lang === "pl" ? (event.lead ?? `${event.kind} · ${event.venue}`) : `${kindLabel(t, event.kind)} · ${venueLabel(t, event.venue)}`,
+    description:
+      eventLead(event, lang) ??
+      (lang === "pl" ? `${event.kind} · ${event.venue}` : `${kindLabel(t, event.kind)} · ${venueLabel(t, event.venue)}`),
     openGraph: event.image ? { images: [event.image.large] } : undefined,
   }
 }
@@ -154,8 +157,13 @@ async function EventView({ id }: { id: number }) {
         ? forWhom(event.kindLabel, ageMin)
         : `${kindLabel(t, event.kind)}${ageMin ? `, ${copy.ageFrom(ageMin)}` : ""}`
       : undefined
-  const why = event.lead ?? details.paragraphs[0]
-  const moreText = details.paragraphs.filter((p) => !why || !why.startsWith(p.slice(0, 40)))
+  // Opis w języku strony, gdy jest tłumaczenie; inaczej polski opis z notą o języku i lang="pl"
+  const translated = eventDescription(id, lang)
+  const descriptionLang = lang === "pl" || translated ? undefined : "pl"
+  const why = translated ? translated.lead : (event.lead ?? details.paragraphs[0])
+  const moreText = translated
+    ? translated.more
+    : details.paragraphs.filter((p) => !why || !why.startsWith(p.slice(0, 40)))
   // Odsłuch wydarzenia pokazujemy na górze tylko wtedy, gdy nie ma odsłuchów przy utworach
   const eventAudio = fragments[id] ? undefined : heroFragment(id)
 
@@ -237,8 +245,8 @@ async function EventView({ id }: { id: number }) {
 
         {why && (
           <Block id="dlaczego" title={exhibition ? copy.whyExhibition : copy.why}>
-            {lang !== "pl" && <p className="mb-3 type-meta text-text-muted">{copy.descriptionNote}</p>}
-            <p className="type-body-lg max-w-[68ch] text-text" lang={lang === "pl" ? undefined : "pl"}>
+            {descriptionLang && <p className="mb-3 type-meta text-text-muted">{copy.descriptionNote}</p>}
+            <p className="type-body-lg max-w-[68ch] text-text" lang={descriptionLang}>
               {why}
             </p>
             {moreText.length > 0 && (
@@ -247,7 +255,7 @@ async function EventView({ id }: { id: number }) {
                   <span className="group-open:hidden">{copy.readMore}</span>
                   <span className="hidden group-open:inline">{copy.collapse}</span>
                 </summary>
-                <div className="mt-3 flex max-w-[68ch] flex-col gap-4 type-body text-text" lang={lang === "pl" ? undefined : "pl"}>
+                <div className="mt-3 flex max-w-[68ch] flex-col gap-4 type-body text-text" lang={descriptionLang}>
                   {moreText.map((p, i) => (
                     <p key={i}>{p}</p>
                   ))}
