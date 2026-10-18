@@ -38,6 +38,9 @@ Wiążąca specyfikacja wizualna i interakcyjna konceptu nowej strony FS. Opiera
 | D5 | Kategorie wydarzeń | **Etykieta tekstowa, bez koloru.** Status zawsze słowem i kształtem | kolorowe paski, kropki, kwadraty, kolorowe statusy |
 | D6 | Cykle i festiwale | **Bez kolorów cykli w ogóle.** Podstrona cyklu też jest czarno-biało-złota, a cykl wyróżnia typografia i zdjęcie | skórki kolorystyczne cykli |
 | D7 | Kształty | **Promień 0 wszędzie.** Ścięty narożnik (motyw łamanych płaszczyzn znaku) oszczędnie, maks. 1–2 na ekran. **Heksagon** tylko dla asystenta AI | zaokrąglenia 8 px, pigułki |
+| D8 | Rytm strony głównej | **„Dla Ciebie” to jedyna czarna sekcja** przed stopką (złoty nagłówek `#AD9450` na czerni, kafle nastrojów z białym konturem). Kafel „Pomóż mi wybrać” jest **odwrócony: biały na czerni**, jedyny jasny blok sekcji. Kafle nastrojów pokazują liczbę wydarzeń za kliknięciem (te same filtry co kalendarz). Długa biała strona bez przerwy rytmu była zbyt jednostajna na telefonie (18.10.2026) | czarny kafel na białej sekcji |
+| D9 | Status „Dostępne” | Na listach, kartach i w otwarciu **pomijamy** „Dostępne” (stan domyślny, szum); pokazujemy wyjątki: „Ostatnie miejsca”, „Wyprzedane”. Na karcie wydarzenia status jest zawsze (§6.8) | znacznik „Dostępne” przy każdym wierszu |
+| D10 | Karta wydarzenia na desktopie | 2 kolumny od 1024 px: treść 7/12 i **przyklejony panel biletowy** 4/12 (data, godzina, sala, cena, status, Kup bilet, akcje). Pasek zakupu zostaje tylko na telefonie | pasek zakupu na każdej szerokości |
 
 D6 dotyczy interfejsu. **Zdjęcia i grafiki FS pokazujemy w oryginale, z ich kolorami** (§5.6).
 
@@ -593,7 +596,7 @@ To wyróżnik konceptu: prawie żaden serwis z inspiracji tego nie ma (wyjątki 
   - Na mobile siatka 2 × 3, na desktopie 3 × 2.
 - **Kategorie nastrojów / „Dla Ciebie”:**
   - kafle tekstowe na `#FFFFFF` z konturem 1,5 px: „Zacznij tutaj”, „Dla rodzin”, „Jeśli lubisz jazz”, „Jeśli lubisz muzykę filmową”, „Jeśli masz 30 minut”, „Coś niezwykłego”,
-  - kafel „Pomóż mi wybrać” w czerni.
+  - kafel „Pomóż mi wybrać” biały na czarnej sekcji (D8).
 - **Oś czasu historii:**
   - pionowa na mobile, pozioma przewijana na desktopie, z przyciskami ← → i obsługą klawiaturą,
   - dekady 1948 → dziś, a lata zapisane Titillium 600 w złocie jako nagłówki.

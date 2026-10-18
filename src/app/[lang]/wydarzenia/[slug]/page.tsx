@@ -393,7 +393,6 @@ async function EventView({ id }: { id: number }) {
           <TicketPanel
             event={event}
             date={date}
-            when={when}
             price={price}
             venueName={venueName}
             t={t}
@@ -524,7 +523,6 @@ function BuyBar({ event, date, price, t }: { event: FsEvent; date: string; price
 function TicketPanel({
   event,
   date,
-  when,
   price,
   venueName,
   t,
@@ -532,7 +530,6 @@ function TicketPanel({
 }: {
   event: FsEvent
   date: string
-  when: string
   price?: string
   venueName: string
   t: Dictionary
