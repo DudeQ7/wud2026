@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Heart, LayoutGrid, LogOut, MessageSquare, User } from "lucide-react";
+import { Bell, Heart, LayoutGrid, LogOut, MessageSquare, Ticket, User } from "lucide-react";
 import posthog from "posthog-js";
 import { logout } from "@/app/actions/auth";
 import { iconProps } from "@/components/fs/icons";
@@ -20,6 +20,8 @@ interface PanelNavProps {
 const navItems = [
   { href: "/panel", key: "dashboard", icon: LayoutGrid },
   { href: "/panel/ulubione", key: "favorites", icon: Heart },
+  { href: "/panel/bilety", key: "tickets", icon: Ticket },
+  { href: "/panel/powiadomienia", key: "notifications", icon: Bell },
   { href: "/panel/historia", key: "history", icon: MessageSquare },
   { href: "/panel/profil", key: "profile", icon: User },
 ] as const;

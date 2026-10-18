@@ -2,6 +2,7 @@ import { SeverityNumber } from "@opentelemetry/api-logs";
 import { after } from "next/server";
 import { posthogAssistantLogger, posthogLogProvider } from "../../../../instrumentation";
 import { chatRequestSchema, streamReply } from "@/lib/assistant";
+import { clientKey, rateLimit } from "@/lib/rate-limit";
 import { createClient } from "@/lib/supabase/server";
 
 function flushPostHogLogs() {
@@ -10,7 +11,18 @@ function flushPostHogLogs() {
   });
 }
 
+// 20 pytań na 10 minut z jednego adresu – wystarczy na rozmowę, a ogranicza nadużycia kosztownego modelu
+const RATE_LIMIT = { max: 20, windowMs: 10 * 60 * 1000 };
+
 export async function POST(request: Request) {
+  const limit = rateLimit(`chat:${clientKey(request)}`, RATE_LIMIT.max, RATE_LIMIT.windowMs);
+  if (!limit.ok) {
+    return Response.json(
+      { error: "Too many requests" },
+      { status: 429, headers: { "Retry-After": String(limit.retryAfter), "Cache-Control": "no-store" } },
+    );
+  }
+
   const body = chatRequestSchema.safeParse(await request.json().catch(() => null));
   if (!body.success) return Response.json({ error: "Invalid request" }, { status: 400 });
 
