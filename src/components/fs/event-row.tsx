@@ -1,5 +1,6 @@
 import Link from "next/link"
 import { TypeGlyph } from "@/components/calendar/type-glyph"
+import { Photo } from "@/components/fs/photo"
 import { AccessibilityNote, EventInfoBadge, MetaLine, TicketStatusBadge, eventPrice } from "@/components/fs/event-meta"
 import { type Locale, getDictionary, kindLabel, localizedPath, venueLabel } from "@/i18n"
 import { type EventType, primaryType } from "@/lib/calendar"
@@ -18,6 +19,7 @@ type EventRowProps = {
 /**
  * Wiersz kalendarza (§6.7): kolumna godziny 56 px + tytuł, meta, rodzaj, znacznik, dostępność.
  * Cały wiersz jest linkiem (rozciągnięty link na tytule). Bez kolorowych pasków i kropek (D5).
+ * Na desktopie po prawej miniatura 3:2 (160 × 107). Jest dekoracyjna (alt=""), bo tytuł obok już nazywa wydarzenie.
  */
 export function EventRow({ event, times, lang, className }: EventRowProps) {
   const t = getDictionary(lang)
@@ -54,6 +56,10 @@ export function EventRow({ event, times, lang, className }: EventRowProps) {
         </div>
         <AccessibilityNote t={t} className="mt-0.5" />
       </div>
+
+      {event.image && (
+        <Photo src={event.image.thumb} alt="" sizes="160px" className="hidden w-40 shrink-0 self-start lg:block" />
+      )}
     </article>
   )
 }
