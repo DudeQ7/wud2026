@@ -93,9 +93,9 @@ export function StairsClient({ items, access, outfit, text }: Props) {
   return (
     // Schody rozciągają się w poziomie na całą szerokość treści (SVG bez zachowania proporcji, plakaty w % szerokości);
     // wysokość i plakaty rosną do skali MAX_SCALE, dalej rozjeżdżają się już tylko odstępy.
-    // Poniżej 360 px ilustracja jest przycinana po bokach (docs/schody §2). Na telefonie i tablecie wychodzi
-    // poza marginesy kontenera – od krawędzi do krawędzi ekranu, jak w projekcie (360 px na 360 px)
-    <div className="-mx-4 flex justify-center overflow-x-clip sm:-mx-6 lg:mx-0">
+    // Poniżej 360 px ilustracja jest przycinana po bokach (docs/schody §2). Sekcja renderuje ją poza kontenerem,
+    // więc na każdej szerokości idzie od krawędzi do krawędzi ekranu (jak w projekcie: 360 px na 360 px)
+    <div className="flex justify-center overflow-x-clip">
       <div ref={artRef} className="relative w-full min-w-[360px] shrink-0" style={{ height: ART_HEIGHT * scale }}>
         <StairsArt />
 

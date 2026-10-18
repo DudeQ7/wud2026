@@ -1,6 +1,6 @@
 import Link from "next/link"
 
-import { Section, SectionHeading } from "@/components/fs/layout"
+import { Container, SectionHeading } from "@/components/fs/layout"
 import { buttonVariants } from "@/components/ui/button"
 import { ticketStatus } from "@/content/availability"
 import { STAIRS_EVENT_COUNT, stairsAccess, stairsOutfit } from "@/content/stairs"
@@ -55,15 +55,20 @@ export function StairsSection({ today, lang }: { today: string; lang: Locale }) 
   )
 
   return (
-    <Section aria-labelledby="najblizsze">
-      <SectionHeading id="najblizsze" title={text.title} />
+    // Nagłówek i przycisk w kolumnie treści, a schody od krawędzi do krawędzi ekranu na każdej szerokości
+    <section aria-labelledby="najblizsze" className="bg-background pt-8 pb-16 lg:pt-12 lg:pb-24">
+      <Container>
+        <SectionHeading id="najblizsze" title={text.title} />
+      </Container>
       <StairsClient items={items} access={stairsAccess} outfit={stairsOutfit} text={clientText} />
-      <Link
-        href={localizedPath(lang, "/repertuar")}
-        className={cn(buttonVariants({ variant: "secondary", block: true }), "mt-6 sm:w-fit")}
-      >
-        {text.all}
-      </Link>
-    </Section>
+      <Container>
+        <Link
+          href={localizedPath(lang, "/repertuar")}
+          className={cn(buttonVariants({ variant: "secondary", block: true }), "mt-6 sm:w-fit")}
+        >
+          {text.all}
+        </Link>
+      </Container>
+    </section>
   )
 }
