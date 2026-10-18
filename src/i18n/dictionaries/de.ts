@@ -373,7 +373,7 @@ export const de: Dictionary = {
     nextMonth: "Nächster Monat",
     todayLabel: "heute",
     emptyDay: "An diesem Tag gibt es keine Veranstaltungen.",
-    markLegend: "Striche unter dem Datum: Anzahl der Veranstaltungen",
+    markLegend: "Das Symbol unter dem Datum zeigt die Art der Veranstaltung",
     quickFilters: "Schnellfilter",
     quick: { today: "Heute", weekend: "Dieses Wochenende", kids: "Für Kinder", jazz: "Jazz", exhibitions: "Ausstellungen" },
     count: (n) => `${n} ${s(n, "Veranstaltung", "Veranstaltungen")}`,

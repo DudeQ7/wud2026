@@ -358,7 +358,7 @@ export const uk: Dictionary = {
     nextMonth: "Наступний місяць",
     todayLabel: "сьогодні",
     emptyDay: "На цей день немає подій.",
-    markLegend: "Риски під датою: кількість подій",
+    markLegend: "Символ під датою показує тип події",
     quickFilters: "Швидкі фільтри",
     quick: { today: "Сьогодні", weekend: "На вихідних", kids: "Для дітей", jazz: "Джаз", exhibitions: "Виставки" },
     count: (n) => `${n} ${s(n, "подія", "події", "подій")}`,

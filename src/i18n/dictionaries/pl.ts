@@ -339,7 +339,7 @@ export const pl = {
     nextMonth: "Następny miesiąc",
     todayLabel: "dziś",
     emptyDay: "Brak wydarzeń w tym dniu.",
-    markLegend: "Kreski pod datą: liczba wydarzeń",
+    markLegend: "Symbol pod datą pokazuje rodzaj wydarzenia",
     quickFilters: "Szybkie filtry",
     quick: { today: "Dziś", weekend: "Ten weekend", kids: "Dla dzieci", jazz: "Jazz", exhibitions: "Wystawy" },
     count: (n: number) => `${n} ${plural(n, "wydarzenie", "wydarzenia", "wydarzeń")}`,

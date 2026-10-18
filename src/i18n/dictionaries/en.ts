@@ -372,7 +372,7 @@ export const en: Dictionary = {
     nextMonth: "Next month",
     todayLabel: "today",
     emptyDay: "No events on this day.",
-    markLegend: "Marks under a date: number of events",
+    markLegend: "The symbol under a date shows the type of event",
     quickFilters: "Quick filters",
     quick: { today: "Today", weekend: "This weekend", kids: "For children", jazz: "Jazz", exhibitions: "Exhibitions" },
     count: (n) => `${n} ${s(n, "event", "events")}`,
