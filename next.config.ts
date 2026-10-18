@@ -1,6 +1,6 @@
 import type { NextConfig } from "next";
 
-/** Wersja testowa (preview / dev) – czerwony favicon i nagłówek; produkcja bez zmian */
+/** Wersja testowa (preview / dev) – czerwony favicon (różowy nagłówek tylko w lokalnym devie); produkcja bez zmian */
 const isTestEnv = process.env.VERCEL_ENV
   ? process.env.VERCEL_ENV !== "production"
   : process.env.NODE_ENV !== "production";

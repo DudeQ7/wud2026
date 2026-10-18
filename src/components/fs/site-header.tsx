@@ -43,6 +43,8 @@ export function SiteHeader({ lang, overlay = false }: SiteHeaderProps) {
 
   const t = getDictionary(lang)
   const solid = !overlay || scrolled
+  // Różowe tło tylko w lokalnym devie. Preview na Vercelu (link dla jury) ma biały nagłówek, znacznikiem testu jest favicon.
+  const devTint = process.env.NODE_ENV === "development"
   // Adres bez prefiksu języka – do oznaczenia aktywnej pozycji menu
   const page = stripLocale(usePathname())
   const isActive = (href: string) => page === href || page.startsWith(`${href}/`)
@@ -57,7 +59,8 @@ export function SiteHeader({ lang, overlay = false }: SiteHeaderProps) {
         "sticky top-0 z-40 h-[var(--header-h)] transition-colors",
         overlay && "-mb-[var(--header-h)]",
         solid
-          ? cn("border-b border-line", process.env.NEXT_PUBLIC_IS_TEST_ENV ? "bg-[#fbe3e3]" : "bg-background") : "border-b border-transparent bg-transparent"
+          ? cn("border-b border-line", devTint ? "bg-[#fbe3e3]" : "bg-background")
+          : "border-b border-transparent bg-transparent"
       )}
     >
       <Container className="flex h-full items-center justify-between gap-4">
