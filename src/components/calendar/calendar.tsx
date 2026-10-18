@@ -151,10 +151,12 @@ export function Calendar({ events, series, lang, displayMode = "list", monthView
         {active.length > 0 && <ActiveFilterList filters={active} current={filters} onChange={navigate} t={t} />}
       </div>
 
+      {/* Kontener wyników jest zawsze w DOM (cel aria-controls przełączników), także w widoku miesiąca */}
+      <div id="repertuar-lista">
       {displayMode === "month" && monthView ? (
         monthView
       ) : (
-        <div id="repertuar-lista">
+        <div>
           {count === 0 ? (
             <EmptyState
               options={alternatives(events, filters, today, seriesLabels, t)}
@@ -191,6 +193,7 @@ export function Calendar({ events, series, lang, displayMode = "list", monthView
           )}
         </div>
       )}
+      </div>
     </>
   )
 }
