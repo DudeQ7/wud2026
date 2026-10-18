@@ -11,6 +11,13 @@ const FIRST_AXIS = 185
 const LEFT = 30
 const RIGHT = 330
 
+/** Widoczny wycinek ilustracji: same schody, bez pustych pasów po bokach – rysunek wypełnia całą szerokość */
+export const VIEW_X = LEFT
+export const VIEW_W = RIGHT - LEFT
+
+/** Pozycja x z układu ilustracji jako % szerokości widocznego wycinka */
+export const xPercent = (x: number) => ((x - VIEW_X) / VIEW_W) * 100
+
 /** Środek pasa piętra na osi pionowej */
 export const axisY = (floor: number) => FIRST_AXIS + floor * PITCH
 
@@ -70,7 +77,7 @@ export function StairsArt() {
     <svg
       aria-hidden="true"
       focusable="false"
-      viewBox={`0 0 ${ART_WIDTH} ${ART_HEIGHT}`}
+      viewBox={`${VIEW_X} 0 ${VIEW_W} ${ART_HEIGHT}`}
       // Rozciągane tylko w poziomie: kreski zostają cienkie dzięki non-scaling-stroke
       preserveAspectRatio="none"
       className="absolute inset-0 size-full"

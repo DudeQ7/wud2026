@@ -9,7 +9,7 @@ import type { AccessKind, AccessLevel } from "@/content/stairs"
 import type { Dictionary } from "@/i18n"
 import { cn } from "@/lib/utils"
 
-import { ART_HEIGHT, ART_WIDTH, SLOTS, StairsArt, slotCenterY } from "./stairs-art"
+import { ART_HEIGHT, ART_WIDTH, SLOTS, StairsArt, slotCenterY, xPercent } from "./stairs-art"
 import { StairsHintIcons } from "./stairs-hint-icons"
 
 export type StairsItem = {
@@ -77,10 +77,12 @@ export function StairsClient({ items, access, outfit, text }: Props) {
     selected === null ? 0 : (slotCenterY(Math.floor(selected / 3), selected % 3) + FOCUS_H / 2) * scale + HINT_GAP
 
   return (
-    // Schody rozciągają się w poziomie od 360 do 880 px (plakaty zachowują rozmiar, rozjeżdżają się tylko odstępy).
-    // Poniżej 360 px ilustracja jest przycinana po bokach (docs/schody §2)
-    <div className="flex justify-center overflow-x-clip">
-      <div ref={artRef} className="relative w-full max-w-[880px] min-w-[360px] shrink-0" style={{ height: ART_HEIGHT * scale }}>
+    // Schody rozciągają się w poziomie na całą szerokość treści (SVG bez zachowania proporcji, plakaty w % szerokości);
+    // wysokość i plakaty rosną do skali MAX_SCALE, dalej rozjeżdżają się już tylko odstępy.
+    // Poniżej 360 px ilustracja jest przycinana po bokach (docs/schody §2). Na telefonie i tablecie wychodzi
+    // poza marginesy kontenera – od krawędzi do krawędzi ekranu, jak w projekcie (360 px na 360 px)
+    <div className="-mx-4 flex justify-center overflow-x-clip sm:-mx-6 lg:mx-0">
+      <div ref={artRef} className="relative w-full min-w-[360px] shrink-0" style={{ height: ART_HEIGHT * scale }}>
         <StairsArt />
 
         <ol aria-label={text.listLabel} className="contents">
@@ -100,8 +102,9 @@ export function StairsClient({ items, access, outfit, text }: Props) {
                   aria-label={item.label}
                   aria-controls={expanded ? hintId : undefined}
                   onClick={() => setSelected(expanded ? null : i)}
-                  className="group absolute cursor-pointer [animation:poster-in_var(--dur-slow)_var(--ease-out)_backwards] transition-[width,height,top,left,transform] duration-250 ease-out hover:-translate-y-1 active:scale-[0.97] motion-reduce:transition-none"
-                  style={{ animationDelay: `${Math.min(i, 8) * 50}ms`, width, height, left: `calc(${(slot.cx / ART_WIDTH) * 100}% - ${width / 2}px)`, top: cy * scale - height / 2 }}
+                  // Uniesienie po najechaniu/fokusie: 6 px po 80 ms, jak kafle (photoLift); `translate` w przejściu, bo Tailwind v4 przesuwa właściwością translate
+                  className="group absolute cursor-pointer [animation:poster-in_var(--dur-slow)_var(--ease-out)_backwards] transition-[width,height,top,left,translate,transform] duration-250 ease-out hover:-translate-y-1.5 hover:delay-[80ms] focus-visible:-translate-y-1.5 active:scale-[0.97] motion-reduce:transition-none"
+                  style={{ animationDelay: `${Math.min(i, 8) * 50}ms`, width, height, left: `calc(${xPercent(slot.cx)}% - ${width / 2}px)`, top: cy * scale - height / 2 }}
                 >
                   {/* Obrys fokusu na wrapperze: clip-path obcinałby outline (design.md §5.2) */}
                   <span
@@ -141,7 +144,7 @@ export function StairsClient({ items, access, outfit, text }: Props) {
             key={`tail-${active.id}`}
             aria-hidden="true"
             className="absolute h-3 w-4 bg-ink [animation:tail-in_var(--dur-base)_var(--ease-out)] [clip-path:polygon(0_100%,50%_0,100%_100%)]"
-            style={{ top: hintTop - 12, left: `calc(${(slotCenterX(selected) / ART_WIDTH) * 100}% - 8px)` }}
+            style={{ top: hintTop - 12, left: `calc(${xPercent(slotCenterX(selected))}% - 8px)` }}
           />
         )}
         {active && selected !== null && (
@@ -153,7 +156,7 @@ export function StairsClient({ items, access, outfit, text }: Props) {
           // Środek hintu pod plakatem, ale z marginesem 32 px od krawędzi ilustracji (przy 360 px wypada dokładnie 32 px)
           style={{
             top: hintTop,
-            left: `clamp(32px, calc(${(slotCenterX(selected) / ART_WIDTH) * 100}% - 148px), calc(100% - 328px))`,
+            left: `clamp(32px, calc(${xPercent(slotCenterX(selected))}% - 148px), calc(100% - 328px))`,
           }}
         >
           <div className="relative flex flex-col px-4 pt-4 pb-4">

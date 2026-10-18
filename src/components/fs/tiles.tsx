@@ -2,7 +2,7 @@ import Link from "next/link"
 import * as React from "react"
 
 import { Eyebrow } from "@/components/fs/layout"
-import { Photo } from "@/components/fs/photo"
+import { Photo, photoLift } from "@/components/fs/photo"
 import { buttonVariants } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
@@ -62,7 +62,7 @@ type DiscoverTileProps = {
   className?: string
 }
 
-/** Kafel „Odkryj Filharmonię” (§6.18): zdjęcie 3:2 + nazwa (h3) + 1 linia opisu */
+/** Kafel „Odkryj Filharmonię” (§6.18): zdjęcie 3:2 (unoszone przy najechaniu) + nazwa (h3) + 1 linia opisu */
 export function DiscoverTile({ title, description, href, image, placeholder, className }: DiscoverTileProps) {
   return (
     <article className={cn("group press enter relative flex flex-col gap-2", className)}>
@@ -71,6 +71,7 @@ export function DiscoverTile({ title, description, href, image, placeholder, cla
         alt=""
         placeholder={placeholder}
         sizes="(min-width: 1024px) 33vw, 50vw"
+        className={photoLift}
       />
       <h3 className="font-heading text-lg leading-tight font-semibold text-text">
         <Link href={href} className={cn(stretchedLink, "group-hover:underline group-hover:underline-offset-4")}>

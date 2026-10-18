@@ -3,7 +3,6 @@ import Link from "next/link"
 
 import visit from "@/data/visit.json"
 import { iconProps } from "@/components/fs/icons"
-import { FooterLanguageLinks } from "@/components/fs/footer-language-links"
 import { Container, Eyebrow } from "@/components/fs/layout"
 import { Logo } from "@/components/fs/wordmark"
 import { address, footerLinks } from "@/content/home"
@@ -56,7 +55,6 @@ export function SiteFooter({ lang }: { lang: Locale }) {
           </ul>
         </nav>
 
-        <FooterLanguageLinks lang={lang} label={t.common.language} />
         <p className="type-meta text-on-dark-muted lg:col-span-3">
           {t.footer.copyright}
         </p>

@@ -70,6 +70,13 @@ export function Photo({
   )
 }
 
+/**
+ * Uniesienie zdjęcia w klikalnym kaflu lub plakacie (rodzic z klasą `group`): po 80 ms od najechania lub fokusu ramka
+ * podnosi się o 6 px, po zjechaniu od razu wraca (250 ms, ease-in-out). Samo zdjęcie się nie zmienia (§5.6).
+ */
+export const photoLift =
+  "transition-transform duration-[250ms] ease-in-out group-focus-within:-translate-y-1.5 group-focus-within:delay-[80ms] group-hover:-translate-y-1.5 group-hover:delay-[80ms]"
+
 /** Czarny znacznik daty w lewym górnym rogu zdjęcia (§6.10) */
 export function PhotoDateBadge({ children }: { children: React.ReactNode }) {
   return (
