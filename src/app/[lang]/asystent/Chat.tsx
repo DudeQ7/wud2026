@@ -14,6 +14,7 @@ import locales from "@/data/locales.json";
 import { localizedPath } from "@/i18n/config";
 import type { ChatMessage, EventCard, Lang, Reply, Venue } from "@/lib/assistant";
 import { readConsent } from "@/lib/consent";
+import { useKeyboardViewport } from "@/lib/use-keyboard-viewport";
 import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
 
@@ -131,11 +132,21 @@ export default function Chat({ lang, events, venue, titleId, onClose, className 
     });
   }
 
+  // Strona /asystent (bez nakładki): przy otwartej klawiaturze czat przykrywa widoczną część ekranu, pole pytania
+  // stoi tuż nad klawiaturą. W nakładce robi to AssistantDialog.
+  const viewport = useKeyboardViewport(!onClose);
+  const keyboard = viewport?.keyboard ? viewport : null;
+
   const last = entries.at(-1);
   const suggestions = !last ? t.suggestions : busy ? [] : (last.suggestions ?? []);
 
   return (
-    <div lang={lang} className={cn("mx-auto flex w-full max-w-2xl flex-col bg-background px-4", className)}>
+    <div
+      lang={lang}
+      data-keyboard={keyboard ? true : undefined}
+      style={keyboard ? { position: "fixed", insetInline: 0, top: keyboard.top, height: keyboard.height, zIndex: 50 } : undefined}
+      className={cn("mx-auto flex w-full max-w-2xl flex-col bg-background px-4", className)}
+    >
       <header className="flex items-center justify-between gap-3 border-b border-line py-3">
         {/* Na stronie /asystent (bez titleId) to h1; w nakładce zostaje h2 */}
         {titleId ? (
@@ -313,15 +324,16 @@ export default function Chat({ lang, events, venue, titleId, onClose, className 
       </div>
 
       {suggestions.length > 0 && (
-        <ul className="flex flex-col gap-2 pb-3 sm:flex-row sm:flex-wrap">
+        // Przy otwartej klawiaturze (data-keyboard na nakładce) jeden przewijany rząd zamiast listy, żeby rozmowa była widoczna
+        <ul className="flex flex-col gap-2 pb-3 sm:flex-row sm:flex-wrap in-data-keyboard:-mx-4 in-data-keyboard:flex-row in-data-keyboard:flex-nowrap in-data-keyboard:overflow-x-auto in-data-keyboard:px-4">
           {suggestions.map((suggestion) => (
-            <li key={suggestion} className="sm:w-auto">
+            <li key={suggestion} className="sm:w-auto in-data-keyboard:shrink-0">
               <button
                 type="button"
                 onClick={() => send(suggestion)}
                 className={cn(
                   buttonVariants({ variant: "secondary", size: "sm" }),
-                  "w-full justify-start whitespace-normal text-left sm:w-auto"
+                  "w-full justify-start whitespace-normal text-left sm:w-auto in-data-keyboard:w-auto in-data-keyboard:whitespace-nowrap"
                 )}
               >
                 {suggestion}

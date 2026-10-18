@@ -4,6 +4,7 @@ import { useId, useRef, useState } from "react"
 
 import Chat from "@/app/[lang]/asystent/Chat"
 import type { EventCard, Lang, Venue } from "@/lib/assistant"
+import { useKeyboardViewport } from "@/lib/use-keyboard-viewport"
 import { cn } from "@/lib/utils"
 
 type AssistantDialogProps = {
@@ -31,6 +32,9 @@ export function AssistantDialog({ lang = "pl", events, venue, className, label, 
   const [mounted, setMounted] = useState(false)
   const [open, setOpen] = useState(false)
 
+  // Klawiatura na telefonie: okno ma wysokość i położenie widocznej części ekranu (pole pytania nad klawiaturą)
+  const viewport = useKeyboardViewport(open)
+
   function show() {
     setMounted(true)
     dialogRef.current?.showModal()
@@ -57,6 +61,8 @@ export function AssistantDialog({ lang = "pl", events, venue, className, label, 
         ref={dialogRef}
         aria-labelledby={titleId}
         onClose={() => setOpen(false)}
+        data-keyboard={viewport?.keyboard || undefined}
+        style={viewport ? { height: viewport.height, top: viewport.top } : undefined}
         // Kliknięcie w tło (poza szufladą na desktopie) zamyka nakładkę
         onClick={(e) => e.target === e.currentTarget && close()}
         className={cn(
@@ -71,7 +77,8 @@ export function AssistantDialog({ lang = "pl", events, venue, className, label, 
             venue={venue}
             titleId={titleId}
             onClose={close}
-            className="h-full pb-[env(safe-area-inset-bottom)]"
+            // Przy otwartej klawiaturze dolny margines bezpieczny nie jest potrzebny – pole stoi tuż nad klawiaturą
+            className="h-full pb-[env(safe-area-inset-bottom)] in-data-keyboard:pb-0"
           />
         )}
       </dialog>
