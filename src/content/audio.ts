@@ -12,9 +12,14 @@ export type Fragment = {
   demo?: boolean
 }
 
-/** Odsłuch przypisany do wydarzenia jako całości (hero), gdy w danych brak programu z utworami */
+const demoFragment: Fragment = { src: "/audio/demo-fragment.mp3", durationSec: 60, demo: true }
+
+/** Odsłuch przypisany do wydarzenia jako całości (hero i wydarzenia demo bez listy utworów w danych) */
 export const eventFragments: Record<number, Fragment> = {
-  2608: { src: "/audio/demo-fragment.mp3", durationSec: 60, demo: true },
+  2601: demoFragment,
+  2608: demoFragment,
+  2612: demoFragment,
+  2623: demoFragment,
 }
 
 /** Fragment do hero: odsłuch całego wydarzenia, a w jego braku pierwszy utwór programu */
@@ -22,7 +27,9 @@ export function heroFragment(eventId: number): Fragment | undefined {
   return eventFragments[eventId] ?? fragments[eventId]?.[0]
 }
 
-/** id wydarzenia → indeks utworu w programie → fragment */
+/** id wydarzenia → indeks utworu w programie → fragment (wydarzenia ze scenariuszy demo) */
 export const fragments: Record<number, Record<number, Fragment>> = {
-  2551: { 0: { src: "/audio/demo-fragment.mp3", durationSec: 60, demo: true } },
+  2550: { 0: demoFragment },
+  2551: { 0: demoFragment },
+  2597: { 0: demoFragment },
 }

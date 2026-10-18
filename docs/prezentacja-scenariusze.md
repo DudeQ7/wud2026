@@ -14,7 +14,7 @@ Skrypt do krótkiego demo i zapis próby w lokalnym podglądzie (`:3100`, 18.10.
 
 **Punkt demo:** użytkownik nie musi znać nazw kompozytorów ani zasad koncertu, żeby znaleźć wydarzenie i zaplanować przyjście.
 
-**Próba:** przeszłam kreator i otworzyłam kartę „FilHERmonia — Oda do młodości” przy szerokości 360 px. Karta ma zakup, dostępność, FAQ dla debiutanta i dodanie do kalendarza. Nie ma na niej odsłuchu audio. Nie otwierano płatności.
+**Próba:** przeszłam kreator i otworzyłam kartę „FilHERmonia — Oda do młodości” przy szerokości 360 px. Karta ma zakup, 1-minutowy odsłuch fragmentu (próbka demo przy utworze w programie), „Dlaczego warto przyjść”, dostępność, FAQ dla debiutanta i dodanie do kalendarza (.ics). Nie otwierano płatności.
 
 ## B. Rodzic — telefon, 390 px
 
@@ -27,7 +27,7 @@ Skrypt do krótkiego demo i zapis próby w lokalnym podglądzie (`:3100`, 18.10.
 
 **Punkt demo:** repertuar pomaga ocenić, czy wydarzenie pasuje do rodziny, zanim rodzic otworzy szczegóły.
 
-**Próba:** filtry weekend + dzieci + wiek 5 lat zwróciły jedno wydarzenie, rekomendowane dla wieku 5+.
+**Próba:** filtry weekend + dzieci + wiek 5 lat zwróciły jedno wydarzenie („Jak w baroku brzmiały pory roku?”, 5+) z odsłuchem demo, dostępnością i przyciskiem zakupu.
 
 ## C. Pytanie do asystenta — telefon lub desktop
 
@@ -40,7 +40,17 @@ Skrypt do krótkiego demo i zapis próby w lokalnym podglądzie (`:3100`, 18.10.
 
 **Punkt demo:** asystent podaje źródło i prowadzi do karty wydarzenia, zamiast zgadywać.
 
-**Próba:** działa. Nakładka otwiera się z heksagonu (mobile) i z nagłówka (desktop), a asystent odpowiada na `/asystent` i w nakładce (potwierdzone przez zespół 18.10.2026). Wcześniejszy zapis o blokadzie dotyczył lokalnego podglądu w narzędziu testowym, nie aplikacji.
+**Próba:** działa. Nakładka otwiera się z heksagonu (mobile i desktop) oraz na `/asystent`, asystent odpowiada z kartami wydarzeń i źródłem, a przy pytaniu o dane osobowe odmawia ich przyjęcia i odsyła do kasy (potwierdzone 18.10.2026).
+
+## D. Turysta z Niemiec — telefon, 360 px
+
+**Cel:** sprawdzić po niemiecku terminy, cenę i zasady zwiedzania budynku.
+
+1. Otwórz `/de/zwiedzanie`.
+2. Pokaż kluczowe fakty (cena 30/20 zł, czas ok. 45 min, języki PL/EN/DE, kontakt dla grup) oraz 4 nadchodzące terminy zwiedzania po niemiecku.
+3. Przejdź do karty zwiedzania albo wieczornego repertuaru (`/de/repertuar`).
+
+**Próba:** `/de/zwiedzanie` przy 360 px wyświetla pełne informacje po niemiecku (`Führungen`), 4 terminy i ceny 30/20 zł.
 
 ## Lista przed pokazem
 
