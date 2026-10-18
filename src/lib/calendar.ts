@@ -1,3 +1,4 @@
+import { minPrice } from "@/content/prices"
 import type { Dictionary } from "@/i18n"
 import { pl } from "@/i18n/dictionaries/pl"
 // Polska odmiana – dla tekstów, które są tylko po polsku (wyszukiwarka, cykle)
@@ -20,8 +21,15 @@ import {
 // Klucze = wartości w adresie URL (po polsku we wszystkich językach, żeby linki działały wszędzie).
 // Etykiety są w słowniku: t.calendar.when, t.calendar.types itd.
 
-const { when: WHEN, types: TYPES, audiences: AUDIENCES, places: PLACES, durations: DURATIONS, moods: MOODS } =
-  pl.calendar
+const {
+  when: WHEN,
+  types: TYPES,
+  audiences: AUDIENCES,
+  places: PLACES,
+  durations: DURATIONS,
+  moods: MOODS,
+  prices: PRICES,
+} = pl.calendar
 
 export type When = keyof typeof WHEN
 export type EventType = keyof typeof TYPES
@@ -29,6 +37,7 @@ export type Audience = keyof typeof AUDIENCES
 export type Place = keyof typeof PLACES
 export type Duration = keyof typeof DURATIONS
 export type Mood = keyof typeof MOODS
+export type Price = keyof typeof PRICES
 
 export type Filters = {
   kiedy?: When
@@ -42,6 +51,8 @@ export type Filters = {
   miejsce: Place[]
   czas?: Duration
   nastroj: Mood[]
+  /** Próg najniższej ceny biletu */
+  cena?: Price
   /** Klucz cyklu (slug nazwy) */
   cykl?: string
   /** Wykonawca, kompozytor, tytuł, cykl */
@@ -66,6 +77,8 @@ export type Facets = {
   /** Czas trwania do filtra; wystawy są otwarte w godzinach galerii, więc pasują do każdego limitu */
   duration?: number | "dowolny"
   seriesKey?: string
+  /** Najniższa cena w zł (0 = wstęp wolny) – ta sama, którą pokazuje wiersz („od 40 zł”); do czasu iksoris z mocka */
+  price?: number
   /** Tekst do wyszukiwania: bez polskich znaków, małymi literami */
   search: string
 }
@@ -175,6 +188,7 @@ export function toCalendarEvent(event: FsEvent, editorial: Editorial): CalendarE
       moods,
       duration: isExhibition(event) ? "dowolny" : event.durationMin,
       seriesKey: seriesKey(event.series),
+      price: minPrice(event),
       search: fold(
         [event.title, event.kindLabel, event.series, event.venue, ...event.artists, ...event.program].join(" ")
       ),
@@ -195,6 +209,7 @@ const dayKey = (value: string | null) => (value && /^\d{4}-\d{2}-\d{2}$/.test(va
 export function parseFilters(params: URLSearchParams): Filters {
   const kiedy = params.get("kiedy") ?? ""
   const czas = params.get("czas") ?? ""
+  const cena = params.get("cena") ?? ""
   const wiek = Number(params.get("wiek"))
   const od = dayKey(params.get("od"))
   const to = dayKey(params.get("do"))
@@ -208,6 +223,7 @@ export function parseFilters(params: URLSearchParams): Filters {
     miejsce: list(params, "miejsce", PLACES),
     czas: isKey(DURATIONS)(czas) ? czas : undefined,
     nastroj: list(params, "nastroj", MOODS),
+    cena: isKey(PRICES)(cena) ? cena : undefined,
     cykl: params.get("cykl") || undefined,
     q: params.get("q")?.trim() || undefined,
   }
@@ -227,6 +243,7 @@ export function toQuery(filters: Filters) {
   set("miejsce", filters.miejsce.join(","))
   set("czas", filters.czas)
   set("nastroj", filters.nastroj.join(","))
+  set("cena", filters.cena)
   set("cykl", filters.cykl)
   // Przecinki zostawiamy czytelne: ?rodzaj=jazz,kameralny
   return params.toString().replaceAll("%2C", ",")
@@ -286,6 +303,15 @@ function matchesAge({ ageMin, ageMax }: Facets, age?: number) {
   return age >= ageMin && (ageMax === undefined || age <= ageMax)
 }
 
+// Progi według danych: najniższe ceny to 0–60 zł, więc „do 50 / do 100 zł” z design.md nic by nie zawężały
+const PRICE_LIMIT: Record<Price, number> = { bezplatne: 0, "do-20": 20, "do-40": 40 }
+
+/** Wydarzenie bez znanej ceny nie pasuje do filtra ceny – nie obiecujemy progu, którego nie znamy */
+function matchesPrice(price: number | undefined, limit?: Price) {
+  if (!limit) return true
+  return price !== undefined && price <= PRICE_LIMIT[limit]
+}
+
 export function matchesEvent(event: CalendarEvent, filters: Filters) {
   const f = event.facets
   if (!some(filters.rodzaj, f.types)) return false
@@ -294,6 +320,7 @@ export function matchesEvent(event: CalendarEvent, filters: Filters) {
   if (!some(filters.miejsce, f.places)) return false
   if (!matchesDuration(f.duration, filters.czas)) return false
   if (!some(filters.nastroj, f.moods)) return false
+  if (!matchesPrice(f.price, filters.cena)) return false
   if (filters.cykl && f.seriesKey !== filters.cykl) return false
   if (filters.q) {
     const words = fold(filters.q).split(/\s+/).filter(Boolean)
@@ -379,6 +406,7 @@ export function activeFilters(filters: Filters, seriesLabels: Record<string, str
   multi("miejsce", labels.places)
   if (filters.czas) result.push({ id: "czas", label: labels.durations[filters.czas], remove: without("czas") })
   multi("nastroj", labels.moods)
+  if (filters.cena) result.push({ id: "cena", label: labels.prices[filters.cena], remove: without("cena") })
   if (filters.cykl) result.push({ id: "cykl", label: seriesLabels[filters.cykl] ?? filters.cykl, remove: without("cykl") })
   return result
 }

@@ -392,7 +392,8 @@ Wzorzec: Figma, „Hero · mobile 360 — v4 (zdjęcie oryginalne od użytkownik
 - **Desktop:** boczna kolumna 280 px po lewej albo pasek nad listą.
 - **Licznik wyników:** komunikat `aria-live="polite"` („24 wydarzenia”), aktualizowany z opóźnieniem ok. 300 ms.
 - **Stan w URL:** każdy zestaw filtrów można udostępnić linkiem.
-- **Cena i zakres dat:** zamiast suwaka pola liczbowe lub predefiniowane progi (bezpłatne, do 50 zł, do 100 zł). Jeśli jest suwak, musi mieć alternatywę bez przeciągania (WCAG 2.5.7).
+- **Cena i zakres dat:** zamiast suwaka pola liczbowe lub predefiniowane progi. W prototypie progi wynikają z danych: **Bezpłatne · Do 20 zł · Do 40 zł** według najniższej ceny biletu (najniższe ceny to 0–60 zł, więc „do 50 / do 100 zł” prawie nic nie zawężały).
+- **Dostępność** w arkuszu to sekcja informacyjna, nie filtr: każda sala ma wejście bez progów i windy, więc filtr zwracałby wszystko. Udogodnienia na zamówienie (miejsce dla wózka, asystent, pętla, PJM) – przez kasę. Jeśli jest suwak, musi mieć alternatywę bez przeciągania (WCAG 2.5.7).
 - **Zakres dat:** natywny `<input type="date">` lub kalendarz obsługiwany klawiaturą.
 
 ### 6.7 Wiersz wydarzenia (lista kalendarza)

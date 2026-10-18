@@ -1,6 +1,6 @@
 "use client"
 
-import { ChevronDown, SlidersHorizontal, X } from "lucide-react"
+import { ChevronDown, Phone, SlidersHorizontal, X } from "lucide-react"
 import * as React from "react"
 import { useRef, useState } from "react"
 import posthog from "posthog-js"
@@ -9,6 +9,7 @@ import { iconProps } from "@/components/fs/icons"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Toggle } from "@/components/ui/toggle"
+import visit from "@/data/visit.json"
 import type { Dictionary } from "@/i18n"
 import { type CalendarEvent, type Filters, calendarDays, countEvents, emptyFilters } from "@/lib/calendar"
 import { cn } from "@/lib/utils"
@@ -57,6 +58,7 @@ export function FilterSheet({ events, series, filters, today, t, activeCount, on
       draft.nastroj.length +
       draft.miejsce.length +
       Number(Boolean(draft.czas)) +
+      Number(Boolean(draft.cena)) +
       Number(Boolean(draft.cykl))
     posthog.capture("calendar_filters_applied", {
       result_count: count,
@@ -209,6 +211,17 @@ export function FilterSheet({ events, series, filters, today, t, activeCount, on
                 <p className="mt-4 type-meta text-text-muted">{s.placeNote}</p>
               </Group>
 
+              <Group title={s.price} count={draft.cena ? 1 : 0} selected={s.selected}>
+                <Options>
+                  {entries(labels.prices).map(([key, label]) => (
+                    <Toggle key={key} pressed={draft.cena === key} onPressedChange={(on) => update({ cena: on ? key : undefined })}>
+                      {label}
+                    </Toggle>
+                  ))}
+                </Options>
+                <p className="mt-4 type-meta text-text-muted">{s.priceNote}</p>
+              </Group>
+
               <Group title={s.duration} count={draft.czas ? 1 : 0} selected={s.selected}>
                 <Options>
                   {entries(labels.durations).map(([key, label]) => (
@@ -218,6 +231,19 @@ export function FilterSheet({ events, series, filters, today, t, activeCount, on
                   ))}
                 </Options>
                 <p className="mt-4 type-meta text-text-muted">{s.durationNote}</p>
+              </Group>
+
+              {/* Dostępność (brief §6.2): w danych każda sala ma dostęp bez barier, więc filtr zwracałby zawsze wszystko.
+                  Zamiast pozornego filtra – co jest zawsze, i kasa dla udogodnień na zamówienie. */}
+              <Group title={s.access} count={0} selected={s.selected}>
+                <p className="type-body text-text">{s.accessNote}</p>
+                <a
+                  href={`tel:${visit.boxOffice.phone.replaceAll(" ", "")}`}
+                  className="mt-3 inline-flex min-h-11 items-center gap-2 font-semibold text-text underline decoration-[1.5px] underline-offset-[3px]"
+                >
+                  <Phone {...iconProps} className="size-5" />
+                  {s.accessCall} · {visit.boxOffice.phone}
+                </a>
               </Group>
 
               <Group title={s.series} count={draft.cykl ? 1 : 0} selected={s.selected}>
