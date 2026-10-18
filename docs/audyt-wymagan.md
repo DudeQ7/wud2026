@@ -51,6 +51,7 @@ Legenda: ✅ zrobione · 🟡 częściowo · ❌ brak
 - Treści: plan wizyty, dostępność, budynek, historia, artyści, cykle.
 - SEO: `schema.org/Event` na kartach wydarzeń i sitemap z hreflang dla tras, wydarzeń, artystów i cykli.
 - RODO: nota w asystencie oraz baner zgód; PostHog startuje dopiero po „Akceptuj”.
+- Nawigacja: okruszki na karcie wydarzenia (desktop) i „wstecz” na mobile.
 
 ## P0 przed prezentacją
 

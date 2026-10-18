@@ -27,6 +27,7 @@ export const en: Dictionary = {
     logoAlt: "Filharmonia Szczecin – home",
     menu: "Menu",
     language: "Language",
+    breadcrumbs: "Breadcrumb",
   },
 
   consent: {

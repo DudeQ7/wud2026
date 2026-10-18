@@ -28,6 +28,7 @@ export const de: Dictionary = {
     logoAlt: "Filharmonia Szczecin – Startseite",
     menu: "Menü",
     language: "Sprache",
+    breadcrumbs: "Navigationspfad",
   },
 
   consent: {

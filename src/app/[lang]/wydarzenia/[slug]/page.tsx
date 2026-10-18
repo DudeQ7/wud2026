@@ -10,6 +10,7 @@ import { BackLink } from "@/components/event/back-link"
 import { EventActions } from "@/components/event/event-actions"
 import { FavoriteButton } from "@/components/event/favorite-button"
 import { FragmentPlayer } from "@/components/event/fragment-player"
+import { Breadcrumbs } from "@/components/fs/breadcrumbs"
 import { EventCard } from "@/components/fs/event-card"
 import { FactList, TicketStatusBadge, eventPrice } from "@/components/fs/event-meta"
 import { iconProps } from "@/components/fs/icons"
@@ -84,7 +85,7 @@ export default async function EventPage({ params }: PageProps<"/[lang]/wydarzeni
       </a>
       <SiteHeader lang={lang} />
       <main id="tresc" className="pb-16">
-        <Container className="max-w-3xl py-2">
+        <Container className="max-w-3xl py-2 lg:hidden">
           <BackLink lang={lang} />
         </Container>
         {/* Adres (params) czytamy w granicy Suspense – wspólna powłoka strony nie zależy od wydarzenia */}
@@ -162,6 +163,14 @@ async function EventView({ id }: { id: number }) {
     ? `${formatShortDate(date, t)} · ${formatTime(date)}–16:00`
     : `${formatShortDate(date, t)} · ${formatTimeRange(date, event.durationMin)}`
 
+  const crumbs = [
+    { label: t.calendar.title, href: localizedPath(lang, "/repertuar") },
+    ...(series && event.series
+      ? [{ label: series, href: localizedPath(lang, `/cykl/${seriesKey(event.series)}`) }]
+      : []),
+    { label: event.headline },
+  ]
+
   return (
     <>
       <script
@@ -169,6 +178,7 @@ async function EventView({ id }: { id: number }) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
       />
       <Container className="max-w-3xl">
+        <Breadcrumbs label={t.common.breadcrumbs} items={crumbs} className="hidden border-b border-line lg:flex" />
         {/* Pierwszy ekran: CO? KIEDY? GDZIE? ZA ILE? DLA KOGO? KUP BILET (pasek na dole) */}
         <Photo
           src={event.image?.large}

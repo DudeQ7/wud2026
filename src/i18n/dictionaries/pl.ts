@@ -30,6 +30,7 @@ export const pl = {
     logoAlt: "Filharmonia Szczecin – strona główna",
     menu: "Menu",
     language: "Wersja językowa",
+    breadcrumbs: "Ścieżka nawigacji",
   },
 
   consent: {

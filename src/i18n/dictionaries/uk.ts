@@ -30,6 +30,7 @@ export const uk: Dictionary = {
     logoAlt: "Filharmonia Szczecin – головна сторінка",
     menu: "Меню",
     language: "Мова",
+    breadcrumbs: "Навігаційний ланцюжок",
   },
 
   consent: {
