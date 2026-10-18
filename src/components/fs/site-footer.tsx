@@ -16,7 +16,7 @@ import { type Locale, getDictionary, localizedPath } from "@/i18n"
 export function SiteFooter({ lang }: { lang: Locale }) {
   const t = getDictionary(lang)
   return (
-    <footer className="on-dark bg-ink pt-10 pb-[calc(var(--bottom-nav-h)+2.5rem)] lg:pb-28">
+    <footer className="on-dark bg-ink pt-10 pb-[calc(var(--bottom-nav-h)+6rem)] lg:pb-28">
       <Container className="grid gap-8 lg:grid-cols-3">
         <div className="flex flex-col gap-1">
           <Logo lang={lang} tone="light" className="-ml-2 h-28" />

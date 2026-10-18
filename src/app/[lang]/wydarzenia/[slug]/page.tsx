@@ -10,6 +10,9 @@ import { BackLink } from "@/components/event/back-link"
 import { EventActions } from "@/components/event/event-actions"
 import { FavoriteButton } from "@/components/event/favorite-button"
 import { FragmentPlayer } from "@/components/event/fragment-player"
+import { AiHexagon } from "@/components/fs/ai-hexagon"
+import { AssistantDialog } from "@/components/fs/assistant-dialog"
+import { AssistantFab } from "@/components/fs/assistant-fab"
 import { Breadcrumbs } from "@/components/fs/breadcrumbs"
 import { EventCard } from "@/components/fs/event-card"
 import { FactList, TicketStatusBadge, eventPrice, eventPriceFrom } from "@/components/fs/event-meta"
@@ -28,6 +31,7 @@ import { accessAssistance, accessTickets, buildingAccess, firstVisit } from "@/c
 import { faqPage } from "@/content/faq"
 import { address, boxOffice, recommended } from "@/content/home"
 import { artistByName } from "@/lib/artists"
+import { eventCards, venue } from "@/lib/assistant"
 import { seriesKey, toCalendarEvent } from "@/lib/calendar"
 import {
   type FsEvent,
@@ -423,7 +427,11 @@ async function EventView({ id }: { id: number }) {
         </Container>
       )}
 
-      {!past && <BuyBar event={event} date={date} price={eventPriceFrom(event, t)} t={t} />}
+      {!past && <BuyBar event={event} date={date} price={eventPriceFrom(event, t)} t={t} lang={lang} />}
+      {/* Desktop: heksagon asystenta w prawym dolnym rogu, jak na pozostałych stronach (na telefonie jest w pasku zakupu) */}
+      <div className="hidden lg:block">
+        <AssistantFab lang={lang} events={eventCards} venue={venue} label={t.nav.assistantAi} hint={t.nav.assistantHint} />
+      </div>
     </>
   )
 }
@@ -490,9 +498,22 @@ function OtherDates({ dates, t }: { dates: string[]; t: Dictionary }) {
 
 /**
  * Przyklejony pasek zakupu (§6.11): czerń, 76 px + safe area. Na karcie wydarzenia zastępuje dolną
- * nawigację (§6.4) – nawigacja wraca po przejściu do innej strony.
+ * nawigację (§6.4) – nawigacja wraca po przejściu do innej strony. Heksagon asystenta stoi w pasku
+ * między terminem a „Kup bilet”, więc nie pływa nad treścią (wariant F4b).
  */
-function BuyBar({ event, date, price, t }: { event: FsEvent; date: string; price?: string; t: Dictionary }) {
+function BuyBar({
+  event,
+  date,
+  price,
+  t,
+  lang,
+}: {
+  event: FsEvent
+  date: string
+  price?: string
+  t: Dictionary
+  lang: Locale
+}) {
   const status = ticketStatus(event.id)
   const statusLabel = t.event.status[status]
   const soldout = status === "soldout"
@@ -510,15 +531,26 @@ function BuyBar({ event, date, price, t }: { event: FsEvent; date: string; price
               .join(" · ")}
           </p>
         </div>
-        {soldout ? (
-          <span aria-disabled="true" className={cn(buttonVariants({ variant: "inverted" }), "shrink-0 opacity-60")}>
-            {statusLabel}
-          </span>
-        ) : (
-          <a href={event.ticketsUrl} className={cn(buttonVariants({ variant: "inverted" }), "shrink-0")}>
-            {t.event.buyTicket}
-          </a>
-        )}
+        <div className="flex shrink-0 items-center gap-3">
+          <AssistantDialog
+            lang={lang}
+            events={eventCards}
+            venue={venue}
+            label={t.nav.assistantAi}
+            className="press group cursor-pointer focus-visible:outline-none"
+          >
+            <AiHexagon tone="on-dark" />
+          </AssistantDialog>
+          {soldout ? (
+            <span aria-disabled="true" className={cn(buttonVariants({ variant: "inverted" }), "shrink-0 opacity-60")}>
+              {statusLabel}
+            </span>
+          ) : (
+            <a href={event.ticketsUrl} className={cn(buttonVariants({ variant: "inverted" }), "shrink-0")}>
+              {t.event.buyTicket}
+            </a>
+          )}
+        </div>
       </Container>
     </div>
   )

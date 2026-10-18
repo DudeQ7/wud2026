@@ -44,6 +44,7 @@ Wiążąca specyfikacja wizualna i interakcyjna konceptu nowej strony FS. Opiera
 | D11 | Symbole rodzajów w kalendarzu | W widoku miesiąca pod datą z wydarzeniami stoi **po jednym symbolu na rodzaj** (maks. 2, dalej „+”), dni puste się cofają (szary tekst), dni z wydarzeniami mają tło, pogrubioną datę i symbol; legenda nad siatką wymienia tylko rodzaje z danego miesiąca. Ten sam symbol stoi przy rodzaju w wierszach listy. Symbole: nuty (symfoniczny), fortepian (kameralny), mikrofon (jazz), globus (muzyka świata), kształty (edukacja i dzieci), obraz (wystawa), ślady stóp (zwiedzanie), klaps (film, debata). Rodzaj rozróżnia kształt, nie kolor (D5/D6); nazwa jest też w `aria-label` dnia | kreski z liczbą wydarzeń (bez rodzaju), kolory rodzajów |
 | D12 | Ceny w prototypie | Ceny wydarzeń oprócz zwiedzania to **dane przykładowe** (`src/content/prices.ts`, mock cennika iksoris wg rodzaju). Prawdziwe ceny z danych mają pierwszeństwo, a dane strukturalne schema.org nigdy nie korzystają z mocka. Do wymiany na API iksoris | „Ceny w kasie online” w każdej karcie |
 | D13 | Kalendarz na telefonie: trzy wiersze kontrolek | Wiersz 1: pole szukania + „Filtry (n)”; wiersz 2: szybkie filtry w jednej przewijanej linii; wiersz 3: licznik wyników + przełącznik Lista/Miesiąc. Akapit wstępny i zdanie przy legendzie znikają na telefonie. Etykieta pola szukania jest widoczna od 640 px, na telefonie zostaje w nazwie pola (`sr-only`). Pomiar (390×844): pierwsza data w siatce z 888 px na 564 px, czyli w pierwszym ekranie. **Szybkie filtry zawsze w jednej linii:** nigdy się nie zawijają; do 768 px mają krótkie etykiety (Dziś · Weekend · Dzieci · Jazz · Wystawy) i zwarty rozmiar, więc wszystkie pięć mieści się na ekranie od 360 px (PL) i od 390 px (DE, UK); węższy ekran przewija linię. Zaznaczenie nie zmienia szerokości: ✓ stoi w rogu chipa (zamiast przed etykietą w §6.6), czyli nic się nie przesuwa i nie wypada | pięć pięter kontrolek przed pierwszą datą |
+| D14 | Przycisk asystenta na telefonie | **Pływający heksagon** (wariant F z tablicy „Asystent AI — warianty”, Figma, 18.10.2026): 56 × 48 px, 16 px nad dolną nawigacją i od prawej krawędzi, a dolna nawigacja ma 4 pozycje. Heksagon jest **widoczny stale**, także podczas przewijania (decyzja 18.10.2026: chowanie przy przewijaniu w dół odrzucone). Przy pierwszej wizycie ma czarny podpis „Masz pytanie?”, który znika po pierwszym przewinięciu. Na karcie wydarzenia heksagon **stoi w pasku zakupu** (biały kontur na czerni) między terminem a „Kup bilet”, więc nic nie pływa nad treścią. To samo miejsce co na desktopie (prawy dolny róg) | heksagon wystający ponad pasek jako 3. pozycja (zasłaniał treść), mały heksagon w linii, czarna kolumna, sam podpis „Zapytaj” |
 
 D6 dotyczy interfejsu. **Zdjęcia i grafiki FS pokazujemy w oryginale, z ich kolorami** (§5.6).
 
@@ -202,7 +203,8 @@ D6 jest świadomie ostrzejsza niż brief, który dopuszczał „kolory tematyczn
 
 ### 5.3 Heksagon
 
-- **Wyłącznie** jako kształt przycisku asystenta AI: 56 × 56 px, czarny, ze złotym `#AD9450` napisem „AI” lub ikoną (5,91:1).
+- **Wyłącznie** jako kształt przycisku asystenta AI: 56 × 48 px (desktop 64 × 56), czarny, ze złotym `#AD9450` napisem „AI” (5,91:1). Na czarnym pasku zakupu: biały kontur 1,5 px, złote „AI”.
+- Fokus klawiatury: obrys 2 px w kształcie heksagonu, ok. 3 px od krawędzi (kolor `--ring`), zamiast prostokątnego `outline`.
 - Ewentualnie jako bardzo mały glif w ikonografii (wzorzec: Nowy Teatr).
 - Nie jako wzór tła, dekoracja sekcji ani maska zdjęć.
 
@@ -324,12 +326,16 @@ Na ekranie jest jeden przycisk główny na sekcję, a reszta to drugorzędne lub
 ### 6.4 Nawigacja: mobile (< 1024 px)
 
 - **Górny pasek** (56 px): logo, przełącznik **PL | EN | DE** (kompaktowy, 44 px) i przycisk **Menu** (44 × 44, pełna lista sekcji z tej samej struktury co desktop).
-- **Dolna nawigacja** (64 px + `env(safe-area-inset-bottom)`), tło `#FFFFFF`, linia górna 1 px, 5 pozycji z ikoną i **zawsze widocznym** podpisem:
+- **Dolna nawigacja** (64 px + `env(safe-area-inset-bottom)`), tło `#FFFFFF`, linia górna 1 px, 4 pozycje z ikoną i **zawsze widocznym** podpisem:
   1. **Kalendarz**
   2. **Szukaj**
-  3. **Asystent**: heksagon 56 px wystający 16 px ponad pasek, czarny, ze złotym „AI”
-  4. **Planuj wizytę**
-  5. **Konto** (ulubione, bilety, powiadomienia)
+  3. **Planuj wizytę**
+  4. **Konto** (ulubione, bilety, powiadomienia)
+- **Asystent** (D14): pływający heksagon 56 × 48 px, 16 px nad paskiem i od prawej krawędzi, nazwa „Asystent AI”.
+  - Widoczny stale, także podczas przewijania (nie chowa się przy przewijaniu w dół).
+  - Pierwsza wizyta: czarny podpis „Masz pytanie?” (PL) / „Got a question?” / „Eine Frage?” po lewej stronie heksagonu; znika po pierwszym przewinięciu (`localStorage`).
+  - Stopka ma na telefonie dolny odstęp `nav + 96 px`, a `scroll-padding-bottom` to `nav + 72 px`, więc heksagon nie zasłania końca strony ani elementu z fokusem.
+  - Na stronie `/asystent` heksagonu nie ma (otwierałby ten sam czat).
 - **Aktywna pozycja:** ikona wypełniona, podpis Open Sans 700 i linia 2 px `#1A1A1A` u góry, plus `aria-current="page"`. Nie oznaczamy jej samym kolorem.
 - Na karcie wydarzenia **dolną nawigację zastępuje przyklejony pasek zakupu** (§6.11). Nawigacja wraca po przewinięciu w górę albo jest dostępna przez przycisk wstecz.
 - **Wstecz zachowuje filtry** (stan w URL).
@@ -479,7 +485,7 @@ To wyróżnik konceptu: prawie żaden serwis z inspiracji tego nie ma (wyjątki 
 **Przyklejony pasek zakupu (mobile)**, tło `#1A1A1A`, wysokość 76 px + safe area:
 
 - po lewej „od 40 zł” (Titillium 600 22 px, biały) i status („ostatnie miejsca”, `#CFCBC2`),
-- po prawej przycisk odwrócony **„Kup bilet”**.
+- po prawej heksagon asystenta (biały kontur, złote „AI”, D14) i przycisk odwrócony **„Kup bilet”**.
 
 **Desktop:** układ 2 kolumn. Treść zajmuje 7/12 po lewej, a **przyklejony panel biletowy** 4/12 po prawej (data, godzina, sala, cena, status, Kup bilet, Dodaj do kalendarza, Udostępnij, Ulubione).
 
@@ -544,7 +550,7 @@ To wyróżnik konceptu: prawie żaden serwis z inspiracji tego nie ma (wyjątki 
 
 ### 6.14 Asystent AI
 
-- **Wejście:** heksagon w dolnej nawigacji (mobile) albo przycisk „Asystent” w nagłówku (desktop). **Nigdy nie otwiera się sam.** To antywzorzec z omn.art.pl, gdzie okno otwiera się po 12 s.
+- **Wejście:** pływający heksagon nad dolną nawigacją (mobile), w pasku zakupu na karcie wydarzenia (mobile) albo heksagon w prawym dolnym rogu (desktop), D14. **Nigdy nie otwiera się sam.** To antywzorzec z omn.art.pl, gdzie okno otwiera się po 12 s.
 - **Panel:** pełnoekranowy arkusz (mobile) albo szuflada 420 px z prawej (desktop).
   - `role="dialog"`, `aria-modal="true"`, pułapka fokusu, Esc zamyka.
   - Po zamknięciu fokus wraca na przycisk otwierający.
