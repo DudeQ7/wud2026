@@ -49,7 +49,7 @@ Legenda: ✅ zrobione · 🟡 częściowo · ❌ brak
 - Panel: logowanie, ulubione, historia czatu, profil; wygląd zgodny z design systemem.
 - Dostępność bazowa: skip link, fokus, 44 px, axe 0 na 16 widokach.
 - Treści: plan wizyty, dostępność, budynek, historia, artyści, cykle.
-- SEO: `schema.org/Event` na kartach wydarzeń i sitemap z hreflang dla tras, wydarzeń, artystów i cykli.
+- SEO: `schema.org/Event` na kartach wydarzeń, `Organization` i `WebSite` na stronie głównej oraz sitemap z hreflang dla tras, wydarzeń, artystów i cykli.
 - RODO: nota w asystencie oraz baner zgód; PostHog startuje dopiero po „Akceptuj”.
 - Nawigacja: okruszki na karcie wydarzenia (desktop) i „wstecz” na mobile.
 
@@ -65,8 +65,7 @@ Legenda: ✅ zrobione · 🟡 częściowo · ❌ brak
 1. Widok miesiąca.
 2. Filtry ceny i dostępności.
 3. Panel: bilety, programy, powiadomienia.
-4. `schema.org/Organization` i `WebSite` na stronie głównej.
-5. Link „Ustawienia prywatności” w stopce do zmiany zgody.
+4. Link „Ustawienia prywatności” w stopce do zmiany zgody.
 6. Podłączyć prawdziwe statusy z iksoris zamiast mocka.
 
 ## P2 później

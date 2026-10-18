@@ -1,6 +1,7 @@
 import { siteUrl } from "@/app/site-url"
 import { ticketStatus } from "@/content/availability"
-import { type Locale, localizedPath } from "@/i18n/config"
+import { boxOffice } from "@/content/home"
+import { type Locale, locales, localizedPath } from "@/i18n/config"
 import { type FsEvent, eventHref, isExhibition } from "@/lib/event-format"
 
 const ORGANIZATION = {
@@ -15,6 +16,38 @@ const ADDRESS = {
   postalCode: "70-515",
   addressLocality: "Szczecin",
   addressCountry: "PL",
+}
+
+/** Organizacja i witryna – jeden blok na stronie głównej (SEO i widoczność dla LLM). */
+export function siteJsonLd(lang: Locale) {
+  return {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        ...ORGANIZATION,
+        logo: `${siteUrl}/icons/icon.png`,
+        address: ADDRESS,
+        contactPoint: {
+          "@type": "ContactPoint",
+          telephone: boxOffice.phone,
+          email: boxOffice.email,
+          contactType: "customer service",
+          availableLanguage: ["pl", "en", "de", "uk"],
+        },
+      },
+      {
+        "@type": "WebSite",
+        name: "Filharmonia im. Mieczysława Karłowicza w Szczecinie",
+        url: siteUrl,
+        inLanguage: locales,
+        potentialAction: {
+          "@type": "SearchAction",
+          target: `${siteUrl}${localizedPath(lang, "/szukaj")}?q={search_term_string}`,
+          "query-input": "required name=search_term_string",
+        },
+      },
+    ],
+  }
 }
 
 function addMinutes(date: string, minutes: number) {
