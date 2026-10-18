@@ -1,6 +1,6 @@
 "use client"
 
-import { ChevronDown, X } from "lucide-react"
+import { ChevronDown, SlidersHorizontal, X } from "lucide-react"
 import * as React from "react"
 import { useRef, useState } from "react"
 import posthog from "posthog-js"
@@ -77,8 +77,17 @@ export function FilterSheet({ events, series, filters, today, t, activeCount, on
 
   return (
     <>
-      <Button variant="secondary" size="sm" onClick={show} aria-haspopup="dialog" aria-expanded={open}>
-        {s.open}
+      {/* Krótko: „Filtry (2)” – widać od razu, ile filtrów jest włączonych, a przycisk mieści się obok pola szukania */}
+      <Button
+        variant="secondary"
+        onClick={show}
+        aria-haspopup="dialog"
+        aria-expanded={open}
+        aria-label={s.open}
+        className="h-13 shrink-0 px-4 lg:h-13"
+      >
+        <SlidersHorizontal {...iconProps} className="size-5" />
+        {s.title}
         {activeCount > 0 && ` (${activeCount})`}
       </Button>
 

@@ -333,7 +333,7 @@ export const pl = {
     intro: "Koncerty, wystawy, zwiedzanie i wydarzenia dla dzieci. Wybierz filtr albo wpisz, czego szukasz.",
     loading: "Wczytywanie repertuaru",
     searchLabel: "Szukaj wykonawcy, kompozytora lub tytułu",
-    searchPlaceholder: "np. Karłowicz, Mendelssohn, jazz",
+    searchPlaceholder: "np. Karłowicz, jazz",
     clearSearch: "Wyczyść wyszukiwanie",
     viewControls: "Widok kalendarza",
     viewList: "Lista",

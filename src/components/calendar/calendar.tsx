@@ -35,6 +35,8 @@ export type CalendarProps = {
   lang: Locale
   displayMode?: "list" | "month"
   monthView?: ReactNode
+  /** Przełącznik Lista | Miesiąc – stoi w wierszu z licznikiem wyników */
+  viewSwitch?: ReactNode
 }
 
 /**
@@ -42,7 +44,7 @@ export type CalendarProps = {
  * a „wstecz” z karty wydarzenia wraca do tych samych wyników. Wyniki liczymy w przeglądarce,
  * więc licznik i lista zmieniają się od razu, bez zapytania do serwera.
  */
-export function Calendar({ events, series, lang, displayMode = "list", monthView }: CalendarProps) {
+export function Calendar({ events, series, lang, displayMode = "list", monthView, viewSwitch }: CalendarProps) {
   const t = getDictionary(lang)
   const searchParams = useSearchParams()
   const filters = useMemo(() => parseFilters(searchParams), [searchParams])
@@ -117,14 +119,9 @@ export function Calendar({ events, series, lang, displayMode = "list", monthView
 
   return (
     <>
-      <SearchField value={filters.q} onCommit={(q) => navigate({ ...filters, q })} t={t} />
-
-      <div
-        role="group"
-        aria-label={t.calendar.quickFilters}
-        className="mt-4 flex flex-wrap gap-2"
-      >
-        {/* „Wszystkie filtry” na początku: na telefonie pasek się przewija i przycisk na końcu był ucięty */}
+      {/* Wiersz 1: szukaj + Filtry w jednej linii (na telefonie pole nie zajmuje już całej szerokości) */}
+      <div className="flex items-end gap-2">
+        <SearchField value={filters.q} onCommit={(q) => navigate({ ...filters, q })} t={t} />
         <FilterSheet
           events={events}
           series={series}
@@ -134,6 +131,14 @@ export function Calendar({ events, series, lang, displayMode = "list", monthView
           activeCount={active.length}
           onApply={navigate}
         />
+      </div>
+
+      {/* Wiersz 2: szybkie filtry w jednej, przewijanej linii; ucięty ostatni chip zdradza, że jest więcej (§6.6) */}
+      <div
+        role="group"
+        aria-label={t.calendar.quickFilters}
+        className="-mx-4 mt-3 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0"
+      >
         {quick.map((q) => (
           <Toggle key={q.label} pressed={q.on} onPressedChange={(on) => navigate(q.toggle(on))} aria-controls="repertuar-lista">
             {q.label}
@@ -141,15 +146,21 @@ export function Calendar({ events, series, lang, displayMode = "list", monthView
         ))}
       </div>
 
-      <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-line-strong pb-3">
+      {/* Wiersz 3: licznik wyników i przełącznik widoku razem */}
+      <div className="mt-4 flex flex-wrap items-center justify-between gap-x-4 gap-y-2 border-b border-line-strong pb-3">
         <p className="type-ui text-text" aria-hidden>
           {countText}
         </p>
         <p className="sr-only" aria-live="polite">
           {announced}
         </p>
-        {active.length > 0 && <ActiveFilterList filters={active} current={filters} onChange={navigate} t={t} />}
+        {viewSwitch}
       </div>
+      {active.length > 0 && (
+        <div className="mt-3">
+          <ActiveFilterList filters={active} current={filters} onChange={navigate} t={t} />
+        </div>
+      )}
 
       {/* Kontener wyników jest zawsze w DOM (cel aria-controls przełączników), także w widoku miesiąca */}
       <div id="repertuar-lista">
@@ -234,8 +245,9 @@ function SearchField({ value, onCommit, t }: { value?: string; onCommit: (q?: st
   }, [text, value, onCommit])
 
   return (
-    <div role="search" className="flex flex-col gap-2">
-      <label htmlFor="repertuar-szukaj" className="text-[0.9375rem] font-semibold text-text">
+    <div role="search" className="flex min-w-0 flex-1 flex-col gap-2">
+      {/* Etykieta widoczna od 640 px; na telefonie zostaje w nazwie pola (sr-only) – oszczędza wiersz, a lupa i podpowiedź mówią, czym jest pole */}
+      <label htmlFor="repertuar-szukaj" className="sr-only text-[0.9375rem] font-semibold text-text sm:not-sr-only">
         {t.calendar.searchLabel}
       </label>
       <div className="relative">

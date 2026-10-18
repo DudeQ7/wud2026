@@ -366,7 +366,7 @@ export const en: Dictionary = {
     intro: "Concerts, exhibitions, guided tours and events for children. Pick a filter or type what you're looking for.",
     loading: "Loading the programme",
     searchLabel: "Search for a performer, composer or title",
-    searchPlaceholder: "e.g. Karłowicz, Mendelssohn, jazz",
+    searchPlaceholder: "e.g. Karłowicz, jazz",
     clearSearch: "Clear search",
     viewControls: "Calendar view",
     viewList: "List",

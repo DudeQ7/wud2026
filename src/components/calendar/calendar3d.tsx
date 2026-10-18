@@ -28,25 +28,31 @@ export function Calendar3D(props: CalendarProps) {
   const t = getDictionary(props.lang)
   const [displayMode, setDisplayMode] = useState<"list" | "month">("month")
 
+  const viewSwitch = (
+    <div role="group" aria-label={t.calendar.viewControls} className="flex">
+      {(["list", "month"] as const).map((mode) => (
+        <button
+          key={mode}
+          type="button"
+          aria-pressed={displayMode === mode}
+          onClick={() => setDisplayMode(mode)}
+          className={`min-h-11 border px-4 type-ui font-semibold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring ${
+            mode === "month" ? "-ml-px" : ""
+          } ${displayMode === mode ? "border-ink bg-ink text-on-dark" : "border-line-strong text-text hover:bg-bg-subtle"}`}
+        >
+          {mode === "list" ? t.calendar.viewList : t.calendar.viewMonth}
+        </button>
+      ))}
+    </div>
+  )
+
   return (
-    <>
-      <div role="group" aria-label={t.calendar.viewControls} className="mb-4 flex justify-end gap-2">
-        {(["list", "month"] as const).map((mode) => (
-          <button
-            key={mode}
-            type="button"
-            aria-pressed={displayMode === mode}
-            onClick={() => setDisplayMode(mode)}
-            className={`min-h-11 border px-4 type-ui font-semibold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring ${
-              displayMode === mode ? "border-ink bg-ink text-on-dark" : "border-line-strong text-text hover:bg-bg-subtle"
-            }`}
-          >
-            {mode === "list" ? t.calendar.viewList : t.calendar.viewMonth}
-          </button>
-        ))}
-      </div>
-      <Calendar {...props} displayMode={displayMode} monthView={<MonthView events={props.events} lang={props.lang} />} />
-    </>
+    <Calendar
+      {...props}
+      displayMode={displayMode}
+      viewSwitch={viewSwitch}
+      monthView={<MonthView events={props.events} lang={props.lang} />}
+    />
   )
 }
 
@@ -361,10 +367,16 @@ function Legend({ types, t }: { types: EventType[]; t: Dictionary }) {
   if (!types.length) return null
   return (
     <div className="mb-3">
-      <p className="type-meta text-text-muted">{t.calendar.markLegend}</p>
-      <ul className="mt-1.5 flex flex-wrap gap-x-4 gap-y-1">
+      {/* Na telefonie legenda to jedna przewijana linia bez zdania wstępnego (zostaje dla czytników ekranu) */}
+      <p className="sr-only type-meta text-text-muted sm:not-sr-only">{t.calendar.markLegend}</p>
+      {/* Przewijany kontener bez elementów interaktywnych musi być dostępny z klawiatury (axe: scrollable-region-focusable) */}
+      <ul
+        tabIndex={0}
+        aria-label={t.calendar.markLegend}
+        className="-mx-4 flex gap-x-4 overflow-x-auto px-4 pb-1 whitespace-nowrap sm:mx-0 sm:mt-1.5 sm:flex-wrap sm:gap-y-1 sm:overflow-visible sm:px-0"
+      >
         {types.map((type) => (
-          <li key={type} className="flex min-h-6 items-center gap-1.5 type-meta text-text">
+          <li key={type} className="flex min-h-6 shrink-0 items-center gap-1.5 type-meta text-text">
             <TypeGlyph type={type} />
             {t.calendar.types[type]}
           </li>

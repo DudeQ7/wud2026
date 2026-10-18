@@ -367,7 +367,7 @@ export const de: Dictionary = {
     intro: "Konzerte, Ausstellungen, Führungen und Veranstaltungen für Kinder. Wählen Sie einen Filter oder geben Sie ein, was Sie suchen.",
     loading: "Programm wird geladen",
     searchLabel: "Interpret, Komponist oder Titel suchen",
-    searchPlaceholder: "z. B. Karłowicz, Mendelssohn, Jazz",
+    searchPlaceholder: "z. B. Karłowicz, Jazz",
     clearSearch: "Suche löschen",
     viewControls: "Kalenderansicht",
     viewList: "Liste",
