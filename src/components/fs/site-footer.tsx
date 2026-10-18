@@ -3,6 +3,7 @@ import Link from "next/link"
 
 import visit from "@/data/visit.json"
 import { iconProps } from "@/components/fs/icons"
+import { FundersBar } from "@/components/fs/funders-bar"
 import { Container, Eyebrow } from "@/components/fs/layout"
 import { PrivacySettingsButton } from "@/components/fs/privacy-settings-button"
 import { Logo } from "@/components/fs/wordmark"
@@ -55,6 +56,8 @@ export function SiteFooter({ lang }: { lang: Locale }) {
             ))}
           </ul>
         </nav>
+
+        <FundersBar lang={lang} tone="dark" className="border-t border-line-on-dark pt-6 lg:col-span-3" />
 
         <div className="flex flex-col gap-1 lg:col-span-3 lg:flex-row lg:items-center lg:justify-between">
           <p className="type-meta text-on-dark-muted">{t.footer.copyright}</p>

@@ -1,6 +1,7 @@
 import Link from "next/link"
 
 import { EventCard } from "@/components/fs/event-card"
+import { FundersBar } from "@/components/fs/funders-bar"
 import { Section, SectionHeading } from "@/components/fs/layout"
 import { NewsletterForm } from "@/components/fs/newsletter-form"
 import { CtaTile, DiscoverTile, LinkTile } from "@/components/fs/tiles"
@@ -238,6 +239,7 @@ export function PartnersSection({ lang }: { lang: Locale }) {
       <Link href={localizedPath(lang, "/partnerzy")} className={cn(buttonVariants({ variant: "secondary", block: true }), "sm:w-fit")}>
         {t.link}
       </Link>
+      <FundersBar lang={lang} tone="light" className="mt-10" />
     </Section>
   )
 }
