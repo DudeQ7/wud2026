@@ -28,22 +28,25 @@ export function Hero({ event, date, lang, photoPosition = "50% 30%" }: HeroProps
 
   return (
     <section aria-labelledby="hero-title">
-      <div className="relative h-[calc(100svh-var(--bottom-nav-h))] max-h-[56rem] min-h-[34rem] overflow-hidden bg-surface-muted">
-        {event.image && (
-          <Image
-            src={event.image.large}
-            alt={t.event.photoAlt(event.headline)}
-            fill
-            priority
-            sizes="100vw"
-            className="object-cover"
-            style={{ objectPosition: photoPosition }}
-          />
-        )}
+      <div className="relative h-[calc(100svh-var(--bottom-nav-h))] max-h-[56rem] min-h-[34rem] overflow-hidden bg-surface-muted landscape-short:min-h-[calc(100svh-var(--bottom-nav-h))]">
+        {/* Poziomo: zdjęcie po lewej, treść po prawej – inaczej tytuł i przyciski lądują poza ekranem */}
+        <div className="absolute inset-0 landscape-short:right-1/2">
+          {event.image && (
+            <Image
+              src={event.image.large}
+              alt={t.event.photoAlt(event.headline)}
+              fill
+              priority
+              sizes="100vw"
+              className="object-cover"
+              style={{ objectPosition: photoPosition }}
+            />
+          )}
+        </div>
 
-        <div className="absolute inset-x-0 bottom-0">
-          <Container className="px-0 sm:px-6 lg:px-8">
-            <div className="chamfer-tr flex flex-col gap-1 bg-background px-4 pt-5 pb-8 sm:max-w-xl sm:px-6 lg:px-8 lg:pt-8">
+        <div className="absolute inset-x-0 bottom-0 landscape-short:inset-y-0 landscape-short:left-1/2 landscape-short:flex landscape-short:items-center landscape-short:bg-background">
+          <Container className="px-0 sm:px-6 lg:px-8 landscape-short:px-0">
+            <div className="chamfer-tr flex flex-col gap-1 bg-background px-4 pt-5 pb-8 sm:max-w-xl sm:px-6 lg:px-8 lg:pt-8 landscape-short:max-w-none landscape-short:px-6 landscape-short:pt-14 landscape-short:pb-4 landscape-short:[clip-path:none]">
               <Eyebrow>
                 {kindLabel(t, event.kind)} · {when}
               </Eyebrow>
