@@ -28,6 +28,8 @@ export type FsEvent = {
   prices: string[]
   ticketsUrl: string
   url: string
+  /** Program koncertu do pobrania (PDF z danych FS); brak = tylko wersja online na stronie */
+  programPdf?: string
   image?: { card: string; large: string }
   lead?: string
 }

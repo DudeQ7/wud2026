@@ -299,6 +299,23 @@ async function EventView({ id }: { id: number }) {
           </Block>
         )}
 
+        {!exhibition && (details.program.length > 0 || event.programPdf) && (
+          <Block id="program-koncertu" title={copy.programTitle}>
+            {event.programPdf ? (
+              <a
+                href={event.programPdf}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={buttonVariants({ variant: "secondary" })}
+              >
+                {copy.programPdf}
+              </a>
+            ) : (
+              <p className="max-w-[68ch] type-body text-text">{copy.programOnline}</p>
+            )}
+          </Block>
+        )}
+
         {!exhibition && (event.durationMin || details.intermission) && (
           <Block id="czas" title={copy.durationTitle}>
             <p className="type-body text-text">

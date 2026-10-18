@@ -13,7 +13,7 @@ Legenda: ✅ zrobione · 🟡 częściowo · ❌ brak
 | 3 | Filtry kalendarza | 🟡 | Brak ceny i dostępności |
 | 4 | Statusy biletów | ✅ | Mock; docelowo iksoris |
 | 5 | Karta wydarzenia | ✅ | — |
-| 6 | Program PDF | ❌ | `program_pdf` = null dla 90/90 |
+| 6 | Program PDF | 🟡 | Brak plików w danych; jest wersja online i obsługa PDF |
 | 7 | Odsłuch | 🟡 | Tylko próbka demo |
 | 8 | „Pomóż mi wybrać” | ✅ | — |
 | 9 | Podobne wydarzenia | ✅ | — |
@@ -52,12 +52,13 @@ Legenda: ✅ zrobione · 🟡 częściowo · ❌ brak
 - SEO: `schema.org/Event` na kartach wydarzeń, `Organization` i `WebSite` na stronie głównej oraz sitemap z hreflang dla tras, wydarzeń, artystów i cykli.
 - RODO: nota w asystencie oraz baner zgód; PostHog startuje dopiero po „Akceptuj”.
 - Nawigacja: okruszki na karcie wydarzenia (desktop) i „wstecz” na mobile.
+- Program: link do PDF, gdy dane go mają; inaczej informacja o pełnej wersji online.
 
 ## P0 przed prezentacją
 
 1. Schody: dostępność opisana słowem, nie tylko kolorem.
 2. Tłumaczenia pod demo: EDU, zwiedzanie i opisy 3–5 wydarzeń.
-3. Program PDF: jeśli FS nie dostarczy plików, wyraźnie oznaczyć program online.
+3. Pozyskać od FS pliki PDF programów (UI już je obsługuje).
 4. Próba całości demo na żywo (A, B, C).
 
 ## P1 po demo

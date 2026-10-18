@@ -79,6 +79,7 @@ function toEvent(raw: RawEvent): FsEvent {
     prices: raw.prices_pln ?? [],
     ticketsUrl: raw.tickets_url,
     url: raw.url,
+    programPdf: raw.program_pdf ?? undefined,
     image: card ? { card, large } : undefined,
     lead: leadFrom(raw.description),
   }
