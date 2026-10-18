@@ -122,7 +122,7 @@ Treść hintu dla Slavic Sessions pochodzi z istniejącej karty sekcji 3 („Dwi
 | Meta (sala · czas) | 16, 62 | Open Sans Regular 14 px, `#FFFFFF` |
 | Zdanie „dlaczego warto” | 16, 86 | Open Sans Regular 14 px, `#FFFFFF`, interlinia 140%, maks. 2 linie, szerokość 264 px |
 | Linia podziału | 16, 138 | 1 px `#BBBBBB`, szerokość 264 px |
-| Etykieta „STRÓJ” | 16, 150 | Open Sans Bold 12 px, WERSALIKI, tracking 12%, `#AD9450` |
+| Etykieta „STRÓJ” | 16, 150 | Open Sans Bold 12 px, WERSALIKI, tracking 12%, złoto `#AD9450` |
 | Etykieta „DOSTĘPNOŚĆ” | 88, 150 | j.w. |
 | Kafelek stroju | 16, 172 (44×44) | ramka 1,5 px `#FFFFFF`, bez wypełnienia |
 | Podpis stroju („Koszula”) | 17, 222 | Open Sans Regular 12 px, `#FFFFFF` |
@@ -148,6 +148,44 @@ Treść hintu dla Slavic Sessions pochodzi z istniejącej karty sekcji 3 („Dwi
 - Pod ikoną podpis rodzaju: „Ruchowa”, „Wzrokowa”, „Słuchowa”. **Nie ma opisu słownego poziomu ani legendy kolorów.**
 - Wartości w mockupie (żółty wózek, zielone okulary, czerwone ucho) są **przykładowe**. Realne poziomy musi potwierdzić FS (`design.md` §13).
 
+### 6.6 Podpowiedzi przy ikonach stroju i dostępności (uzupełnienie)
+
+Cztery ikony w hincie (strój, wózek, okulary, ucho) są **przyciskami z podpowiedzią (tooltip)**. Żeby nie wyglądały jak „ghost buttony”, mają stały obrys i znacznik „i”. Mockupy tego punktu pokazują schody w wersji 3-piętrowej (decyzja zespołu), reszta układu jest taka sama jak w §6.2.
+
+**Wygląd ikon (stan spoczynku):**
+
+- Kafelek 44×44 px wokół każdej ikony (strój: 16, 172; wózek: 84, 172; okulary: 152, 172; ucho: 220, 172), obrys **1,5 px `#DDDDDD`**, bez wypełnienia, promień 0.
+- Znacznik **„i”** w prawym górnym rogu kafelka: kwadrat 14×14 px, tło `#1A1A1A` (pełne, nieprzezroczyste), obrys 1 px `#DDDDDD`, litera Open Sans Bold 11 px `#FFFFFF`. Znacznik leży nad podpowiedzią w kolejności warstw.
+- **Stan aktywny** (hover, focus, dotknięcie): obrys **3 px `#FFFFFF`**. Przy stroju dodatkowa ramka 52×52 px o tym samym wyglądzie wokół kafelka.
+- Kursor `help` (lub `pointer`) na hoverze. Cały kafelek ma cel dotyku min. 44 px.
+
+**Podpowiedź:**
+
+- Pojawia się **nad ikoną**, jej dolna krawędź jest 8 px nad kafelkiem, trójkątny ogonek 14×9 px wskazuje środek ikony.
+- Tło `#444444` (szarawe, bo podpowiedź jest chwilowa), obrys 1 px `#BBBBBB`, tekst biały `#FFFFFF`. Kontrast tekstu 9,7:1 (wymóg zespołu: min. 4:1), obrysu do tła hintu 8,5:1.
+- Nagłówek Open Sans Bold 14 px, treść Open Sans Regular 14 px, margines wewnętrzny 12 px, promień 0.
+- Wymiary: dostępność 264 px szerokości (cały hint, x=16), wysokość 82 px dla dwóch linii treści i 102 px dla trzech. Strój: 240×56 px.
+- Wyzwalacze: hover (po 150 ms), focus klawiatury, dotknięcie. Esc lub dotknięcie poza ikoną zamyka. `tabindex="0"`, `aria-describedby`, `role="tooltip"`.
+
+**Treści podpowiedzi** (propozycja, do ustalenia z FS; pełna tabela w `dostepnosc_mozliwe-teksty.png`):
+
+| Rodzaj | Dostępne | Częściowo dostępne | Niedostępne | Brak informacji |
+|---|---|---|---|---|
+| Ruchowa (wózek) | Dostępne. Wejście, sala i toalety bez schodów. | Częściowo dostępne. Winda lub podjazd, miejsca dla wózków ograniczone. | Niedostępne. Wejście tylko po schodach. | Brak informacji. Zapytaj obsługę. |
+| Wzrokowa (okulary) | Dostępne. Audiodeskrypcja i pomoc na miejscu. | Częściowo dostępne. Pomoc personelu na życzenie. | Niedostępne. Brak audiodeskrypcji i pomocy. | Brak informacji. Zapytaj obsługę. |
+| Słuchowa (ucho) | Dostępne. Pętla indukcyjna lub napisy. | Częściowo dostępne. Pętla tylko w części sali. | Niedostępne. Brak pętli indukcyjnej i napisów. | Brak informacji. Zapytaj obsługę. |
+
+Nagłówek podpowiedzi to „Dostępność ruchowa / wzrokowa / słuchowa”. Strój: „Najważniejsza jest Twoja wygoda, to jedynie sugestia.”
+
+Dodatkowe warianty:
+
+- **Brak informacji** (4. stan): szary obrys ikony zamiast koloru, tekst „Brak informacji. Zapytaj obsługę.”. Nie zgadujemy koloru.
+- Druga linia z krokiem do wykonania, np. „Zgłoś asystenta: numer do ustalenia z FS”.
+- Zakres w nagłówku, np. „Dostępność ruchowa · Sala kameralna”, bo sale mają różne warunki.
+- Wydarzenie bez barier dla grupy: „Brak barier dla tej grupy.”
+
+**Jak zasygnalizować podpowiedź:** stały obrys i „i” (§6.6), kursor `help`, jednorazowa animacja jednej podpowiedzi przy pierwszym wejściu w sekcję (wyłączona dla `prefers-reduced-motion`). Na telefonie, bez hovera, najważniejszy jest znacznik „i” i dotknięcie.
+
 ## 7. Zachowanie przy przewijaniu
 
 - Całą sekcję przewija się **normalnie**. Focus jest przypisany do plakatu najbliższego linii odczytu (środek widocznego obszaru).
@@ -163,7 +201,7 @@ Treść hintu dla Slavic Sessions pochodzi z istniejącej karty sekcji 3 („Dwi
 
 - Znaczniki dat: biały tekst na `#1A1A1A` (17,4:1).
 - Hint: biały na `#1A1A1A` (17,4:1). Złoto `#AD9450` na `#1A1A1A` ma 5,91:1 (AA), ale według reguły zespołu jest ciemniejsze niż `#BBBBBB`. To świadomy wyjątek (§6.3).
-- Cele dotykowe: przycisk „Kup bilet” ma 44 px wysokości (minimum dotyku). Ikony dostępności są informacyjne, nie interaktywne.
+- Cele dotykowe: przycisk „Kup bilet” ma 44 px wysokości (minimum dotyku). Ikony stroju i dostępności są przyciskami z podpowiedzią (§6.6), cel dotyku min. 44 px.
 - Poziomy dostępności są oznaczone **tylko kolorem** (patrz §9 punkt 4 i §10).
 - Treść hintu da się odczytać czytnikiem ekranu: tytuł, data, sala, zdanie, strój, trzy poziomy dostępności z nazwami rodzaju. Kolejność w DOM jest taka sama jak wizualna.
 
@@ -189,9 +227,11 @@ Zasada przyjęta w projekcie: decyzje zespołu są ważniejsze od docs, a każdy
 
 1. **Realne dane o dostępności** per wydarzenie i sala (wózek, wzrok, słuch). Kolory w mockupie są przykładowe.
 2. **Wybór polecanego stroju** per wydarzenie (obecnie koszula jako przykład). Do ustalenia z FS.
-3. **Poziom dostępności tylko kolorem** (§9, punkt 4). Do rozstrzygnięcia z zespołem: dodać ukryty tekst dla czytników ekranu (`aria-label`) i/lub opis po dotknięciu.
+3. **Poziom dostępności** jest w stanie spoczynku tylko kolorem (§9, punkt 4), a słowem dopiero w podpowiedzi (§6.6). Do rozstrzygnięcia z zespołem: dodać `aria-label` z poziomem na samych ikonach.
 4. **Obrót schodów** (§9, punkt 3): do potwierdzenia przez zespół w kontekście wydajności i `prefers-reduced-motion`.
-5. **Desktop**: nie projektowany.
+5. **Treści podpowiedzi o dostępności** i numer kontaktowy do asystenta: do ustalenia z FS (§6.6).
+6. **Liczba pięter**: makiety podpowiedzi pokazują 3 piętra, ten dokument i pozostałe screeny w §11 opisują 5. Do ujednolicenia.
+7. **Desktop**: nie projektowany.
 
 ## 11. Pliki
 
@@ -205,9 +245,15 @@ Wszystkie screeny w `docs/schody/` (skala 2× dla telefonów, 1,5× dla całej s
 | `telefon-360x780_hint-kompaktowy.png` | 360×780 (710 wejść, najciaśniej) |
 | `telefon-402x874_hint-kompaktowy.png` | 402×874 (600 wejść) |
 | `sekcja-3_cala-sekcja_hint-kompaktowy.png` | cała sekcja 360×2009 (hint kompaktowy pod plakatem w focusie) |
+| `hint-dostepnosc-ruchowa_czesciowo.png` | podpowiedź przy wózku, 390×844 (3 linie treści) |
+| `hint-dostepnosc-wzrokowa_dostepne.png` | podpowiedź przy okularach |
+| `hint-dostepnosc-sluchowa_niedostepne.png` | podpowiedź przy uchu |
+| `hint-stroj.png` | podpowiedź przy stroju |
+| `dostepnosc_mozliwe-teksty.png` | tabela możliwych tekstów podpowiedzi (ruchowa, wzrokowa, słuchowa × 4 stany) |
 
 **Figma (Scarlet Page):**
 
 - Cała sekcja: „Sekcja 3 · SCHODY · FINAL · hint kompaktowy (cała sekcja)”, x=9000, y=8000.
 - Telefony, hint kompaktowy wyśrodkowany: rząd y≈11500 (`v2 · … · hint kompaktowy · wyśrodkowany`).
+- Podpowiedzi przy ikonach: rzędy y=19700 (`Hint v3`, 3 ramki), y=17600 (`Hint v2 4/4 · strój`); tabela tekstów: x=-7152, y=18800.
 - Komponenty plakatów E0–E11 i N1–N8: wiersz y≈7000.
