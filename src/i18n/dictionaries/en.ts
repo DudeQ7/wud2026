@@ -29,6 +29,19 @@ export const en: Dictionary = {
     language: "Language",
   },
 
+  consent: {
+    label: "Analytics consent",
+    text: "We use analytics to learn which pages and events are useful. It starts only after you agree.",
+    accept: "Accept",
+    reject: "Reject",
+    settings: "Settings",
+    analytics: "Analytics",
+    analyticsText: "Anonymous visit and click statistics.",
+    save: "Save choice",
+    back: "Back",
+    privacy: "Privacy policy",
+  },
+
   nav: {
     label: "Bottom",
     calendar: "Calendar",

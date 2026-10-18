@@ -30,6 +30,19 @@ export const de: Dictionary = {
     language: "Sprache",
   },
 
+  consent: {
+    label: "Einwilligung zur Analyse",
+    text: "Wir nutzen Analysen, um zu sehen, welche Seiten und Veranstaltungen hilfreich sind. Sie starten erst nach Ihrer Zustimmung.",
+    accept: "Akzeptieren",
+    reject: "Ablehnen",
+    settings: "Einstellungen",
+    analytics: "Analyse",
+    analyticsText: "Anonyme Besuchs- und Klickstatistiken.",
+    save: "Auswahl speichern",
+    back: "Zurück",
+    privacy: "Datenschutzerklärung",
+  },
+
   nav: {
     label: "Untere",
     calendar: "Kalender",

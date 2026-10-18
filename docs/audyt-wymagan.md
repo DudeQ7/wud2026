@@ -30,7 +30,7 @@ Legenda: ✅ zrobione · 🟡 częściowo · ❌ brak
 | 20 | Strefa mediów | 🟡 | Brak materiałów prasowych |
 | 21 | Języki PL/EN/DE/UK | 🟡 | Kluczowa ścieżka OK, reszta PL |
 | 22 | SEO | ✅ | `schema.org/Event` + pełny sitemap |
-| 23 | RODO i analityka | 🟡 | Brak banera zgód |
+| 23 | RODO i analityka | ✅ | Baner zgód + RODO w asystencie |
 | 24 | CMS i iksoris | ❌ | Brak integracji i mocka |
 | 25 | API i model treści | 🟡 | Tylko API wydarzeń |
 | 26 | Wydajność | 🟡 | Brak pomiarów |
@@ -50,6 +50,7 @@ Legenda: ✅ zrobione · 🟡 częściowo · ❌ brak
 - Dostępność bazowa: skip link, fokus, 44 px, axe 0 na 16 widokach.
 - Treści: plan wizyty, dostępność, budynek, historia, artyści, cykle.
 - SEO: `schema.org/Event` na kartach wydarzeń i sitemap z hreflang dla tras, wydarzeń, artystów i cykli.
+- RODO: nota w asystencie oraz baner zgód; PostHog startuje dopiero po „Akceptuj”.
 
 ## P0 przed prezentacją
 
@@ -63,8 +64,8 @@ Legenda: ✅ zrobione · 🟡 częściowo · ❌ brak
 1. Widok miesiąca.
 2. Filtry ceny i dostępności.
 3. Panel: bilety, programy, powiadomienia.
-4. Baner zgód analitycznych.
-5. `schema.org/Organization` i `WebSite` na stronie głównej.
+4. `schema.org/Organization` i `WebSite` na stronie głównej.
+5. Link „Ustawienia prywatności” w stopce do zmiany zgody.
 6. Podłączyć prawdziwe statusy z iksoris zamiast mocka.
 
 ## P2 później
