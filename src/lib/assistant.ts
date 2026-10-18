@@ -15,17 +15,18 @@ const posthogHost = process.env.NEXT_PUBLIC_POSTHOG_HOST;
 const openaiApiKey = process.env.OPENAI_API_KEY;
 
 if (!posthogProjectToken && process.env.NODE_ENV === "development") {
-  throw new Error("NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN variable required by PostHog is missing or un-configured, this causes events to be silently missed. This error stops appearing once NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN is configured");
+  console.warn("NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN is missing; assistant PostHog telemetry is disabled");
 }
 
 if (!posthogHost && process.env.NODE_ENV === "development") {
-  throw new Error("NEXT_PUBLIC_POSTHOG_HOST variable required by PostHog is missing or un-configured, this causes events to be silently missed. This error stops appearing once NEXT_PUBLIC_POSTHOG_HOST is configured");
+  console.warn("NEXT_PUBLIC_POSTHOG_HOST is missing; assistant PostHog telemetry is disabled");
 }
 
 const posthog = posthogProjectToken && posthogHost
   ? new PostHog(posthogProjectToken, {
       host: posthogHost,
-      privacyMode: false,
+      // privacyMode: true nie wysyła treści zapytań i odpowiedzi do PostHoga (ochrona RODO, brief §6.5)
+      privacyMode: true,
       enableExceptionAutocapture: true,
       flushAt: 1,
       flushInterval: 0,
@@ -64,6 +65,8 @@ export const chatRequestSchema = z.object({
   messages: z.array(messageSchema).min(1).max(100),
   lang: langSchema,
   sessionId: z.string().uuid(),
+  /** Zgoda z banera RODO – bez niej serwer nie wysyła telemetrii do PostHoga */
+  analyticsConsent: z.boolean().optional(),
 });
 export type ChatRequest = z.infer<typeof chatRequestSchema>;
 
@@ -99,6 +102,7 @@ Zasady:
 - Przy wydarzeniach podawaj: co, kiedy, gdzie i dla kogo. Ceny podawaj tylko wtedy, gdy są w danych; w przeciwnym razie odeślij do ${meta.ticket_site}.
 - Polecaj wyłącznie terminy, które jeszcze nie minęły.
 - Osoby, które pierwszy raz idą do filharmonii, zachęcaj ciepło i bez onieśmielania.
+- Prywatność i RODO: nigdy nie proś użytkownika o dane osobowe (imię, nazwisko, e-mail, telefon, PESEL, numer zamówienia lub biletu) i nie powtarzaj ich w odpowiedzi. Jeśli użytkownik sam poda dane osobowe lub sprawa wymaga ich przekazania (np. imienna rezerwacja, zwrot, reklamacja), przypomnij, by nie podawać danych osobowych na czacie, i odeślij bezpośrednio do kasy lub biura Filharmonii.
 - Na pytania niezwiązane z Filharmonią i jej ofertą grzecznie odpowiedz, że w tym nie pomożesz.
 
 Pola odpowiedzi:
@@ -113,7 +117,7 @@ DANE:
 ${JSON.stringify(knowledge)}`;
 
 export async function streamReply(
-  { messages, lang, sessionId }: ChatRequest,
+  { messages, lang, sessionId, analyticsConsent }: ChatRequest,
   distinctId?: string,
 ): Promise<ReadableStream<Uint8Array>> {
   const now = new Intl.DateTimeFormat("pl-PL", {
@@ -122,7 +126,8 @@ export async function streamReply(
     timeZone: "Europe/Warsaw",
   }).format(new Date());
 
-  const stream = observedOpenAI
+  const trackAi = Boolean(analyticsConsent && observedOpenAI);
+  const stream = trackAi && observedOpenAI
     ? await observedOpenAI.responses.create({
         model: MODEL,
         instructions: `${INSTRUCTIONS}\n\nTeraz jest: ${now} (czas w Szczecinie).\nJĘZYK INTERFEJSU: ${LANG_NAMES[lang]} (${lang}).`,
@@ -156,10 +161,12 @@ export async function streamReply(
       } catch (error) {
         controller.error(error);
       } finally {
-        try {
-          await posthog?.flush();
-        } catch {
-          // AI observability delivery must not interrupt the assistant response.
+        if (trackAi) {
+          try {
+            await posthog?.flush();
+          } catch {
+            // AI observability delivery must not interrupt the assistant response.
+          }
         }
       }
     },

@@ -13,6 +13,7 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import locales from "@/data/locales.json";
 import { localizedPath } from "@/i18n/config";
 import type { ChatMessage, EventCard, Lang, Reply, Venue } from "@/lib/assistant";
+import { readConsent } from "@/lib/consent";
 import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
 
@@ -86,7 +87,12 @@ export default function Chat({ lang, events, venue, titleId, onClose, className 
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: history, lang, sessionId: aiSessionId.current }),
+        body: JSON.stringify({
+          messages: history,
+          lang,
+          sessionId: aiSessionId.current,
+          analyticsConsent: readConsent() === "analytics",
+        }),
       });
       if (!res.ok || !res.body) throw new Error(res.statusText);
 

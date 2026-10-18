@@ -141,10 +141,10 @@ Ta sama warstwa ma zasilać przyszłą aplikację FS (bilety, panel klienta).
 
 ## 7. RODO i bezpieczeństwo
 
-- Analityka tylko po zgodzie; zgodę można zmienić w stopce („Ustawienia prywatności”).
+- Analityka (PostHog w przeglądarce i na serwerze `/api/chat` oraz Vercel Analytics) uruchamia się wyłącznie po wyborze „Akceptuj” w banerze (`localStorage["fs-consent"] = "analytics"`). Zgodę można w każdej chwili zmienić lub wycofać przyciskiem „Ustawienia prywatności” (`#ustawienia-prywatnosci`) w stopce – fokus trafia na pole wyboru, a po zapisie wraca na przycisk w stopce.
 - Dane użytkownika w Supabase z Row Level Security (użytkownik widzi tylko swoje wiersze).
-- Asystent: nota o braku danych osobowych w rozmowie, odpowiedzi tylko z danych FS.
-- **Do rozstrzygnięcia z FS:** brief wymaga asystenta „bez logowania rozmów”, a prototyp zapisuje historię czatu zalogowanych użytkowników (`chat_sessions`, `chat_messages`) na potrzeby panelu. Trzeba wybrać: wyłączyć zapis albo opisać go w polityce prywatności z możliwością usunięcia.
+- Asystent: widoczna nota RODO z linkiem do polityki prywatności, zakaz proszenia o dane osobowe i ich powtarzania w instrukcji systemowej modelu (`src/lib/assistant.ts`) oraz `privacyMode: true` w kliencie PostHog AI (treść rozmowy nie trafia do logów analitycznych).
+- **Ograniczenia prototypu / do rozstrzygnięcia z FS:** zgoda jest pamiętana lokalnie w `localStorage` (brak serwerowego rejestru zgód); w bazie istnieją tabele `chat_sessions` / `chat_messages` pod historię w panelu klienta, natomiast publiczny `/api/chat` nie zapisuje rozmów w bazie. Przed wdrożeniem trzeba zdecydować z FS, czy historia czatu dla zalogowanych ma być wyłączona (zgodnie z „bez logowania” z briefu §6.5), czy opisana w polityce prywatności jako opcja konta z usuwaniem.
 - Dane panelu: czy przechowuje je iksoris czy CMS/Supabase (pytanie otwarte z briefu §6.6).
 - HTTPS, brak sekretów w kodzie klienta (klucze w zmiennych środowiskowych).
 
