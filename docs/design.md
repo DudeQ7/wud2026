@@ -554,7 +554,7 @@ To wyróżnik konceptu: prawie żaden serwis z inspiracji tego nie ma (wyjątki 
   - nota RODO w 1 zdaniu („Nie podawaj danych osobowych. Odpowiadam tylko na podstawie informacji Filharmonii.”) z linkiem do polityki,
   - 3–4 **sugerowane pytania** jako przyciski konturowe („Co gramy w sobotę?”, „Czy sala jest dostępna dla wózków?”).
 - **Odpowiedź:**
-  - krótki tekst + **karta wydarzenia z przyciskami „Zobacz wydarzenie” i „Kup bilet”**,
+  - krótki tekst + **karta wydarzenia z przyciskami „Zobacz” i „Kup bilet”** (jak w „Pomóż mi wybrać”, §6.10),
   - pod odpowiedzią **źródło**: „Źródło: strona wydarzenia · Planuj wizytę”, z linkami.
 - **Gdy asystent nie wie:** „Nie mam tej informacji.” + przyciski „Zadzwoń do kasy” (`tel:`) i „Napisz do nas”. Asystent nigdy nie zgaduje.
 - **Wiadomości:** dymki użytkownika `#1A1A1A`/biały tekst, odpowiedzi bez tła z linią 1 px po lewej. Nowe odpowiedzi ogłaszamy w `aria-live="polite"`.
