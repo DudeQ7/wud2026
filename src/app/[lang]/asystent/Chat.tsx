@@ -129,7 +129,12 @@ export default function Chat({ lang, events, venue, titleId, onClose, className 
   return (
     <div lang={lang} className={cn("mx-auto flex w-full max-w-2xl flex-col px-4", className)}>
       <header className="flex items-center justify-between gap-2 py-4">
-        <h2 id={titleId} className="text-lg font-semibold">{t.title}</h2>
+        {/* Na stronie /asystent (bez titleId) to h1; w nakładce zostaje h2 */}
+        {titleId ? (
+          <h2 id={titleId} className="text-lg font-semibold">{t.title}</h2>
+        ) : (
+          <h1 className="text-lg font-semibold">{t.title}</h1>
+        )}
         <div className="flex items-center gap-1">
           {userEmail && (
             <Link
