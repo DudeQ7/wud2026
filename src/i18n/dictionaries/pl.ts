@@ -245,6 +245,8 @@ export const pl = {
     stairs: {
       title: "Najbliższe wydarzenia",
       all: "Pełny repertuar →",
+      /** Podpowiedź pod nagłówkiem: tytuł, godzina i zakup są w dymku po wybraniu plakatu */
+      cue: "Wybierz plakat, żeby zobaczyć szczegóły i kupić bilet.",
       listLabel: "Najbliższe koncerty",
       outfit: "Strój",
       access: "Dostępność",

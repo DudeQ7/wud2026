@@ -278,6 +278,8 @@ export const en: Dictionary = {
     stairs: {
       title: "Upcoming events",
       all: "Full programme →",
+      /** Podpowiedź pod nagłówkiem: tytuł, godzina i zakup są w dymku po wybraniu plakatu */
+      cue: "Select a poster to see the details and buy tickets.",
       listLabel: "Upcoming concerts",
       outfit: "Dress",
       access: "Accessibility",

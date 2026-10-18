@@ -39,7 +39,8 @@ const POSTER_H = 126
 const FOCUS_W = 99
 const FOCUS_H = 139
 const HINT_GAP = 12
-const MAX_SCALE = 1.5
+// Skala całej ilustracji rośnie z szerokością do MAX_SCALE. Na telefonie (do ~430 px) to 1–1,2, jak w projekcie.
+const MAX_SCALE = 2.2
 
 type Props = {
   items: StairsItem[]
@@ -54,7 +55,6 @@ export function StairsClient({ items, access, outfit, text }: Props) {
   const hintId = useId()
   const artRef = useRef<HTMLDivElement>(null)
   const hintRef = useRef<HTMLElement>(null)
-  // Skala całej ilustracji: 1 na telefonie w pionie, do 1,5 na szerszych ekranach (większe plakaty)
   const [scale, setScale] = useState(1)
 
   useEffect(() => {
@@ -91,12 +91,12 @@ export function StairsClient({ items, access, outfit, text }: Props) {
     selected === null ? 0 : (slotCenterY(Math.floor(selected / 3), selected % 3) + FOCUS_H / 2) * scale + HINT_GAP
 
   return (
-    // Schody rozciągają się w poziomie na całą szerokość treści (SVG bez zachowania proporcji, plakaty w % szerokości);
-    // wysokość i plakaty rosną do skali MAX_SCALE, dalej rozjeżdżają się już tylko odstępy.
-    // Poniżej 360 px ilustracja jest przycinana po bokach (docs/schody §2). Sekcja renderuje ją poza kontenerem,
-    // więc na każdej szerokości idzie od krawędzi do krawędzi ekranu (jak w projekcie: 360 px na 360 px)
+    // Schody rozciągają się w poziomie (SVG bez zachowania proporcji, plakaty w % szerokości); wysokość i plakaty rosną
+    // do skali MAX_SCALE. Sekcja renderuje je poza kontenerem: na telefonie i tablecie od krawędzi do krawędzi ekranu
+    // (jak w projekcie: 360 px na 360 px), od 1024 px w środkowej kolumnie do 900 px – rozciągnięte na 1440 px były
+    // puste, a plakaty małe. Poniżej 360 px ilustracja jest przycinana po bokach (docs/schody §2).
     <div className="flex justify-center overflow-x-clip">
-      <div ref={artRef} className="relative w-full min-w-[360px] shrink-0" style={{ height: ART_HEIGHT * scale }}>
+      <div ref={artRef} className="relative w-full min-w-[360px] shrink-0 lg:max-w-[900px]" style={{ height: ART_HEIGHT * scale }}>
         <StairsArt />
 
         <ol aria-label={text.listLabel} className="contents">
@@ -135,7 +135,7 @@ export function StairsClient({ items, access, outfit, text }: Props) {
                         src={item.image}
                         alt=""
                         fill
-                        sizes="100px"
+                        sizes="(min-width: 600px) 220px, 110px"
                         loading={i < 6 ? "eager" : "lazy"}
                         className="object-cover transition-transform duration-250 ease-out group-hover:scale-105"
                       />

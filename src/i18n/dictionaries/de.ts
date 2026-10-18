@@ -279,6 +279,8 @@ export const de: Dictionary = {
     stairs: {
       title: "Nächste Veranstaltungen",
       all: "Gesamtes Programm →",
+      /** Podpowiedź pod nagłówkiem: tytuł, godzina i zakup są w dymku po wybraniu plakatu */
+      cue: "Wählen Sie ein Plakat für Details und Tickets.",
       listLabel: "Nächste Konzerte",
       outfit: "Kleidung",
       access: "Barrierefreiheit",

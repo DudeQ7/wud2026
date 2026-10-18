@@ -265,6 +265,8 @@ export const uk: Dictionary = {
     stairs: {
       title: "Найближчі події",
       all: "Повний репертуар →",
+      /** Podpowiedź pod nagłówkiem: tytuł, godzina i zakup są w dymku po wybraniu plakatu */
+      cue: "Оберіть афішу, щоб побачити деталі й купити квиток.",
       listLabel: "Найближчі концерти",
       outfit: "Дрес-код",
       access: "Доступність",
