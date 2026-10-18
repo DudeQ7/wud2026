@@ -29,10 +29,41 @@ export function SiteHeader({ lang, overlay = false }: SiteHeaderProps) {
   const [menuOpen, setMenuOpen] = useState(false)
   const menuRef = useRef<HTMLDialogElement>(null)
   const menuId = useId()
+  const barRef = useRef<HTMLDivElement>(null)
+  // Dodatkowe pozycje (Dla Ciebie, EDUfilharmonia) tylko gdy naprawdę się mieszczą – szerokość tekstu
+  // zależy od przeglądarki i jej ustawień czcionek, więc sam breakpoint nie wystarcza
+  const [roomy, setRoomy] = useState(true)
 
   function closeMenu() {
     menuRef.current?.close()
   }
+
+  useEffect(() => {
+    const bar = barRef.current
+    if (!bar) return
+    const [left, right] = Array.from(bar.children) as HTMLElement[]
+    let wideWidth = 0
+    const check = () => {
+      const wide = Array.from(bar.querySelectorAll<HTMLElement>("[data-wide]"))
+      const shown = wide.some((el) => el.offsetWidth > 0)
+      if (shown) {
+        const gap = parseFloat(getComputedStyle(wide[0].parentElement!).columnGap) || 0
+        wideWidth = wide.reduce((sum, el) => sum + el.offsetWidth + gap, 0)
+      }
+      const style = getComputedStyle(bar)
+      const free =
+        bar.clientWidth -
+        parseFloat(style.paddingLeft) -
+        parseFloat(style.paddingRight) -
+        (parseFloat(style.columnGap) || 0) -
+        left.offsetWidth -
+        right.offsetWidth
+      setRoomy(shown ? free >= 0 : free >= wideWidth)
+    }
+    const observer = new ResizeObserver(check)
+    for (const el of [bar, left, right]) observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
 
   useEffect(() => {
     if (!overlay) return
@@ -67,13 +98,13 @@ export function SiteHeader({ lang, overlay = false }: SiteHeaderProps) {
           : "border-b border-transparent bg-transparent"
       )}
     >
-      <Container className="flex h-full items-center justify-between gap-2 2xl:gap-4">
+      <Container ref={barRef} className="flex h-full items-center justify-between gap-2 2xl:gap-4">
         <div className="flex items-center gap-2 2xl:gap-6">
           <Logo lang={lang} className="h-14" priority />
           <nav aria-label={t.nav.mainLabel} className="hidden lg:block">
             <ul className="flex items-center gap-0.5 2xl:gap-1">
               {mainLinks.map(({ label, href, wide }) => (
-                <li key={href} className={wide ? "hidden xl:block" : undefined}>
+                <li key={href} data-wide={wide || undefined} className={wide ? cn("hidden xl:block", !roomy && "xl:hidden") : undefined}>
                   <HeaderLink href={localizedPath(lang, href)} active={isActive(href)}>
                     {label}
                   </HeaderLink>
