@@ -1,11 +1,15 @@
 "use client";
 
-import { useEffect } from "react";
+import { Heart, LayoutDashboard, LogOut, MessageSquare, Sparkles, User } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import posthog from "posthog-js";
+import { useEffect } from "react";
+
 import { logout } from "@/app/actions/auth";
+import { iconProps } from "@/components/fs/icons";
 import { type Locale, getDictionary, localizedPath, stripLocale } from "@/i18n";
+import { cn } from "@/lib/utils";
 
 interface PanelNavProps {
   lang: Locale;
@@ -15,10 +19,10 @@ interface PanelNavProps {
 }
 
 const navItems = [
-  { href: "/panel", key: "dashboard", icon: "📊" },
-  { href: "/panel/ulubione", key: "favorites", icon: "❤️" },
-  { href: "/panel/historia", key: "history", icon: "💬" },
-  { href: "/panel/profil", key: "profile", icon: "👤" },
+  { href: "/panel", key: "dashboard", icon: LayoutDashboard },
+  { href: "/panel/ulubione", key: "favorites", icon: Heart },
+  { href: "/panel/historia", key: "history", icon: MessageSquare },
+  { href: "/panel/profil", key: "profile", icon: User },
 ] as const;
 
 export function PanelNav({ lang, userId, userEmail, userName }: PanelNavProps) {
@@ -34,50 +38,50 @@ export function PanelNav({ lang, userId, userEmail, userName }: PanelNavProps) {
   }, [userEmail, userId, userName]);
 
   return (
-    <aside className="w-full shrink-0 border-b border-border bg-background md:w-64 md:border-r md:border-b-0">
+    <aside className="w-full shrink-0 border-b border-line bg-background md:w-72 md:border-r md:border-b-0">
       <div className="flex h-full flex-col justify-between p-4 md:p-6">
         <div>
-          <div className="mb-6 flex items-center justify-between">
-            <Link href={localizedPath(lang, "/panel")} className="text-lg font-bold tracking-tight">
+          <div className="mb-6 border-b border-line pb-4">
+            <Link href={localizedPath(lang, "/panel")} className="type-h3 text-gold">
               {t.title}
             </Link>
           </div>
 
-          <div className="mb-6 rounded-xl border border-border bg-muted/40 p-3 text-xs">
-            <p className="font-semibold text-foreground truncate">
-              {userName || t.userFallback}
-            </p>
-            <p className="text-muted-foreground truncate">{userEmail}</p>
+          <div className="mb-6 border border-line bg-bg-subtle p-3">
+            <p className="truncate text-sm font-semibold text-text">{userName || t.userFallback}</p>
+            <p className="truncate type-meta text-text-muted">{userEmail}</p>
           </div>
 
-          <nav className="space-y-1">
-            {navItems.map((item) => {
-              const isActive = pathname === item.href;
-              return (
-                <Link
-                  key={item.href}
-                  href={localizedPath(lang, item.href)}
-                  aria-current={isActive ? "page" : undefined}
-                  className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors ${
-                    isActive
-                      ? "bg-foreground text-background"
-                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                  }`}
-                >
-                  <span className="text-base" aria-hidden>{item.icon}</span>
-                  <span>{t.nav[item.key]}</span>
-                </Link>
-              );
-            })}
+          <nav aria-label={t.title}>
+            <ul>
+              {navItems.map(({ href, key, icon: Icon }) => {
+                const isActive = pathname === href;
+                return (
+                  <li key={href} className="border-b border-line">
+                    <Link
+                      href={localizedPath(lang, href)}
+                      aria-current={isActive ? "page" : undefined}
+                      className={cn(
+                        "flex min-h-12 items-center gap-3 px-3 text-sm font-semibold transition-colors",
+                        isActive ? "bg-ink text-on-dark" : "text-text hover:bg-bg-subtle"
+                      )}
+                    >
+                      <Icon {...iconProps} className="size-5 shrink-0" />
+                      <span>{t.nav[key]}</span>
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
           </nav>
         </div>
 
-        <div className="mt-6 border-t border-border pt-4 space-y-2">
+        <div className="mt-6 border-t border-line pt-4">
           <Link
             href={localizedPath(lang, "/asystent")}
-            className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+            className="flex min-h-11 items-center gap-2 text-sm font-semibold text-text underline decoration-[1.5px] underline-offset-[3px] hover:decoration-2"
           >
-            <span aria-hidden>✨</span>
+            <Sparkles {...iconProps} className="size-5 shrink-0" />
             <span>{t.assistantLink}</span>
           </Link>
 
@@ -90,9 +94,9 @@ export function PanelNav({ lang, userId, userEmail, userName }: PanelNavProps) {
             <input type="hidden" name="uiLang" value={lang} />
             <button
               type="submit"
-              className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-left text-sm text-red-500 transition-colors hover:bg-red-500/10 dark:text-red-400"
+              className="flex min-h-11 w-full cursor-pointer items-center gap-2 text-left text-sm font-semibold text-text hover:underline hover:underline-offset-4"
             >
-              <span aria-hidden>🚪</span>
+              <LogOut {...iconProps} className="size-5 shrink-0" />
               <span>{t.logout}</span>
             </button>
           </form>

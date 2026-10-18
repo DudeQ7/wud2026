@@ -11,8 +11,8 @@ Legenda: ✅ zrobione · 🟡 częściowo · ❌ brak
 | 1 | „Dziś w Filharmonii” (schody) | ✅ | — |
 | 2 | Kalendarz | 🟡 | Brak widoku miesiąca |
 | 3 | Filtry kalendarza | 🟡 | Brak ceny i dostępności |
-| 4 | Statusy biletów | ❌ | Brak danych i znaczników |
-| 5 | Karta wydarzenia | 🟡 | Brak ulubionych i statusu |
+| 4 | Statusy biletów | ✅ | Mock; docelowo iksoris |
+| 5 | Karta wydarzenia | ✅ | — |
 | 6 | Program PDF | ❌ | `program_pdf` = null dla 90/90 |
 | 7 | Odsłuch | 🟡 | Tylko próbka demo |
 | 8 | „Pomóż mi wybrać” | ✅ | — |
@@ -29,13 +29,13 @@ Legenda: ✅ zrobione · 🟡 częściowo · ❌ brak
 | 19 | Partnerzy | 🟡 | Placeholdery zamiast logotypów |
 | 20 | Strefa mediów | 🟡 | Brak materiałów prasowych |
 | 21 | Języki PL/EN/DE/UK | 🟡 | Kluczowa ścieżka OK, reszta PL |
-| 22 | SEO | 🟡 | Brak `schema.org/Event` |
-| 23 | RODO i analityka | 🟡 | Brak banera zgód |
+| 22 | SEO | ✅ | `schema.org/Event` + pełny sitemap |
+| 23 | RODO i analityka | ✅ | Baner zgód + RODO w asystencie |
 | 24 | CMS i iksoris | ❌ | Brak integracji i mocka |
 | 25 | API i model treści | 🟡 | Tylko API wydarzeń |
 | 26 | Wydajność | 🟡 | Brak pomiarów |
 | 27 | Dostępność | 🟡 | Brak testów manualnych |
-| 28 | Design system | 🟡 | Panel poza systemem |
+| 28 | Design system | ✅ | — |
 | 29 | Prezentacja | 🟡 | Brak próby na żywo |
 
 ## Co jest gotowe
@@ -43,28 +43,30 @@ Legenda: ✅ zrobione · 🟡 częściowo · ❌ brak
 - Mobile-first, dolna nawigacja, menu, przełącznik języków.
 - Strona główna: hero, schody z 9 wydarzeniami (sekcja „Dziś w Filharmonii”), polecane, dla Ciebie, odkryj, newsletter, stopka.
 - Kalendarz: lista po dniach, szybkie filtry, pełny arkusz filtrów, licznik, linki z filtrami, stan pusty z alternatywami.
-- Karta wydarzenia: fakty, wykonawcy z linkami, program, czas, podobne, kalendarz, udostępnianie, nawigacja, telefon.
+- Karta wydarzenia: fakty, wykonawcy z linkami, program, czas, podobne, kalendarz, udostępnianie, nawigacja, telefon, ulubione, status biletów i odsłuch demo.
 - Kreator: 5 pytań, pomijanie, wstecz, 3–5 wyników, uzasadnienie, stan braku dopasowania.
 - Asystent: odpowiedzi z danych FS, karty wydarzeń, ulubione, mapa, 4 języki, nota RODO, źródło odpowiedzi, CTA „Zadzwoń do kasy / Napisz do nas” przy braku wiedzy i wygląd zgodny z design systemem.
-- Panel: logowanie, ulubione, historia czatu, profil.
+- Panel: logowanie, ulubione, historia czatu, profil; wygląd zgodny z design systemem.
 - Dostępność bazowa: skip link, fokus, 44 px, axe 0 na 16 widokach.
 - Treści: plan wizyty, dostępność, budynek, historia, artyści, cykle.
+- SEO: `schema.org/Event` na kartach wydarzeń, `Organization` i `WebSite` na stronie głównej oraz sitemap z hreflang dla tras, wydarzeń, artystów i cykli.
+- RODO: nota w asystencie oraz baner zgód; PostHog startuje dopiero po „Akceptuj”.
+- Nawigacja: okruszki na karcie wydarzenia (desktop) i „wstecz” na mobile.
 
 ## P0 przed prezentacją
 
-1. Panel: doprowadzić wygląd do design systemu (asystent jest gotowy).
-2. Karta wydarzenia: ulubione, status biletów, odsłuch dla wydarzenia demo.
-3. Schody: dostępność opisana słowem, nie tylko kolorem.
-4. Tłumaczenia pod demo: EDU, zwiedzanie i opisy 3–5 wydarzeń.
+1. Schody: dostępność opisana słowem, nie tylko kolorem.
+2. Tłumaczenia pod demo: EDU, zwiedzanie i opisy 3–5 wydarzeń.
+3. Program PDF: jeśli FS nie dostarczy plików, wyraźnie oznaczyć program online.
+4. Próba całości demo na żywo (A, B, C).
 
 ## P1 po demo
 
 1. Widok miesiąca.
 2. Filtry ceny i dostępności.
 3. Panel: bilety, programy, powiadomienia.
-4. Baner zgód analitycznych.
-5. `schema.org/Event` i pełny sitemap.
-6. Mock statusów iksoris.
+4. Link „Ustawienia prywatności” w stopce do zmiany zgody.
+6. Podłączyć prawdziwe statusy z iksoris zamiast mocka.
 
 ## P2 później
 
@@ -77,7 +79,7 @@ Legenda: ✅ zrobione · 🟡 częściowo · ❌ brak
 
 | Scenariusz | Stan | Uwaga |
 |---|---|---|
-| A. Debiutant | ✅ | Brak odsłuchu i polskie opisy w EN/DE/UK |
+| A. Debiutant | ✅ | Odsłuch demo dla wydarzenia z hero; polskie opisy w EN/DE/UK |
 | B. Rodzic | ✅ | Działa filtr weekend + dzieci + wiek |
 | C. Asystent | ✅ | RODO, źródło i CTA gotowe; wygląd do dopracowania |
 | D. Turysta DE | ❌ | Zwiedzanie po polsku |

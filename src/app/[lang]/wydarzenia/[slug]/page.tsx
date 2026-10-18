@@ -7,17 +7,20 @@ import * as React from "react"
 import { Suspense } from "react"
 
 import { BackLink } from "@/components/event/back-link"
-import { FragmentPlayer } from "@/components/event/fragment-player"
 import { EventActions } from "@/components/event/event-actions"
+import { FavoriteButton } from "@/components/event/favorite-button"
+import { FragmentPlayer } from "@/components/event/fragment-player"
+import { Breadcrumbs } from "@/components/fs/breadcrumbs"
 import { EventCard } from "@/components/fs/event-card"
-import { FactList, eventPrice } from "@/components/fs/event-meta"
+import { FactList, TicketStatusBadge, eventPrice } from "@/components/fs/event-meta"
 import { iconProps } from "@/components/fs/icons"
 import { Container, Eyebrow } from "@/components/fs/layout"
 import { Photo } from "@/components/fs/photo"
 import { SiteFooter } from "@/components/fs/site-footer"
 import { SiteHeader } from "@/components/fs/site-header"
 import { buttonVariants } from "@/components/ui/button"
-import { fragments } from "@/content/audio"
+import { fragments, heroFragment } from "@/content/audio"
+import { ticketStatus } from "@/content/availability"
 import { calendarEditorial } from "@/content/calendar"
 import { accessAssistance, accessTickets, buildingAccess, firstVisit } from "@/content/event"
 import { address, boxOffice, recommended } from "@/content/home"
@@ -39,6 +42,7 @@ import {
   nowKey,
   similarEvents,
 } from "@/lib/events"
+import { eventJsonLd } from "@/lib/structured-data"
 import { cn } from "@/lib/utils"
 import { type Dictionary, getDictionary, hasLocale, kindLabel, localizedPath, seriesLabel, venueLabel } from "@/i18n"
 import { getLang } from "@/i18n/server"
@@ -81,7 +85,7 @@ export default async function EventPage({ params }: PageProps<"/[lang]/wydarzeni
       </a>
       <SiteHeader lang={lang} />
       <main id="tresc" className="pb-16">
-        <Container className="max-w-3xl py-2">
+        <Container className="max-w-3xl py-2 lg:hidden">
           <BackLink lang={lang} />
         </Container>
         {/* Adres (params) czytamy w granicy Suspense – wspólna powłoka strony nie zależy od wydarzenia */}
@@ -140,7 +144,9 @@ async function EventView({ id }: { id: number }) {
   }))
   const exhibition = isExhibition(event)
   const price = eventPrice(event, t)
+  const venueName = venueLabel(t, event.venue)
   const series = seriesLabel(t, event.series)
+  const jsonLd = eventJsonLd({ event, date, lang, venue: venueName })
   const ageMin = toCalendarEvent(event, calendarEditorial).facets.ageMin
   const audience =
     event.kindLabel && / dla /.test(event.kindLabel)
@@ -150,14 +156,29 @@ async function EventView({ id }: { id: number }) {
       : undefined
   const why = event.lead ?? details.paragraphs[0]
   const moreText = details.paragraphs.filter((p) => !why || !why.startsWith(p.slice(0, 40)))
+  // Odsłuch wydarzenia pokazujemy na górze tylko wtedy, gdy nie ma odsłuchów przy utworach
+  const eventAudio = fragments[id] ? undefined : heroFragment(id)
 
   const when = exhibition
     ? `${formatShortDate(date, t)} · ${formatTime(date)}–16:00`
     : `${formatShortDate(date, t)} · ${formatTimeRange(date, event.durationMin)}`
 
+  const crumbs = [
+    { label: t.calendar.title, href: localizedPath(lang, "/repertuar") },
+    ...(series && event.series
+      ? [{ label: series, href: localizedPath(lang, `/cykl/${seriesKey(event.series)}`) }]
+      : []),
+    { label: event.headline },
+  ]
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
+      />
       <Container className="max-w-3xl">
+        <Breadcrumbs label={t.common.breadcrumbs} items={crumbs} className="hidden border-b border-line lg:flex" />
         {/* Pierwszy ekran: CO? KIEDY? GDZIE? ZA ILE? DLA KOGO? KUP BILET (pasek na dole) */}
         <Photo
           src={event.image?.large}
@@ -169,8 +190,14 @@ async function EventView({ id }: { id: number }) {
         />
 
         <div className="mt-5 flex flex-col gap-2">
-          <Eyebrow>{kindLabel(t, event.kind)}</Eyebrow>
-          <h1 className="type-h1 text-gold">{event.headline}</h1>
+          <div className="flex flex-wrap items-center gap-2">
+            <Eyebrow>{kindLabel(t, event.kind)}</Eyebrow>
+            <TicketStatusBadge event={event} t={t} />
+          </div>
+          <div className="flex items-start justify-between gap-3">
+            <h1 className="type-h1 text-gold">{event.headline}</h1>
+            {!past && <FavoriteButton eventId={event.id} lang={lang} className="mt-1" />}
+          </div>
           {event.subtitle && <p className="font-heading text-xl font-semibold text-text">{event.subtitle}</p>}
         </div>
 
@@ -178,7 +205,7 @@ async function EventView({ id }: { id: number }) {
           className="mt-5"
           facts={[
             { label: t.event.facts.when, value: past ? `${when} · ${copy.past}` : when },
-            { label: t.event.facts.where, value: venueLabel(t, event.venue) },
+            { label: t.event.facts.where, value: venueName },
             {
               label: copy.price,
               value: price ?? (
@@ -190,6 +217,12 @@ async function EventView({ id }: { id: number }) {
             ...(audience ? [{ label: copy.forWhom, value: audience }] : []),
           ]}
         />
+
+        {eventAudio && (
+          <div className="mt-4 border-y border-line py-3">
+            <FragmentPlayer fragment={eventAudio} label={event.headline} lang={lang} />
+          </div>
+        )}
 
         {series && (
           <Link
@@ -401,6 +434,10 @@ function OtherDates({ dates, t }: { dates: string[]; t: Dictionary }) {
  * nawigację (§6.4) – nawigacja wraca po przejściu do innej strony.
  */
 function BuyBar({ event, date, price, t }: { event: FsEvent; date: string; price?: string; t: Dictionary }) {
+  const status = ticketStatus(event.id)
+  const statusLabel = t.event.status[status]
+  const soldout = status === "soldout"
+
   return (
     <div className="on-dark fixed inset-x-0 bottom-0 z-40 bg-ink pb-[env(safe-area-inset-bottom)] shadow-[0_-4px_16px_rgba(26,26,26,.08)]">
       <Container className="flex h-[76px] max-w-3xl items-center justify-between gap-4">
@@ -408,11 +445,21 @@ function BuyBar({ event, date, price, t }: { event: FsEvent; date: string; price
           <p className="truncate font-heading text-[1.375rem] leading-tight font-semibold text-on-dark tabular-nums">
             {price ?? `${formatShortDate(date, t)} · ${formatTime(date)}`}
           </p>
-          <p className="truncate type-meta text-on-dark-muted">{price ? `${formatShortDate(date, t)} · ${formatTime(date)}` : venueLabel(t, event.venue)}</p>
+          <p className="truncate type-meta text-on-dark-muted">
+            {[statusLabel, price ? `${formatShortDate(date, t)} · ${formatTime(date)}` : venueLabel(t, event.venue)]
+              .filter(Boolean)
+              .join(" · ")}
+          </p>
         </div>
-        <a href={event.ticketsUrl} className={cn(buttonVariants({ variant: "inverted" }), "shrink-0")}>
-          {t.event.buyTicket}
-        </a>
+        {soldout ? (
+          <span aria-disabled="true" className={cn(buttonVariants({ variant: "inverted" }), "shrink-0 opacity-60")}>
+            {statusLabel}
+          </span>
+        ) : (
+          <a href={event.ticketsUrl} className={cn(buttonVariants({ variant: "inverted" }), "shrink-0")}>
+            {t.event.buyTicket}
+          </a>
+        )}
       </Container>
     </div>
   )

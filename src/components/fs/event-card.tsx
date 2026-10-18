@@ -1,7 +1,7 @@
 import Link from "next/link"
 import * as React from "react"
 
-import { AccessibilityNote, MetaLine } from "@/components/fs/event-meta"
+import { AccessibilityNote, MetaLine, TicketStatusBadge } from "@/components/fs/event-meta"
 import { Eyebrow } from "@/components/fs/layout"
 import { Photo, PhotoDateBadge } from "@/components/fs/photo"
 import { type Locale, getDictionary, kindLabel, localizedPath, venueLabel } from "@/i18n"
@@ -79,6 +79,7 @@ export function EventCard({
             compact ? undefined : formatDuration(event.durationMin),
           ]}
         />
+        <TicketStatusBadge event={event} t={t} className="mt-1" />
         {sentence && <p className="mt-1 type-body text-text">{sentence}</p>}
         {showAccess && <AccessibilityNote t={t} className="mt-1" />}
       </div>

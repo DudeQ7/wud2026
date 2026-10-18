@@ -28,6 +28,28 @@ export const de: Dictionary = {
     logoAlt: "Filharmonia Szczecin – Startseite",
     menu: "Menü",
     language: "Sprache",
+    breadcrumbs: "Navigationspfad",
+  },
+
+  notFound: {
+    eyebrow: "404",
+    title: "Diese Seite gibt es nicht",
+    text: "Die Veranstaltung ist vielleicht schon vorbei oder die Adresse hat sich geändert. Prüfen Sie den aktuellen Spielplan.",
+    home: "Startseite",
+    repertoire: "Spielplan",
+  },
+
+  consent: {
+    label: "Einwilligung zur Analyse",
+    text: "Wir nutzen Analysen, um zu sehen, welche Seiten und Veranstaltungen hilfreich sind. Sie starten erst nach Ihrer Zustimmung.",
+    accept: "Akzeptieren",
+    reject: "Ablehnen",
+    settings: "Einstellungen",
+    analytics: "Analyse",
+    analyticsText: "Anonyme Besuchs- und Klickstatistiken.",
+    save: "Auswahl speichern",
+    back: "Zurück",
+    privacy: "Datenschutzerklärung",
   },
 
   nav: {
@@ -129,6 +151,8 @@ export const de: Dictionary = {
     age: (age) => `Alter ${age}`,
     galleryPrice: "Eintritt 10 zł",
     photoPlaceholder: "Foto wird von der FS geliefert",
+    status: { available: "Verfügbar", last: "Letzte Karten", soldout: "Ausverkauft" },
+    favorite: { add: "Zu Favoriten hinzufügen", remove: "Aus den Favoriten entfernen" },
     kinds: {
       Wystawa: "Ausstellung",
       Wernisaż: "Vernissage",
@@ -457,7 +481,7 @@ export const de: Dictionary = {
     logout: "Abmelden",
     noDate: "Termin folgt",
     dashboard: {
-      greeting: (name) => `Willkommen, ${name}! 👋`,
+      greeting: (name) => `Willkommen, ${name}!`,
       defaultName: "Musikfreund",
       intro: "Dies ist Ihre persönliche Übersicht der Mieczysław-Karłowicz-Philharmonie Szczecin.",
       favorites: "Lieblingskonzerte",
@@ -481,7 +505,7 @@ export const de: Dictionary = {
       emptyText: "Stöbern Sie im Gespräch mit dem Philharmonie-Assistenten und tippen Sie auf das Herz, um Veranstaltungen hier zu speichern.",
       start: "Gespräch mit dem Assistenten beginnen",
       remove: "Aus den Favoriten entfernen",
-      removeButton: "✕ Entfernen",
+      removeButton: "Entfernen",
       details: "Veranstaltungsdetails",
       buyTicket: "Tickets online kaufen",
       loginRequired: "Melden Sie sich an, um Konzerte zu Ihren Favoriten hinzuzufügen",
@@ -510,6 +534,7 @@ export const de: Dictionary = {
       save: "Profiländerungen speichern",
       saving: "Änderungen werden gespeichert...",
       notLoggedIn: "Sie müssen angemeldet sein",
+      errorLabel: "Fehler:",
       updateFailed: "Profil konnte nicht aktualisiert werden",
       updated: "Ihr Profil wurde aktualisiert",
     },

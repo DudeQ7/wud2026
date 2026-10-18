@@ -30,6 +30,28 @@ export const uk: Dictionary = {
     logoAlt: "Filharmonia Szczecin – головна сторінка",
     menu: "Меню",
     language: "Мова",
+    breadcrumbs: "Навігаційний ланцюжок",
+  },
+
+  notFound: {
+    eyebrow: "404",
+    title: "Цієї сторінки не існує",
+    text: "Можливо, подія вже відбулася або адреса змінилася. Перегляньте актуальну програму.",
+    home: "Головна",
+    repertoire: "Програма",
+  },
+
+  consent: {
+    label: "Згода на аналітику",
+    text: "Ми використовуємо аналітику, щоб розуміти, які сторінки та події корисні. Вона почне працювати лише після вашої згоди.",
+    accept: "Прийняти",
+    reject: "Відхилити",
+    settings: "Налаштування",
+    analytics: "Аналітика",
+    analyticsText: "Анонімна статистика відвідувань і кліків.",
+    save: "Зберегти вибір",
+    back: "Назад",
+    privacy: "Політика конфіденційності",
   },
 
   nav: {
@@ -114,6 +136,8 @@ export const uk: Dictionary = {
     age: (age) => `Вік ${age}`,
     galleryPrice: "квиток 10 зл",
     photoPlaceholder: "Фото надасть FS",
+    status: { available: "Доступні", last: "Останні квитки", soldout: "Продано" },
+    favorite: { add: "Додати до улюблених", remove: "Прибрати з улюблених" },
     kinds: {
       Wystawa: "Виставка",
       Wernisaż: "Відкриття виставки",
@@ -442,7 +466,7 @@ export const uk: Dictionary = {
     logout: "Вийти",
     noDate: "Дату буде оголошено",
     dashboard: {
-      greeting: (name) => `Вітаємо, ${name}! 👋`,
+      greeting: (name) => `Вітаємо, ${name}!`,
       defaultName: "меломане",
       intro: "Це ваша особиста панель у Філармонії імені Мечислава Карловича в Щецині.",
       favorites: "Улюблені концерти",
@@ -466,7 +490,7 @@ export const uk: Dictionary = {
       emptyText: "Переглядайте події під час розмови з Асистентом Філармонії та натискайте серце, щоб зберегти їх тут.",
       start: "Розпочати розмову з Асистентом",
       remove: "Прибрати з улюблених",
-      removeButton: "✕ Прибрати",
+      removeButton: "Прибрати",
       details: "Деталі події",
       buyTicket: "Купити квитки онлайн",
       loginRequired: "Увійдіть, щоб додавати концерти до улюблених",
@@ -495,6 +519,7 @@ export const uk: Dictionary = {
       save: "Зберегти зміни профілю",
       saving: "Зберігаємо зміни...",
       notLoggedIn: "Потрібно увійти в акаунт",
+      errorLabel: "Помилка:",
       updateFailed: "Не вдалося оновити профіль",
       updated: "Ваш профіль оновлено",
     },

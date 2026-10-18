@@ -1,9 +1,15 @@
 "use client";
 
-import { useTransition } from "react";
+import { CalendarDays, MapPin, X } from "lucide-react";
+import Link from "next/link";
 import posthog from "posthog-js";
+import { useTransition } from "react";
+
 import { toggleFavorite } from "@/app/actions/panel";
+import { iconProps } from "@/components/fs/icons";
+import { buttonVariants } from "@/components/ui/button";
 import { type Locale, getDictionary } from "@/i18n";
+import { cn } from "@/lib/utils";
 
 interface FavoriteItemProps {
   lang: Locale;
@@ -14,7 +20,7 @@ interface FavoriteItemProps {
     kind?: string;
     dates: string[];
     venue?: string;
-    url: string;
+    href: string;
     ticketsUrl?: string;
     series?: string;
   };
@@ -42,63 +48,51 @@ export function FavoriteItem({ lang, event }: FavoriteItemProps) {
     : panel.noDate;
 
   return (
-    <article className="flex flex-col justify-between rounded-2xl border border-border bg-background p-6 transition-shadow hover:shadow-xs">
+    <article className="flex flex-col justify-between border-[1.5px] border-line-strong p-5">
       <div>
-        <div className="flex items-start justify-between gap-4">
-          <div>
-            {event.kind && (
-              <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                {event.kind}
-              </span>
-            )}
-            {event.series && (
-              <span className="ml-2 text-xs text-muted-foreground">
-                ({event.series})
-              </span>
-            )}
+        <div className="flex items-start justify-between gap-3">
+          <div className="min-w-0">
+            {event.kind && <p className="type-eyebrow text-gold">{event.kind}</p>}
+            {event.series && <p className="mt-1 type-meta text-text-muted">{event.series}</p>}
           </div>
           <button
+            type="button"
             onClick={handleRemove}
             disabled={isPending}
-            title={t.remove}
             aria-label={t.remove}
-            className="rounded-lg p-1.5 text-sm text-red-500 transition-colors hover:bg-red-500/10 disabled:opacity-50"
+            className={cn(buttonVariants({ variant: "secondary", size: "sm" }), "shrink-0 gap-1.5 disabled:opacity-50")}
           >
-            {isPending ? "..." : t.removeButton}
+            <X {...iconProps} className="size-4" />
+            {isPending ? "…" : t.removeButton}
           </button>
         </div>
 
-        <h2 className="mt-2 text-lg font-bold leading-tight">{event.title}</h2>
+        <h2 className="mt-2 type-title-card text-text">{event.title}</h2>
 
-        <div className="mt-3 space-y-1 text-sm text-muted-foreground">
-          <p>
-            <span aria-hidden>📅 </span>
+        <div className="mt-3 space-y-1">
+          <p className="flex items-center gap-1.5 type-meta text-text-muted">
+            <CalendarDays {...iconProps} className="size-4 shrink-0" />
             {nextDate}
           </p>
           {event.venue && (
-            <p>
-              <span aria-hidden>📍 </span>
+            <p className="flex items-center gap-1.5 type-meta text-text-muted">
+              <MapPin {...iconProps} className="size-4 shrink-0" />
               {event.venue}
             </p>
           )}
         </div>
       </div>
 
-      <div className="mt-6 flex flex-wrap items-center gap-3 border-t border-border pt-4 text-sm font-medium">
-        <a
-          href={event.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="rounded-xl border border-border px-4 py-2 transition-colors hover:bg-muted"
-        >
+      <div className="mt-5 flex flex-wrap items-center gap-2 border-t border-line pt-4">
+        <Link href={event.href} className={buttonVariants({ variant: "secondary", size: "sm" })}>
           {t.details}
-        </a>
+        </Link>
         {event.ticketsUrl && (
           <a
             href={event.ticketsUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="rounded-xl bg-foreground px-4 py-2 text-background transition-opacity hover:opacity-90"
+            className={buttonVariants({ variant: "primary", size: "sm" })}
           >
             {t.buyTicket}
           </a>

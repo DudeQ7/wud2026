@@ -5,6 +5,7 @@ import Link from "next/link"
 import { useEffect, useId, useRef, useState } from "react"
 
 import { Eyebrow } from "@/components/fs/layout"
+import type { TicketStatus } from "@/content/availability"
 import type { AccessKind, AccessLevel } from "@/content/stairs"
 import type { Dictionary } from "@/i18n"
 import { cn } from "@/lib/utils"
@@ -28,6 +29,8 @@ export type StairsItem = {
   image?: string
   href: string
   ticketsUrl?: string
+  status: TicketStatus
+  statusLabel: string
 }
 
 type Text = Omit<Dictionary["home"]["stairs"], "selectEvent">
@@ -171,19 +174,40 @@ export function StairsClient({ items, access, outfit, text }: Props) {
             <p className="type-meta text-on-dark">
               {[active.venue, active.duration].filter(Boolean).join(" · ")}
             </p>
+            <p
+              className={cn(
+                "mt-1 inline-flex h-6 w-fit items-center border-[1.5px] px-2 type-badge",
+                active.status === "last"
+                  ? "border-transparent bg-white text-ink"
+                  : active.status === "soldout"
+                    ? "border-transparent bg-surface-muted text-text-muted"
+                    : "border-[#BBBBBB] text-on-dark"
+              )}
+            >
+              {active.statusLabel}
+            </p>
             {active.lead && <p className="mt-2 line-clamp-2 type-meta text-on-dark">{active.lead}</p>}
 
             <hr className="my-3 border-t border-[#BBBBBB]" />
 
             <StairsHintIcons key={active.id} access={access} outfit={outfit} text={text} />
 
-            <a
-              href={active.ticketsUrl ?? active.href}
-              {...(active.ticketsUrl ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-              className="mt-4 flex h-11 items-center justify-center bg-white font-semibold text-ink hover:underline"
-            >
-              {text.buy}
-            </a>
+            {active.status === "soldout" ? (
+              <span
+                aria-disabled="true"
+                className="mt-4 flex h-11 items-center justify-center bg-white/60 font-semibold text-ink"
+              >
+                {active.statusLabel}
+              </span>
+            ) : (
+              <a
+                href={active.ticketsUrl ?? active.href}
+                {...(active.ticketsUrl ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                className="mt-4 flex h-11 items-center justify-center bg-white font-semibold text-ink hover:underline"
+              >
+                {text.buy}
+              </a>
+            )}
           </div>
         </section>
         )}

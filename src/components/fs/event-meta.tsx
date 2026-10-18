@@ -3,6 +3,7 @@ import * as React from "react"
 
 import { iconProps } from "@/components/fs/icons"
 import { Badge } from "@/components/ui/badge"
+import { ticketStatus } from "@/content/availability"
 import type { Dictionary } from "@/i18n"
 import { type FsEvent, formatDayMonth, isExhibition, lastDate } from "@/lib/event-format"
 import { cn } from "@/lib/utils"
@@ -25,6 +26,19 @@ export function EventInfoBadge({ event, t }: { event: FsEvent; t: Dictionary }) 
   }
   if (event.age) return <Badge>{t.event.age(event.age)}</Badge>
   return null
+}
+
+/** Status biletów (§6.8) – mock iksoris: dostępne, ostatnie miejsca, wyprzedane */
+export function TicketStatusBadge({ event, t, className }: { event: FsEvent; t: Dictionary; className?: string }) {
+  const status = ticketStatus(event.id)
+  return (
+    <Badge
+      variant={status === "last" ? "solid" : status === "soldout" ? "muted" : "outline"}
+      className={className}
+    >
+      {t.event.status[status]}
+    </Badge>
+  )
 }
 
 /** Cena do metadanych: z danych, a dla wystaw – cena biletu do galerii */

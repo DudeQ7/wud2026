@@ -1,6 +1,6 @@
 import Image from "next/image"
 
-import { FactList } from "@/components/fs/event-meta"
+import { FactList, TicketStatusBadge } from "@/components/fs/event-meta"
 import { Container, Eyebrow } from "@/components/fs/layout"
 import { HeroListen } from "@/components/home/hero-listen"
 import { buttonVariants } from "@/components/ui/button"
@@ -55,9 +55,12 @@ export function Hero({ event, date, today, lang, photoPosition = "50% 30%" }: He
         <div className="absolute inset-x-0 bottom-0 landscape-short:inset-y-0 landscape-short:left-1/2 landscape-short:flex landscape-short:items-center landscape-short:bg-background">
           <Container className="px-0 sm:px-6 lg:px-8 landscape-short:px-0">
             <div className="chamfer-tr enter flex flex-col gap-1 bg-background px-4 pt-5 pb-8 sm:max-w-xl sm:px-6 lg:px-8 lg:pt-8 landscape-short:max-w-none landscape-short:px-6 landscape-short:pt-14 landscape-short:pb-4 landscape-short:[clip-path:none]">
-              <Eyebrow>
-                {kindLabel(t, event.kind)} · {eyebrowWhen}
-              </Eyebrow>
+              <div className="flex flex-wrap items-center gap-2">
+                <Eyebrow>
+                  {kindLabel(t, event.kind)} · {eyebrowWhen}
+                </Eyebrow>
+                <TicketStatusBadge event={event} t={t} />
+              </div>
               <h1 id="hero-title" className="type-h1 text-gold">
                 {event.headline}
               </h1>

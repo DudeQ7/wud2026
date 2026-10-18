@@ -27,6 +27,28 @@ export const en: Dictionary = {
     logoAlt: "Filharmonia Szczecin – home",
     menu: "Menu",
     language: "Language",
+    breadcrumbs: "Breadcrumb",
+  },
+
+  notFound: {
+    eyebrow: "404",
+    title: "This page does not exist",
+    text: "The event may have already taken place or the address has changed. Check the current programme.",
+    home: "Home",
+    repertoire: "What's on",
+  },
+
+  consent: {
+    label: "Analytics consent",
+    text: "We use analytics to learn which pages and events are useful. It starts only after you agree.",
+    accept: "Accept",
+    reject: "Reject",
+    settings: "Settings",
+    analytics: "Analytics",
+    analyticsText: "Anonymous visit and click statistics.",
+    save: "Save choice",
+    back: "Back",
+    privacy: "Privacy policy",
   },
 
   nav: {
@@ -128,6 +150,8 @@ export const en: Dictionary = {
     age: (age) => `Age ${age}`,
     galleryPrice: "ticket 10 zł",
     photoPlaceholder: "Photo to be supplied by FS",
+    status: { available: "Available", last: "Last tickets", soldout: "Sold out" },
+    favorite: { add: "Add to favourites", remove: "Remove from favourites" },
     kinds: {
       Wystawa: "Exhibition",
       Wernisaż: "Exhibition opening",
@@ -456,7 +480,7 @@ export const en: Dictionary = {
     logout: "Log out",
     noDate: "Date to be announced",
     dashboard: {
-      greeting: (name) => `Welcome, ${name}! 👋`,
+      greeting: (name) => `Welcome, ${name}!`,
       defaultName: "music lover",
       intro: "This is your personal dashboard at the Mieczysław Karłowicz Philharmonic in Szczecin.",
       favorites: "Favourite concerts",
@@ -480,7 +504,7 @@ export const en: Dictionary = {
       emptyText: "Browse events while chatting with the Philharmonic Assistant and tap the heart to save them here.",
       start: "Start a conversation with the Assistant",
       remove: "Remove from favourites",
-      removeButton: "✕ Remove",
+      removeButton: "Remove",
       details: "Event details",
       buyTicket: "Buy tickets online",
       loginRequired: "Log in to add concerts to your favourites",
@@ -509,6 +533,7 @@ export const en: Dictionary = {
       save: "Save profile changes",
       saving: "Saving changes...",
       notLoggedIn: "You must be logged in",
+      errorLabel: "Error:",
       updateFailed: "Couldn't update your profile",
       updated: "Your profile has been updated",
     },

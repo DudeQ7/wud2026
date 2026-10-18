@@ -1,6 +1,8 @@
 import { notFound } from "next/navigation";
+
 import { getCurrentUser, getProfile } from "@/app/actions/panel";
 import { getDictionary, hasLocale } from "@/i18n";
+
 import { ProfileForm } from "./ProfileForm";
 
 export default async function ProfilePage({ params }: PageProps<"/[lang]/panel/profil">) {
@@ -20,19 +22,19 @@ export default async function ProfilePage({ params }: PageProps<"/[lang]/panel/p
     : "—";
 
   return (
-    <div className="max-w-2xl space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight">{t.title}</h1>
-        <p className="mt-1 text-sm text-muted-foreground">{t.intro}</p>
-      </div>
+    <div className="max-w-2xl space-y-8">
+      <header>
+        <h1 className="type-h1 text-gold">{t.title}</h1>
+        <p className="mt-2 max-w-[68ch] type-body text-text">{t.intro}</p>
+      </header>
 
-      <div className="rounded-2xl border border-border bg-background p-6 sm:p-8">
+      <div className="border border-line p-5 sm:p-8">
         <ProfileForm lang={lang} profile={profile} userEmail={user?.email || ""} />
       </div>
 
-      <div className="rounded-2xl border border-border bg-muted/30 p-4 text-xs text-muted-foreground">
-        {t.since} <span className="font-medium text-foreground">{formattedDate}</span>
-      </div>
+      <p className="border-t border-line pt-4 type-meta text-text-muted">
+        {t.since} <span className="font-semibold text-text">{formattedDate}</span>
+      </p>
     </div>
   );
 }

@@ -30,6 +30,28 @@ export const pl = {
     logoAlt: "Filharmonia Szczecin – strona główna",
     menu: "Menu",
     language: "Wersja językowa",
+    breadcrumbs: "Ścieżka nawigacji",
+  },
+
+  notFound: {
+    eyebrow: "404",
+    title: "Ta strona nie istnieje",
+    text: "Może wydarzenie już się odbyło albo adres się zmienił. Sprawdź aktualny repertuar.",
+    home: "Strona główna",
+    repertoire: "Repertuar",
+  },
+
+  consent: {
+    label: "Zgody na analitykę",
+    text: "Używamy analityki, żeby wiedzieć, które strony i wydarzenia są przydatne. Włączy się dopiero po Twojej zgodzie.",
+    accept: "Akceptuj",
+    reject: "Odrzuć",
+    settings: "Ustawienia",
+    analytics: "Analityka",
+    analyticsText: "Anonimowe statystyki odwiedzin i kliknięć.",
+    save: "Zapisz wybór",
+    back: "Wróć",
+    privacy: "Polityka prywatności",
   },
 
   nav: {
@@ -134,6 +156,8 @@ export const pl = {
     age: (age: string) => `Wiek ${age}`,
     galleryPrice: "bilet 10 zł",
     photoPlaceholder: "Zdjęcie do pozyskania od FS",
+    status: { available: "Dostępne", last: "Ostatnie miejsca", soldout: "Wyprzedane" },
+    favorite: { add: "Dodaj do ulubionych", remove: "Usuń z ulubionych" },
     /** Krótkie rodzaje z koncerty.json → tłumaczenie; brak klucza = tekst z danych */
     kinds: {} as Record<string, string>,
     /** Nazwy sal → tłumaczenie; brak klucza = nazwa z danych */
@@ -423,7 +447,7 @@ export const pl = {
     logout: "Wyloguj się",
     noDate: "Brak ustalonej daty",
     dashboard: {
-      greeting: (name: string) => `Witaj, ${name}! 👋`,
+      greeting: (name: string) => `Witaj, ${name}!`,
       defaultName: "Melomanie",
       intro: "Oto Twój osobisty pulpit Filharmonii im. Mieczysława Karłowicza w Szczecinie.",
       favorites: "Ulubione koncerty",
@@ -447,7 +471,7 @@ export const pl = {
       emptyText: "Przeglądaj wydarzenia podczas rozmowy z Asystentem Filharmonii i klikaj serduszko, aby zapisać je tutaj.",
       start: "Rozpocznij rozmowę z Asystentem",
       remove: "Usuń z ulubionych",
-      removeButton: "✕ Usuń",
+      removeButton: "Usuń",
       details: "Szczegóły wydarzenia",
       buyTicket: "Kup bilet online",
       loginRequired: "Zaloguj się, aby dodawać koncerty do ulubionych",
@@ -476,6 +500,7 @@ export const pl = {
       save: "Zapisz zmiany w profilu",
       saving: "Zapisywanie zmian...",
       notLoggedIn: "Musisz być zalogowany",
+      errorLabel: "Błąd:",
       updateFailed: "Nie udało się zaktualizować profilu",
       updated: "Profil został zaktualizowany",
     },

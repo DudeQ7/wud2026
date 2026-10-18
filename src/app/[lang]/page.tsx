@@ -16,6 +16,7 @@ import {
 import { StairsSection } from "@/components/home/stairs"
 import { type Locale, getDictionary, hasLocale, locales, localizedPath } from "@/i18n"
 import { nextConcert, nowKey, todayKey } from "@/lib/events"
+import { siteJsonLd } from "@/lib/structured-data"
 
 export async function generateMetadata({ params }: PageProps<"/[lang]">): Promise<Metadata> {
   const { lang } = await params
@@ -47,6 +48,10 @@ async function HomeContent({ lang }: { lang: Locale }) {
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(siteJsonLd(lang)).replace(/</g, "\\u003c") }}
+      />
       <a
         href="#tresc"
         className="sr-only z-50 bg-ink px-4 py-3 font-semibold text-on-dark focus:not-sr-only focus:fixed focus:top-2 focus:left-2"

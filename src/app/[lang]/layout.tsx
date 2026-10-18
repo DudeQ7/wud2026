@@ -4,6 +4,7 @@ import { Analytics } from "@vercel/analytics/next"
 
 import { siteUrl } from "@/app/site-url"
 import { fontVariables } from "@/app/fonts"
+import { ConsentBanner } from "@/components/fs/consent-banner"
 import { getDictionary, hasLocale, locales } from "@/i18n"
 
 import "../globals.css"
@@ -46,6 +47,7 @@ export default async function RootLayout({ children, params }: LayoutProps<"/[la
     <html lang={lang} className={fontVariables}>
       <body className="min-h-dvh">
         {children}
+        <ConsentBanner lang={lang} />
         <Analytics />
       </body>
     </html>
