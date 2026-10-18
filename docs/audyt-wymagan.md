@@ -75,7 +75,7 @@ Legenda: ✅ zrobione · 🟡 częściowo · ❌ brak
 1. CMS i pełne API treści.
 2. Plan sali i wybór miejsc.
 3. Archiwum, nagrania FS, tłumaczenia wszystkich opisów.
-4. Pomiar LCP/CLS/INP i pakiet wdrożeniowy.
+4. ~~Pomiar LCP/CLS/INP i pakiet wdrożeniowy~~ — zrobione (`docs/architektura.md` §6 i §9).
 
 ## Scenariusze
 

@@ -166,7 +166,115 @@ Ta sama warstwa ma zasilać przyszłą aplikację FS (bilety, panel klienta).
 | 3. Wyszukiwarka i AI | indeks (Meilisearch/Typesense), RAG po FAQ i treściach, limity | decyzja o zapisie rozmów |
 | 4. Konto | bilety, programy PDF, powiadomienia, newsletter z segmentacją | decyzja, kto przechowuje dane |
 | 5. Media | audio (pliki lub streaming), archiwum, zdjęcia z licencjami | pliki, licencje, logo SVG |
-| 6. Wydajność i dostępność | pomiar LCP/CLS/INP, testy z VoiceOver/TalkBack, zoom 200% | — |
+| 6. Wydajność i dostępność | pomiar LCP/CLS/INP (zrobione w §6), powiększenie 200% i AXTree (zrobione), testy z fizycznym VoiceOver/TalkBack | — |
 | 7. Aplikacja FS | ta sama warstwa API | — |
 
 Ryzyka: jakość i licencje materiałów FS, dostępność API iksoris, koszt i limity LLM przy szczycie ruchu, pełne tłumaczenia treści (dziś ~85 opisów tylko po polsku).
+
+## 9. Paczka wdrożeniowa: makiety układów 360 px / 1440 px i indeks dokumentacji
+
+Wszystkie artefakty dla zespołu wdrożeniowego w jednym miejscu:
+
+- **System projektowy i zasady UI:** [`docs/design.md`](./design.md) (monochromatyczna paleta + złoto w nagłówkach, `border-radius: 0`, siatka 4 kolumn na 360 px i 12 kolumn na 1440 px, komponenty §6, szablony stron §7).
+- **Raport dostępności WCAG 2.2 AA:** [`docs/raport-dostepnosci.md`](./raport-dostepnosci.md) (axe-core: 0 naruszeń w 38 skanach na 360 i 1440 px; klawiatura i pułapki fokusu; reflow 320 px; powiększenie 200% na 12 widokach; drzewo AXTree).
+- **Scenariusze prezentacji i ścieżki użytkownika:** [`docs/prezentacja-scenariusze.md`](./prezentacja-scenariusze.md) (scenariusze A–D zweryfikowane na żywo).
+- **Audyt wymagań briefu:** [`docs/audyt-wymagan.md`](./audyt-wymagan.md).
+
+### Makiety strukturalne kluczowych widoków (360 px mobile vs 1440 px desktop)
+
+#### 9.1. Strona główna (`/[lang]` — `src/app/[lang]/page.tsx`)
+
+```text
+360 px (4 kol., margines 16 px, dolny pasek 64 px)      1440 px (12 kol., max 1320 px, margines 32 px)
++------------------------------------+                  +------------------------------------------------------------------+
+| [Logo FS]            [PL v] [Menu] | 56 px            | [Logo FS]  Repertuar  Planuj wizytę    [Szukaj] [Konto] [PL] [≡] | 72 px
++------------------------------------+                  +------------------------------------------------------------------+
+| Zdjęcie otwarcia (pełna szer.)     |                  | Zdjęcie otwarcia (pełna szer., wys. 72–82 vh, ścięcie 48 px)     |
+| Ciemna płyta (#1A1A1A):            |                  | +-----------------------------------+                            |
+|   NADCHODZĄCY KONCERT (złoto)      |                  | | Ciemna płyta (kol. 1–6):          |                            |
+|   Tytuł wydarzenia (H1, biały)     |                  | |   NADCHODZĄCY KONCERT             |                            |
+|   Data · sala · od 40 zł           |                  | |   Tytuł wydarzenia (H1)           |                            |
+|   [Kup bilet]  [Posłuchaj 1 min]   |                  | |   [Kup bilet] [Posłuchaj] [Zobacz]|                            |
++------------------------------------+                  +------------------------------------------------------------------+
+| NAJBLIŻSZE WYDARZENIA              |                  | NAJBLIŻSZE WYDARZENIA                          Wszystkie (90) →  |
+| Wiersze 1–5 (data | tytuł | status)|                  | Wiersze 1–6 w układzie poziomym (data | zdjęcie | tytuł | akcja) |
++------------------------------------+                  +------------------------------------------------------------------+
+| DZIŚ W FILHARMONII (Schody #1A1A1A)|                  | DZIŚ W FILHARMONII — Schody (9 stopni diagonalnych + podgląd)    |
++------------------------------------+                  +------------------------------------------------------------------+
+| POLECAMY (siatka 2 kol. kompakt)   |                  | POLECAMY (siatka 3 kart po 4 kolumny, zdjęcie 3:2 ze ścięciem)   |
++------------------------------------+                  +------------------------------------------------------------------+
+| DLA CIEBIE (kafle 2×2 + kreator)   |                  | DLA CIEBIE (4 kafle po 3 kolumny + baner „Pomóż mi wybrać”)      |
++------------------------------------+                  +------------------------------------------------------------------+
+| ODKRYJ FILHARMONIĘ (kafle 2×3)     |                  | ODKRYJ FILHARMONIĘ (6 kafli: EDU, Orkiestra, Budynek, Historia…)|
++------------------------------------+                  +------------------------------------------------------------------+
+| Newsletter + Stopka (#1A1A1A)      |                  | Newsletter (2 kol.) + Stopka (4 kolumny linków + RODO)           |
++------------------------------------+                  +------------------------------------------------------------------+
+| [Repertuar][Wizyta][AI][Szukaj][Ja]| sticky           |                                                    [Heksagon AI] |
++------------------------------------+                  +------------------------------------------------------------------+
+```
+
+#### 9.2. Repertuar i kalendarz (`/[lang]/repertuar` — `src/components/calendar/calendar.tsx`)
+
+```text
+360 px (pasek filtrów sticky pod nagłówkiem)            1440 px (filtry + przełącznik Miesiąc / Lista w jednym wierszu)
++------------------------------------+                  +------------------------------------------------------------------+
+| H1: Repertuar i bilety             |                  | H1: Repertuar i bilety                     [Miesiąc] [Lista]     |
+| [Miesiąc] [Lista]                  |                  +------------------------------------------------------------------+
+| [Ten weekend][Symfoniczny][Filtry] | ← scroll X       | [Ten weekend][Dziś][Symfoniczny][Kameralny][Jazz][Dzieci][Filtry]|
++------------------------------------+                  +------------------------------------------------------------------+
+| 90 wydarzeń · Wyczyść filtry       | aria-live        | 90 wydarzeń (aria-live="polite")                                 |
++------------------------------------+                  +------------------------------------------------------------------+
+| Widok Miesiąc:                     |                  | Widok Miesiąc:                                                   |
+|   Fasada 3D (7 kolumn Pn–Nd)       |                  |   Fasada 3D (7 kolumn Pn–Nd, obrót bryły przy zmianie miesiąca)  |
+|   Panel wybranego dnia pod siatką  |                  |   Panel wybranego dnia z wierszami wydarzeń i „Kup bilet”        |
+| Widok Lista:                       |                  | Widok Lista:                                                     |
+|   Nagłówek dnia (sticky)           |                  |   Nagłówek dnia + wiersze: godzina | zdjęcie | tytuł/sala | CTA  |
+|   Wiersze wydarzeń (cały klikalny) |                  +------------------------------------------------------------------+
++------------------------------------+
+```
+
+#### 9.3. Karta wydarzenia (`/[lang]/wydarzenia/[slug]` — `src/app/[lang]/wydarzenia/[slug]/page.tsx`)
+
+```text
+360 px (jedna kolumna + dolny pasek zakupu)             1440 px (kol. 1–7 treść + kol. 9–12 sticky panel zakupu)
++------------------------------------+                  +------------------------------------------------------------------+
+| ← Wróć do repertuaru               |                  | Repertuar / Koncert symfoniczny / Tytuł                          |
+| Zdjęcie 3:2 (ścięcie 24 px)        |                  +-----------------------------------------+------------------------+
+| CYKL · RODZAJ (złoto)              |                  | Zdjęcie 3:2 (kol. 1–7, ścięcie 48 px)   | Panel zakupu (sticky,  |
+| H1: Tytuł wydarzenia               |                  |                                         | kol. 9–12, obrys 1,5px)|
+| Metryczka: Kiedy / Gdzie / Cena    |                  | H1: Tytuł wydarzenia                    | Data i godzina         |
+| [Kup bilet — pełna szer. 48 px]    |                  | [Posłuchaj fragmentu (1:00)]            | Sala i czas trwania    |
+| [Posłuchaj fragmentu (1:00)]       |                  | Opis redakcyjny (max 68zn)              | Cena: 50 / 40 zł       |
+| [Do kalendarza (.ics)] [Udostępnij]|                  | Wykonawcy (z linkami do /artysci/slug)  | Status: Dostępne       |
+| Opis redakcyjny (max 68zn)         |                  | Program (kompozytor — utwór + PDF)      | [Kup bilet (48 px)]    |
+| Wykonawcy + Program                |                  | Dostępność sali i wskazówki             | [Dodaj do kalendarza]  |
+| Pierwszy raz? (4 karty)            |                  | Pierwszy raz w Filharmonii? (2×2)       | [Udostępnij] [Ulubione]|
+| Podobne wydarzenia (2 kol.)        |                  +-----------------------------------------+------------------------+
++------------------------------------+                  | Podobne wydarzenia (3 karty po 4 kolumny)                        |
+| Sticky: Data · Cena   [Kup bilet]  |                  +------------------------------------------------------------------+
++------------------------------------+
+```
+
+#### 9.4. Kreator „Pomóż mi wybrać” (`/[lang]/pomoz-mi-wybrac`) i Asystent AI (`/[lang]/asystent`)
+
+```text
+360 px — Kreator (5 kroków bez JS, stan w URL)          360 px / 1440 px — Nakładka Asystenta AI (<dialog>)
++------------------------------------+                  +------------------------------------+
+| Pomóż mi wybrać · KROK 1 Z 5       |                  | H2: Wirtualny Doradca          [X] |
+| [■][□][□][□][□]                    |                  | Nota RODO + link do polityki       |
+| H1: Z kim wybierasz się na koncert?|                  +------------------------------------+
+| +--------------------------------+ |                  | Podpowiedzi (chipy >= 44 px):      |
+| | Sam / sama                     | | >= 56 px         | [Co jest w ten weekend?]           |
+| +--------------------------------+ |                  | [Pierwszy raz — co polecasz?]      |
+| | We dwoje                       | |                  | [Z dzieckiem w wieku 6 lat]        |
+| +--------------------------------+ |                  +------------------------------------+
+| | Z dziećmi                      | |                  | Odpowiedź AI (aria-live="polite"): |
+| +--------------------------------+ |                  |   Tekst + karty wydarzeń z ceną,   |
+| Wstecz                       Pomiń |                  |   dostępnością i „Kup bilet”       |
++------------------------------------+                  |   Źródło: Dane repertuarowe FS     |
+                                                        |   CTA kasy: [Zadzwoń] [Napisz]     |
+                                                        +------------------------------------+
+                                                        | [Zadaj pytanie...        ] [Wyślij]|
+                                                        +------------------------------------+
+```
+
