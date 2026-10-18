@@ -128,6 +128,8 @@ export const en: Dictionary = {
     age: (age) => `Age ${age}`,
     galleryPrice: "ticket 10 zł",
     photoPlaceholder: "Photo to be supplied by FS",
+    status: { available: "Available", last: "Last tickets", soldout: "Sold out" },
+    favorite: { add: "Add to favourites", remove: "Remove from favourites" },
     kinds: {
       Wystawa: "Exhibition",
       Wernisaż: "Exhibition opening",

@@ -134,6 +134,8 @@ export const pl = {
     age: (age: string) => `Wiek ${age}`,
     galleryPrice: "bilet 10 zł",
     photoPlaceholder: "Zdjęcie do pozyskania od FS",
+    status: { available: "Dostępne", last: "Ostatnie miejsca", soldout: "Wyprzedane" },
+    favorite: { add: "Dodaj do ulubionych", remove: "Usuń z ulubionych" },
     /** Krótkie rodzaje z koncerty.json → tłumaczenie; brak klucza = tekst z danych */
     kinds: {} as Record<string, string>,
     /** Nazwy sal → tłumaczenie; brak klucza = nazwa z danych */

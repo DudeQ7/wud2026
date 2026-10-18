@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { AccessibilityNote, EventInfoBadge, MetaLine, eventPrice } from "@/components/fs/event-meta"
+import { AccessibilityNote, EventInfoBadge, MetaLine, TicketStatusBadge, eventPrice } from "@/components/fs/event-meta"
 import { type Locale, getDictionary, kindLabel, localizedPath, venueLabel } from "@/i18n"
 import { type FsEvent, eventHref, formatDuration, formatTime, galleryInfo, isExhibition } from "@/lib/event-format"
 import { cn } from "@/lib/utils"
@@ -42,6 +42,7 @@ export function EventRow({ event, times, lang, className }: EventRowProps) {
         <div className="flex flex-wrap items-center gap-2">
           <span className="type-label text-text-muted">{exhibition ? t.event.exhibition : kindLabel(t, event.kind)}</span>
           <EventInfoBadge event={event} t={t} />
+          <TicketStatusBadge event={event} t={t} />
         </div>
         <AccessibilityNote t={t} className="mt-0.5" />
       </div>

@@ -11,8 +11,8 @@ Legenda: ✅ zrobione · 🟡 częściowo · ❌ brak
 | 1 | „Dziś w Filharmonii” (schody) | ✅ | — |
 | 2 | Kalendarz | 🟡 | Brak widoku miesiąca |
 | 3 | Filtry kalendarza | 🟡 | Brak ceny i dostępności |
-| 4 | Statusy biletów | ❌ | Brak danych i znaczników |
-| 5 | Karta wydarzenia | 🟡 | Brak ulubionych i statusu |
+| 4 | Statusy biletów | ✅ | Mock; docelowo iksoris |
+| 5 | Karta wydarzenia | ✅ | — |
 | 6 | Program PDF | ❌ | `program_pdf` = null dla 90/90 |
 | 7 | Odsłuch | 🟡 | Tylko próbka demo |
 | 8 | „Pomóż mi wybrać” | ✅ | — |
@@ -43,7 +43,7 @@ Legenda: ✅ zrobione · 🟡 częściowo · ❌ brak
 - Mobile-first, dolna nawigacja, menu, przełącznik języków.
 - Strona główna: hero, schody z 9 wydarzeniami (sekcja „Dziś w Filharmonii”), polecane, dla Ciebie, odkryj, newsletter, stopka.
 - Kalendarz: lista po dniach, szybkie filtry, pełny arkusz filtrów, licznik, linki z filtrami, stan pusty z alternatywami.
-- Karta wydarzenia: fakty, wykonawcy z linkami, program, czas, podobne, kalendarz, udostępnianie, nawigacja, telefon.
+- Karta wydarzenia: fakty, wykonawcy z linkami, program, czas, podobne, kalendarz, udostępnianie, nawigacja, telefon, ulubione, status biletów i odsłuch demo.
 - Kreator: 5 pytań, pomijanie, wstecz, 3–5 wyników, uzasadnienie, stan braku dopasowania.
 - Asystent: odpowiedzi z danych FS, karty wydarzeń, ulubione, mapa, 4 języki, nota RODO, źródło odpowiedzi, CTA „Zadzwoń do kasy / Napisz do nas” przy braku wiedzy i wygląd zgodny z design systemem.
 - Panel: logowanie, ulubione, historia czatu, profil.
@@ -53,9 +53,9 @@ Legenda: ✅ zrobione · 🟡 częściowo · ❌ brak
 ## P0 przed prezentacją
 
 1. Panel: doprowadzić wygląd do design systemu (asystent jest gotowy).
-2. Karta wydarzenia: ulubione, status biletów, odsłuch dla wydarzenia demo.
-3. Schody: dostępność opisana słowem, nie tylko kolorem.
-4. Tłumaczenia pod demo: EDU, zwiedzanie i opisy 3–5 wydarzeń.
+2. Schody: dostępność opisana słowem, nie tylko kolorem.
+3. Tłumaczenia pod demo: EDU, zwiedzanie i opisy 3–5 wydarzeń.
+4. Program PDF: jeśli FS nie dostarczy plików, wyraźnie oznaczyć program online.
 
 ## P1 po demo
 
@@ -64,7 +64,7 @@ Legenda: ✅ zrobione · 🟡 częściowo · ❌ brak
 3. Panel: bilety, programy, powiadomienia.
 4. Baner zgód analitycznych.
 5. `schema.org/Event` i pełny sitemap.
-6. Mock statusów iksoris.
+6. Podłączyć prawdziwe statusy z iksoris zamiast mocka.
 
 ## P2 później
 
@@ -77,7 +77,7 @@ Legenda: ✅ zrobione · 🟡 częściowo · ❌ brak
 
 | Scenariusz | Stan | Uwaga |
 |---|---|---|
-| A. Debiutant | ✅ | Brak odsłuchu i polskie opisy w EN/DE/UK |
+| A. Debiutant | ✅ | Odsłuch demo dla wydarzenia z hero; polskie opisy w EN/DE/UK |
 | B. Rodzic | ✅ | Działa filtr weekend + dzieci + wiek |
 | C. Asystent | ✅ | RODO, źródło i CTA gotowe; wygląd do dopracowania |
 | D. Turysta DE | ❌ | Zwiedzanie po polsku |

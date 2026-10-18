@@ -114,6 +114,8 @@ export const uk: Dictionary = {
     age: (age) => `Вік ${age}`,
     galleryPrice: "квиток 10 зл",
     photoPlaceholder: "Фото надасть FS",
+    status: { available: "Доступні", last: "Останні квитки", soldout: "Продано" },
+    favorite: { add: "Додати до улюблених", remove: "Прибрати з улюблених" },
     kinds: {
       Wystawa: "Виставка",
       Wernisaż: "Відкриття виставки",

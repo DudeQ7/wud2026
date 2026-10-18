@@ -129,6 +129,8 @@ export const de: Dictionary = {
     age: (age) => `Alter ${age}`,
     galleryPrice: "Eintritt 10 zł",
     photoPlaceholder: "Foto wird von der FS geliefert",
+    status: { available: "Verfügbar", last: "Letzte Karten", soldout: "Ausverkauft" },
+    favorite: { add: "Zu Favoriten hinzufügen", remove: "Aus den Favoriten entfernen" },
     kinds: {
       Wystawa: "Ausstellung",
       Wernisaż: "Vernissage",
