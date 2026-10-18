@@ -288,12 +288,16 @@ function Facade({
               <button
                 key={day}
                 type="button"
-                aria-label={`${formatLongDate(day, t)}${isToday ? `, ${t.calendar.todayLabel}` : ""}, ${t.calendar.count(count)}`}
                 aria-pressed={isSelected}
                 onClick={() => onSelectDay(day)}
                 className={`flex min-h-[3.25rem] min-w-0 cursor-pointer items-center justify-center focus-visible:z-10 focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-ring ${edge}`}
               >
+                {/* Nazwa z tekstu, nie z aria-label: aria-label bez widocznego „18 dziś” łamał WCAG 2.5.3 */}
+                <span className="sr-only">
+                  {`${formatLongDate(day, t)}${isToday ? `, ${t.calendar.todayLabel}` : ""}, ${t.calendar.count(count)}`}
+                </span>
                 <span
+                  aria-hidden="true"
                   className={`flex h-[2.875rem] w-10 max-w-full flex-col items-center justify-center gap-0.5 ${
                     isSelected ? "bg-ink text-on-dark" : `hover:bg-bg-subtle ${isPast ? "text-text-muted" : "text-text"}`
                   }`}

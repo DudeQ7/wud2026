@@ -152,7 +152,8 @@ export function Calendar({ events, series, lang, displayMode = "list", monthView
       </div>
 
       {displayMode === "month" && monthView ? (
-        monthView
+        // Ten sam id co lista: szybkie filtry wskazują go w aria-controls w obu widokach
+        <div id="repertuar-lista">{monthView}</div>
       ) : (
         <div id="repertuar-lista">
           {count === 0 ? (

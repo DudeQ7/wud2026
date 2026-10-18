@@ -1,6 +1,6 @@
 "use client"
 
-import { useRef, useState } from "react"
+import { useId, useRef, useState } from "react"
 
 import Chat from "@/app/[lang]/asystent/Chat"
 import type { EventCard, Lang, Venue } from "@/lib/assistant"
@@ -25,6 +25,8 @@ type AssistantDialogProps = {
  */
 export function AssistantDialog({ lang = "pl", events, venue, className, label, children }: AssistantDialogProps) {
   const dialogRef = useRef<HTMLDialogElement>(null)
+  // Dwie instancje (dolna nawigacja i heksagon na desktopie) – każda potrzebuje własnego id nagłówka
+  const titleId = useId()
   // Czat montujemy dopiero przy pierwszym otwarciu, żeby nie obciążać każdej strony
   const [mounted, setMounted] = useState(false)
   const [open, setOpen] = useState(false)
@@ -53,7 +55,7 @@ export function AssistantDialog({ lang = "pl", events, venue, className, label, 
       </button>
       <dialog
         ref={dialogRef}
-        aria-labelledby="asystent-tytul"
+        aria-labelledby={titleId}
         onClose={() => setOpen(false)}
         // Kliknięcie w tło (poza szufladą na desktopie) zamyka nakładkę
         onClick={(e) => e.target === e.currentTarget && close()}
@@ -67,7 +69,7 @@ export function AssistantDialog({ lang = "pl", events, venue, className, label, 
             lang={lang}
             events={events}
             venue={venue}
-            titleId="asystent-tytul"
+            titleId={titleId}
             onClose={close}
             className="h-full pb-[env(safe-area-inset-bottom)]"
           />

@@ -93,6 +93,25 @@ Nadal niesprawdzone: czytniki ekranu (VoiceOver, TalkBack), wtyczka WAVE (wymaga
 
 To ręczna próba tras, nie pełny audyt axe. Drzewo dostępności potwierdza etykiety i strukturę, ale nie zastępuje testu na VoiceOver/TalkBack. EN/DE nadal zawierają polskie opisy części wydarzeń i niektóre teksty z danych źródłowych.
 
+## 9. Skan axe: nakładka asystenta, logowanie, EN/DE/UK (18.10.2026)
+
+Środowisko: `next dev` na `:3100`, Chrome headless (puppeteer-core) z wstrzykniętym `axe-core` 4.14.0, te same tagi co w sekcji 1. Szerokości 360 px i 1440 px. Nakładkę otwierano przyciskiem z dolnej nawigacji (360 px) i heksagonem (1440 px), a skan powtarzano po odpowiedzi asystenta na „Co jest w ten weekend?” i „Gdzie zaparkować?” (z kartami wydarzeń, mapą i źródłem).
+
+**Wynik końcowy: 0 naruszeń** w 22 skanach: `/`, `/asystent`, `/auth/login`, `/auth/register`, `/en`, `/uk`, `/repertuar`, `/en/repertuar`, `/de/repertuar`, `/de/zwiedzanie`, `/en/planuj-wizyte`, `/uk/zacznij-tutaj` oraz nakładka asystenta (pusta i po odpowiedzi), każdy przy 360 i 1440 px.
+
+Znalezione i naprawione:
+
+| Problem (reguła axe) | Gdzie | Naprawa |
+|---|---|---|
+| `aria-valid-attr-value` (critical): szybkie filtry wskazują `aria-controls="repertuar-lista"`, którego nie ma w widoku miesiąca | `/repertuar` we wszystkich językach (widok miesiąca jest domyślny) | widok miesiąca w kontenerze `#repertuar-lista` (`calendar.tsx`) |
+| `label-content-name-mismatch` (serious, WCAG 2.5.3): `aria-label` dnia „Niedziela, 18 października, dziś, …” nie zawiera widocznego „18 dziś” | fasada miesiąca, komórka dzisiejszego dnia | nazwa z ukrytego tekstu (`sr-only`), cyfra i znaczniki `aria-hidden` (`calendar3d.tsx`) |
+| `label-content-name-mismatch` (serious): heksagon pokazuje „AI”, a etykieta UK brzmiała „ШІ-асистент” | `/uk/*` przy 1440 px | „AI-асистент” (`uk.ts`) |
+| Ten sam `id` nagłówka w dwóch instancjach nakładki (dolna nawigacja i heksagon) | `assistant-dialog.tsx` | `useId()` zamiast stałego `asystent-tytul` |
+
+Panel (`/panel/*`) przekierowuje do logowania, więc skan obejmuje stronę logowania i rejestracji, nie widoki po zalogowaniu.
+
+Uwaga: lokalny `next dev` bez `NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN` i `NEXT_PUBLIC_POSTHOG_HOST` kończy się błędem w `instrumentation.ts`. Do skanu ustawiono atrapy tych zmiennych (host `http://127.0.0.1:9`), bez zmian w `.env`.
+
 ## 5. Jak powtórzyć
 
 1. `pnpm add -D axe-core` (jest w `devDependencies`), skopiować `node_modules/axe-core/axe.min.js` do `public/`.
