@@ -4,6 +4,7 @@
 export type ConsentValue = "analytics" | "essential";
 
 const KEY = "fs-consent";
+export const CONSENT_EVENT = "fs-consent-change";
 
 export function readConsent(): ConsentValue | null {
   try {
@@ -20,4 +21,5 @@ export function writeConsent(value: ConsentValue) {
   } catch {
     // Prywatne okno lub zablokowany storage – zgoda obowiązuje tylko w tej sesji.
   }
+  window.dispatchEvent(new CustomEvent<ConsentValue>(CONSENT_EVENT, { detail: value }));
 }
