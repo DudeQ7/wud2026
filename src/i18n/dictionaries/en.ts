@@ -382,7 +382,8 @@ export const en: Dictionary = {
     /** Krótkie etykiety szybkich filtrów na telefonie: wszystkie pięć chipów musi się zmieścić w jednej linii */
     quickShort: { today: "Today", weekend: "Weekend", kids: "Kids", jazz: "Jazz", exhibitions: "Exhibits" },
     count: (n) => `${n} ${s(n, "event", "events")}`,
-    shown: (limit, count) => `Showing ${limit} of ${count}`,
+    dates: (n) => `${n} ${s(n, "date", "dates")}`,
+    shown: (limit, count) => `Showing ${limit} of ${count} dates`,
     showMore: "Show more events",
     activeFilters: "Active filters",
     removeFilter: (label) => `Remove filter: ${label}`,

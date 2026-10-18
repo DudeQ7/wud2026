@@ -20,6 +20,7 @@ import {
   activeFilters,
   alternatives,
   calendarDays,
+  countEvents,
   countRows,
   LAST_CALENDAR_QUERY_KEY,
   emptyFilters,
@@ -54,7 +55,9 @@ export function Calendar({ events, series, lang, displayMode = "list", monthView
 
   const seriesLabels = useMemo(() => Object.fromEntries(series.map((s) => [s.key, s.label])), [series])
   const days = useMemo(() => calendarDays(events, filters, today, t), [events, filters, today, t])
-  const count = countRows(days)
+  // Licznik pokazuje wydarzenia; lista i „pokaż więcej” idą po terminach (wiersz = wydarzenie w danym dniu)
+  const count = countEvents(days)
+  const rows = countRows(days)
   const active = activeFilters(filters, seriesLabels, t)
 
   const [limit, setLimit] = useState(PAGE_SIZE)
@@ -165,8 +168,10 @@ export function Calendar({ events, series, lang, displayMode = "list", monthView
 
       {/* Wiersz 3: licznik wyników i przełącznik widoku razem */}
       <div className="mt-4 flex flex-wrap items-center justify-between gap-x-4 gap-y-2 border-b border-line-strong pb-3">
-        <p className="type-ui text-text" aria-hidden>
+        <p className="flex flex-col type-ui text-text" aria-hidden>
           {countText}
+          {/* Terminy tylko, gdy różnią się od liczby wydarzeń – np. wystawa otwarta przez miesiąc */}
+          {rows !== count && <span className="type-meta font-normal text-text-muted">{t.calendar.dates(rows)}</span>}
         </p>
         <p className="sr-only" aria-live="polite">
           {announced}
@@ -210,9 +215,9 @@ export function Calendar({ events, series, lang, displayMode = "list", monthView
                   </div>
                 </section>
               ))}
-              {count > limit && (
+              {rows > limit && (
                 <div className="mt-8 flex flex-col items-start gap-2">
-                  <p className="type-meta text-text-muted">{t.calendar.shown(limit, count)}</p>
+                  <p className="type-meta text-text-muted">{t.calendar.shown(limit, rows)}</p>
                   <Button variant="secondary" block className="sm:w-fit" onClick={() => setLimit((l) => l + PAGE_SIZE)}>
                     {t.calendar.showMore}
                   </Button>

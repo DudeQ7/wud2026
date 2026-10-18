@@ -383,7 +383,8 @@ export const de: Dictionary = {
     /** Krótkie etykiety szybkich filtrów na telefonie: wszystkie pięć chipów musi się zmieścić w jednej linii */
     quickShort: { today: "Heute", weekend: "Wochenende", kids: "Kinder", jazz: "Jazz", exhibitions: "Galerie" },
     count: (n) => `${n} ${s(n, "Veranstaltung", "Veranstaltungen")}`,
-    shown: (limit, count) => `${limit} von ${count} angezeigt`,
+    dates: (n) => `${n} ${s(n, "Termin", "Termine")}`,
+    shown: (limit, count) => `${limit} von ${count} Terminen angezeigt`,
     showMore: "Weitere Veranstaltungen anzeigen",
     activeFilters: "Aktive Filter",
     removeFilter: (label) => `Filter entfernen: ${label}`,

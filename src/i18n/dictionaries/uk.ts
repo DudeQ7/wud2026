@@ -369,7 +369,8 @@ export const uk: Dictionary = {
     /** Krótkie etykiety szybkich filtrów na telefonie: wszystkie pięć chipów musi się zmieścić w jednej linii */
     quickShort: { today: "Сьогодні", weekend: "Вихідні", kids: "Діти", jazz: "Джаз", exhibitions: "Виставки" },
     count: (n) => `${n} ${s(n, "подія", "події", "подій")}`,
-    shown: (limit, count) => `Показано ${limit} з ${count}`,
+    dates: (n) => `${n} ${s(n, "дата", "дати", "дат")}`,
+    shown: (limit, count) => `Показано ${limit} з ${count} дат`,
     showMore: "Показати більше подій",
     activeFilters: "Активні фільтри",
     removeFilter: (label) => `Прибрати фільтр: ${label}`,

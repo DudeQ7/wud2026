@@ -337,8 +337,14 @@ export function calendarDays(
     }))
 }
 
+/** Liczba terminów: wydarzenie w danym dniu (wystawa otwarta 30 dni to 30 terminów) */
 export function countRows(days: CalendarDay[]) {
   return days.reduce((sum, d) => sum + d.rows.length, 0)
+}
+
+/** Liczba różnych wydarzeń – to pokazuje licznik wyników */
+export function countEvents(days: CalendarDay[]) {
+  return new Set(days.flatMap((d) => d.rows.map((r) => r.event.id))).size
 }
 
 // ——— Aktywne filtry (do usuwania pojedynczo i stanu „brak wyników”) ———
@@ -388,7 +394,7 @@ export function alternatives(
   return activeFilters(filters, seriesLabels, t)
     .map((filter) => {
       const relaxed = filter.remove(filters)
-      return { filter, relaxed, count: countRows(calendarDays(events, relaxed, today, t)) }
+      return { filter, relaxed, count: countEvents(calendarDays(events, relaxed, today, t)) }
     })
     .filter((a) => a.count > 0)
     .sort((a, b) => b.count - a.count)

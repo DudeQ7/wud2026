@@ -349,7 +349,8 @@ export const pl = {
     /** Krótkie etykiety szybkich filtrów na telefonie: wszystkie pięć chipów musi się zmieścić w jednej linii */
     quickShort: { today: "Dziś", weekend: "Weekend", kids: "Dzieci", jazz: "Jazz", exhibitions: "Wystawy" },
     count: (n: number) => `${n} ${plural(n, "wydarzenie", "wydarzenia", "wydarzeń")}`,
-    shown: (limit: number, count: number) => `Widzisz ${limit} z ${count}`,
+    dates: (n: number) => `${n} ${plural(n, "termin", "terminy", "terminów")}`,
+    shown: (limit: number, count: number) => `Widzisz ${limit} z ${count} terminów`,
     showMore: "Pokaż kolejne wydarzenia",
     activeFilters: "Aktywne filtry",
     removeFilter: (label: string) => `Usuń filtr: ${label}`,

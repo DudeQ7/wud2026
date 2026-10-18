@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Toggle } from "@/components/ui/toggle"
 import type { Dictionary } from "@/i18n"
-import { type CalendarEvent, type Filters, calendarDays, countRows, emptyFilters } from "@/lib/calendar"
+import { type CalendarEvent, type Filters, calendarDays, countEvents, emptyFilters } from "@/lib/calendar"
 import { cn } from "@/lib/utils"
 
 type FilterSheetProps = {
@@ -36,7 +36,7 @@ export function FilterSheet({ events, series, filters, today, t, activeCount, on
   const [draft, setDraft] = useState(filters)
   const [open, setOpen] = useState(false)
 
-  const count = open ? countRows(calendarDays(events, draft, today, t)) : 0
+  const count = open ? countEvents(calendarDays(events, draft, today, t)) : 0
 
   function show() {
     setDraft(filters)
