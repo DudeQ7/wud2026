@@ -29,7 +29,7 @@ Legenda: ✅ zrobione · 🟡 częściowo · ❌ brak
 | 19 | Partnerzy | 🟡 | Placeholdery zamiast logotypów |
 | 20 | Strefa mediów | 🟡 | Brak materiałów prasowych |
 | 21 | Języki PL/EN/DE/UK | 🟡 | Kluczowa ścieżka OK, reszta PL |
-| 22 | SEO | 🟡 | Brak `schema.org/Event` |
+| 22 | SEO | ✅ | `schema.org/Event` + pełny sitemap |
 | 23 | RODO i analityka | 🟡 | Brak banera zgód |
 | 24 | CMS i iksoris | ❌ | Brak integracji i mocka |
 | 25 | API i model treści | 🟡 | Tylko API wydarzeń |
@@ -49,6 +49,7 @@ Legenda: ✅ zrobione · 🟡 częściowo · ❌ brak
 - Panel: logowanie, ulubione, historia czatu, profil; wygląd zgodny z design systemem.
 - Dostępność bazowa: skip link, fokus, 44 px, axe 0 na 16 widokach.
 - Treści: plan wizyty, dostępność, budynek, historia, artyści, cykle.
+- SEO: `schema.org/Event` na kartach wydarzeń i sitemap z hreflang dla tras, wydarzeń, artystów i cykli.
 
 ## P0 przed prezentacją
 
@@ -63,7 +64,7 @@ Legenda: ✅ zrobione · 🟡 częściowo · ❌ brak
 2. Filtry ceny i dostępności.
 3. Panel: bilety, programy, powiadomienia.
 4. Baner zgód analitycznych.
-5. `schema.org/Event` i pełny sitemap.
+5. `schema.org/Organization` i `WebSite` na stronie głównej.
 6. Podłączyć prawdziwe statusy z iksoris zamiast mocka.
 
 ## P2 później

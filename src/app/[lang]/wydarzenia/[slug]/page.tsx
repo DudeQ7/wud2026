@@ -41,6 +41,7 @@ import {
   nowKey,
   similarEvents,
 } from "@/lib/events"
+import { eventJsonLd } from "@/lib/structured-data"
 import { cn } from "@/lib/utils"
 import { type Dictionary, getDictionary, hasLocale, kindLabel, localizedPath, seriesLabel, venueLabel } from "@/i18n"
 import { getLang } from "@/i18n/server"
@@ -142,7 +143,9 @@ async function EventView({ id }: { id: number }) {
   }))
   const exhibition = isExhibition(event)
   const price = eventPrice(event, t)
+  const venueName = venueLabel(t, event.venue)
   const series = seriesLabel(t, event.series)
+  const jsonLd = eventJsonLd({ event, date, lang, venue: venueName })
   const ageMin = toCalendarEvent(event, calendarEditorial).facets.ageMin
   const audience =
     event.kindLabel && / dla /.test(event.kindLabel)
@@ -161,6 +164,10 @@ async function EventView({ id }: { id: number }) {
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
+      />
       <Container className="max-w-3xl">
         {/* Pierwszy ekran: CO? KIEDY? GDZIE? ZA ILE? DLA KOGO? KUP BILET (pasek na dole) */}
         <Photo
@@ -188,7 +195,7 @@ async function EventView({ id }: { id: number }) {
           className="mt-5"
           facts={[
             { label: t.event.facts.when, value: past ? `${when} · ${copy.past}` : when },
-            { label: t.event.facts.where, value: venueLabel(t, event.venue) },
+            { label: t.event.facts.where, value: venueName },
             {
               label: copy.price,
               value: price ?? (
