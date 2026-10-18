@@ -232,6 +232,18 @@ export function toQuery(filters: Filters) {
   return params.toString().replaceAll("%2C", ",")
 }
 
+/** Widok miesiąca w adresie (?widok=miesiac) – lista jest domyślna (§6.16), a „wstecz” wraca do wybranego widoku */
+export const VIEW_PARAM = "widok"
+export const MONTH_VIEW = "miesiac"
+
+export type DisplayMode = "list" | "month"
+
+export function withView(query: string, mode: DisplayMode) {
+  if (mode !== "month") return query
+  const view = `${VIEW_PARAM}=${MONTH_VIEW}`
+  return query ? `${query}&${view}` : view
+}
+
 // ——— Dopasowanie ———
 
 function dateWindow(filters: Filters, today: string): [string, string | undefined] {

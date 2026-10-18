@@ -567,7 +567,8 @@ To wyróżnik konceptu: prawie żaden serwis z inspiracji tego nie ma (wyjątki 
 
 ### 6.16 Widok miesiąca (desktop, opcja obok listy)
 
-- **Przełącznik:** „Lista | Miesiąc”, pierwszy wybór domyślny. Pozycje są przyciskami z `aria-pressed`.
+- **Przełącznik:** „Lista | Miesiąc”, pierwszy wybór domyślny na każdej szerokości. Pozycje są przyciskami z `aria-pressed`.
+- **Widok w URL**, jak filtry: `?widok=miesiac` (lista nie dodaje parametru). „Wstecz” z karty wydarzenia wraca do tego samego widoku, a link z parametrem otwiera od razu siatkę (np. scenariusz F na pokazie).
 - **Siatka 7 kolumn:**
   - komórka dnia pokazuje numer (Titillium 600) i do 2 tytułów wydarzeń, resztę jako „+3 więcej”,
   - dzień bieżący oznaczony obrysem 2 px `#1A1A1A` i słowem „dziś”.

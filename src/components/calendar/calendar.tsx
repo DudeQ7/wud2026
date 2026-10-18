@@ -15,6 +15,7 @@ import {
   type ActiveFilter,
   type CalendarDay,
   type CalendarEvent,
+  type DisplayMode,
   type Filters,
   activeFilters,
   alternatives,
@@ -24,6 +25,7 @@ import {
   emptyFilters,
   parseFilters,
   toQuery,
+  withView,
 } from "@/lib/calendar"
 import { todayKey } from "@/lib/event-format"
 
@@ -33,7 +35,7 @@ export type CalendarProps = {
   events: CalendarEvent[]
   series: { key: string; label: string }[]
   lang: Locale
-  displayMode?: "list" | "month"
+  displayMode?: DisplayMode
   monthView?: ReactNode
   /** Przełącznik Lista | Miesiąc – stoi w wierszu z licznikiem wyników */
   viewSwitch?: ReactNode
@@ -56,7 +58,8 @@ export function Calendar({ events, series, lang, displayMode = "list", monthView
   const active = activeFilters(filters, seriesLabels, t)
 
   const [limit, setLimit] = useState(PAGE_SIZE)
-  const query = toQuery(filters)
+  // Adres z filtrami i widokiem – „← Repertuar” na karcie wydarzenia wraca do tego samego miejsca
+  const query = withView(toQuery(filters), displayMode)
 
   // Zapamiętujemy filtry dla „← Repertuar” na karcie wydarzenia
   useEffect(() => {
@@ -74,7 +77,7 @@ export function Calendar({ events, series, lang, displayMode = "list", monthView
   }
 
   function navigate(next: Filters) {
-    const qs = toQuery(next)
+    const qs = withView(toQuery(next), displayMode)
     // replaceState: filtry nie zaśmiecają historii, a „wstecz” prowadzi tam, skąd przyszedł użytkownik
     window.history.replaceState(null, "", qs ? `?${qs}` : window.location.pathname)
   }

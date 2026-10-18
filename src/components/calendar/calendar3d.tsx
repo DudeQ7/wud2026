@@ -9,7 +9,19 @@ import { MoreGlyph, TypeGlyph } from "@/components/calendar/type-glyph"
 import { EventRow } from "@/components/fs/event-row"
 import { iconProps } from "@/components/fs/icons"
 import { type Dictionary, getDictionary } from "@/i18n"
-import { type CalendarDay, type EventType, PRIMARY_ORDER, calendarDays, parseFilters, primaryType } from "@/lib/calendar"
+import {
+  type CalendarDay,
+  type DisplayMode,
+  type EventType,
+  MONTH_VIEW,
+  PRIMARY_ORDER,
+  VIEW_PARAM,
+  calendarDays,
+  parseFilters,
+  primaryType,
+  toQuery,
+  withView,
+} from "@/lib/calendar"
 import { addDays, formatLongDate, todayKey, weekday } from "@/lib/event-format"
 
 /** Czas obrotu o 90° – zgodnie z docs/calendar/calendar_design.md */
@@ -26,7 +38,15 @@ type Turn = { to: string; direction: 1 | -1; selectedDay: string }
 
 export function Calendar3D(props: CalendarProps) {
   const t = getDictionary(props.lang)
-  const [displayMode, setDisplayMode] = useState<"list" | "month">("month")
+  const searchParams = useSearchParams()
+  // Domyślnie lista (§6.16): pierwszy ekran na telefonie to wydarzenia, nie siatka. Miesiąc: ?widok=miesiac
+  const displayMode: DisplayMode = searchParams.get(VIEW_PARAM) === MONTH_VIEW ? "month" : "list"
+
+  function setDisplayMode(mode: DisplayMode) {
+    const qs = withView(toQuery(parseFilters(searchParams)), mode)
+    // Jak przy filtrach: replaceState, więc zmiana widoku nie dokłada wpisu do historii
+    window.history.replaceState(null, "", qs ? `?${qs}` : window.location.pathname)
+  }
 
   const viewSwitch = (
     <div role="group" aria-label={t.calendar.viewControls} className="flex">
