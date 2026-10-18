@@ -60,3 +60,10 @@ export const footerLinks = [
 ] as const
 
 export const address = "ul. Małopolska 48, 70-515 Szczecin"
+
+/** Pierwsza wizyta w trzech krokach (Odkryj Filharmonię) – trasa po budynku jak na zwiedzaniu z przewodnikiem (visit.json → tours) */
+export const firstVisitRoute = [
+  { key: "foyer", href: "/budynek" },
+  { key: "hall", href: "/repertuar" },
+  { key: "gallery", href: "/wystawy" },
+] as const

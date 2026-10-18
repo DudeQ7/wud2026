@@ -1,17 +1,19 @@
 "use client";
 
-import { parse } from "partial-json";
-import { useEffect, useRef, useState, useTransition } from "react";
-import { X } from "lucide-react";
+import { Heart, User, X } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { parse } from "partial-json";
 import posthog from "posthog-js";
-import locales from "@/data/locales.json";
-import type { ChatMessage, EventCard, Lang, Reply, Venue } from "@/lib/assistant";
+import { useEffect, useRef, useState, useTransition } from "react";
+
 import { toggleFavorite, getFavoriteEventIds } from "@/app/actions/panel";
-import { localizedPath } from "@/i18n/config";
-import { createClient } from "@/lib/supabase/client";
 import { iconProps } from "@/components/fs/icons";
+import { Button, buttonVariants } from "@/components/ui/button";
+import locales from "@/data/locales.json";
+import { localizedPath } from "@/i18n/config";
+import type { ChatMessage, EventCard, Lang, Reply, Venue } from "@/lib/assistant";
+import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
 
 type Entry = ChatMessage & Partial<Reply>;
@@ -127,22 +129,24 @@ export default function Chat({ lang, events, venue, titleId, onClose, className 
   const suggestions = !last ? t.suggestions : busy ? [] : (last.suggestions ?? []);
 
   return (
-    <div lang={lang} className={cn("mx-auto flex w-full max-w-2xl flex-col px-4", className)}>
-      <header className="flex items-center justify-between gap-2 py-4">
+    <div lang={lang} className={cn("mx-auto flex w-full max-w-2xl flex-col bg-background px-4", className)}>
+      <header className="flex items-center justify-between gap-3 border-b border-line py-3">
         {/* Na stronie /asystent (bez titleId) to h1; w nakładce zostaje h2 */}
         {titleId ? (
-          <h2 id={titleId} className="text-lg font-semibold">{t.title}</h2>
+          <h2 id={titleId} className="type-h3 text-gold">
+            {t.title}
+          </h2>
         ) : (
-          <h1 className="text-lg font-semibold">{t.title}</h1>
+          <h1 className="type-h3 text-gold">{t.title}</h1>
         )}
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-2">
           {userEmail && (
             <Link
               href={localizedPath(lang, "/panel")}
-              className="inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1 text-xs font-semibold hover:bg-muted transition-colors"
+              className={cn(buttonVariants({ variant: "secondary", size: "sm" }), "gap-2")}
             >
-              <span aria-hidden>👤</span>
-              <span>{t.panel}</span>
+              <User {...iconProps} className="size-4" />
+              {t.panel}
             </Link>
           )}
           {onClose && (
@@ -150,7 +154,7 @@ export default function Chat({ lang, events, venue, titleId, onClose, className 
               type="button"
               onClick={onClose}
               aria-label={t.close}
-              className="flex size-11 cursor-pointer items-center justify-center text-ink hover:bg-bg-subtle"
+              className="flex size-11 cursor-pointer items-center justify-center text-text hover:bg-bg-subtle"
             >
               <X {...iconProps} className="size-6" />
             </button>
@@ -158,79 +162,144 @@ export default function Chat({ lang, events, venue, titleId, onClose, className 
         </div>
       </header>
 
-      <div role="log" aria-live="polite" aria-busy={busy} className="flex-1 space-y-4 overflow-y-auto pb-4">
-        <p className="text-muted-foreground">{t.greeting}</p>
+      <div role="log" aria-live="polite" aria-busy={busy} className="flex-1 space-y-5 overflow-y-auto py-4">
+        <div className="space-y-2 border-b border-line pb-4">
+          <p className="type-body text-text">{t.greeting}</p>
+          <p className="type-meta text-text-muted">
+            {t.privacyNote}{" "}
+            <a
+              href="https://filharmonia.szczecin.pl/polityka_prywatnosci"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline underline-offset-2 hover:no-underline"
+            >
+              {t.privacy}
+            </a>
+          </p>
+        </div>
 
         {entries.map((entry, i) => (
-          <div key={i} className={entry.role === "user" ? "flex justify-end" : "space-y-3"}>
-            <p
-              className={`whitespace-pre-wrap ${
-                entry.role === "user" ? "max-w-[85%] rounded-2xl bg-foreground px-4 py-2 text-background" : ""
-              }`}
-            >
-              {entry.content || (busy && i === entries.length - 1 ? "…" : "")}
-            </p>
+          <div key={i} className={entry.role === "user" ? "flex justify-end" : ""}>
+            {entry.role === "user" ? (
+              <p className="max-w-[85%] whitespace-pre-wrap bg-ink px-4 py-3 type-body text-on-dark">
+                {entry.content}
+              </p>
+            ) : (
+              <div className="space-y-3 border-l border-line-strong pl-4">
+                <p className="whitespace-pre-wrap type-body text-text">
+                  {entry.content || (busy && i === entries.length - 1 ? "…" : "")}
+                </p>
 
-            {entry.events?.map(({ id, title, kind, place }) => {
-              const event = events.find((card) => card.id === id);
-              if (!event) return null;
-              const isFav = favIds.includes(id);
+                {entry.events?.map(({ id, title, kind, place }) => {
+                  const event = events.find((card) => card.id === id);
+                  if (!event) return null;
+                  const isFav = favIds.includes(id);
 
-              return (
-                <article key={id} className="rounded-xl border border-border p-4">
-                  <div className="flex items-start justify-between gap-2">
-                    <div>
-                      {kind && <p className="text-xs text-muted-foreground">{kind}</p>}
-                      <h2 className="font-semibold">{title}</h2>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => handleToggleFavorite(id)}
-                      className="shrink-0 p-1 text-base transition-transform hover:scale-110"
-                      title={isFav ? t.favRemove : t.favAdd}
-                      aria-label={isFav ? t.favRemove : t.favAdd}
+                  return (
+                    <article key={id} className="border-[1.5px] border-line-strong p-4">
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="min-w-0">
+                          {kind && <p className="type-eyebrow text-gold">{kind}</p>}
+                          <h3 className="mt-1 type-title-card text-text">{title}</h3>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => handleToggleFavorite(id)}
+                          aria-pressed={isFav}
+                          title={isFav ? t.favRemove : t.favAdd}
+                          aria-label={isFav ? t.favRemove : t.favAdd}
+                          className="flex size-11 shrink-0 cursor-pointer items-center justify-center text-text hover:bg-bg-subtle"
+                        >
+                          <Heart {...iconProps} className="size-5" fill={isFav ? "currentColor" : "none"} />
+                        </button>
+                      </div>
+
+                      <p className="mt-2 type-meta text-text-muted">
+                        {new Date(nextDate(event.dates)).toLocaleString(lang, { dateStyle: "full", timeStyle: "short" })}
+                        {place && ` · ${place}`}
+                      </p>
+                      <div className="mt-3 grid grid-cols-2 gap-2">
+                        <Link
+                          href={localizedPath(lang, `/wydarzenia/${id}`)}
+                          className={cn(buttonVariants({ variant: "secondary", size: "sm" }), "w-full")}
+                        >
+                          {t.details}
+                        </Link>
+                        <a
+                          href={event.ticketsUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={cn(buttonVariants({ variant: "primary", size: "sm" }), "w-full")}
+                        >
+                          {t.tickets}
+                        </a>
+                      </div>
+                    </article>
+                  );
+                })}
+
+                {entry.showMap && (
+                  <article className="border-[1.5px] border-line-strong p-4">
+                    <h3 className="type-h4 text-text">{venue.name}</h3>
+                    <p className="mt-1 type-meta text-text-muted">{venue.address}</p>
+                    <a
+                      href={venue.mapsUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={cn(buttonVariants({ variant: "link" }), "mt-2")}
                     >
-                      {isFav ? "❤️" : "🤍"}
-                    </button>
-                  </div>
+                      {t.directions}
+                    </a>
+                  </article>
+                )}
 
-                  <p className="mt-1 text-sm text-muted-foreground">
-                    {new Date(nextDate(event.dates)).toLocaleString(lang, { dateStyle: "full", timeStyle: "short" })}
-                    {place && ` · ${place}`}
-                  </p>
-                  <div className="mt-2 flex gap-4 text-sm font-medium">
-                    {[
-                      [event.url, t.details],
-                      [event.ticketsUrl, t.tickets],
-                    ].map(([href, label]) => (
-                      <a
-                        key={label}
-                        href={href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="underline underline-offset-4"
-                      >
-                        {label}
-                      </a>
-                    ))}
-                  </div>
-                </article>
-              );
-            })}
+                {Boolean(entry.sources?.length || entry.unknown) && (
+                  <div className="space-y-2">
+                    {entry.sources?.length ? (
+                      <p className="type-meta text-text-muted">
+                        {t.source}{" "}
+                        {entry.sources.map((source, index) => {
+                          const eventId = entry.events?.[0]?.id;
+                          const [href, label] =
+                            source === "event"
+                              ? [
+                                  localizedPath(lang, eventId ? `/wydarzenia/${eventId}` : "/repertuar"),
+                                  t.sourceEvent,
+                                ]
+                              : source === "visit"
+                                ? [localizedPath(lang, "/planuj-wizyte"), t.sourceVisit]
+                                : [localizedPath(lang, "/planuj-wizyte"), t.sourceVenue];
+                          return (
+                            <span key={source}>
+                              {index > 0 && " · "}
+                              <Link href={href} className="underline underline-offset-2 hover:no-underline">
+                                {label}
+                              </Link>
+                            </span>
+                          );
+                        })}
+                      </p>
+                    ) : null}
 
-            {entry.showMap && (
-              <article className="rounded-xl border border-border p-4">
-                <h2 className="font-semibold">{venue.name}</h2>
-                <p className="text-sm text-muted-foreground">{venue.address}</p>
-                <a
-                  href={venue.mapsUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-2 inline-block text-sm font-medium underline underline-offset-4"
-                >
-                  {t.directions}
-                </a>
-              </article>
+                    {entry.unknown && (
+                      <div className="flex flex-wrap gap-2">
+                        <a
+                          href={`tel:${venue.phone.replaceAll(" ", "")}`}
+                          className={buttonVariants({ variant: "secondary", size: "sm" })}
+                        >
+                          {t.callBox}
+                        </a>
+                        <Link
+                          href={localizedPath(lang, "/kontakt")}
+                          className={buttonVariants({ variant: "secondary", size: "sm" })}
+                        >
+                          {t.writeUs}
+                        </Link>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
             )}
           </div>
         ))}
@@ -238,13 +307,16 @@ export default function Chat({ lang, events, venue, titleId, onClose, className 
       </div>
 
       {suggestions.length > 0 && (
-        <ul className="flex flex-wrap gap-2 pb-3">
+        <ul className="flex flex-col gap-2 pb-3 sm:flex-row sm:flex-wrap">
           {suggestions.map((suggestion) => (
-            <li key={suggestion}>
+            <li key={suggestion} className="sm:w-auto">
               <button
                 type="button"
                 onClick={() => send(suggestion)}
-                className="rounded-full border border-border px-3 py-1.5 text-sm hover:bg-muted"
+                className={cn(
+                  buttonVariants({ variant: "secondary", size: "sm" }),
+                  "w-full justify-start whitespace-normal text-left sm:w-auto"
+                )}
               >
                 {suggestion}
               </button>
@@ -258,7 +330,7 @@ export default function Chat({ lang, events, venue, titleId, onClose, className 
           e.preventDefault();
           send(input);
         }}
-        className="flex gap-2 pb-4"
+        className="flex gap-2 border-t border-line pt-3 pb-4"
       >
         <label htmlFor="question" className="sr-only">
           {t.placeholder}
@@ -270,15 +342,11 @@ export default function Chat({ lang, events, venue, titleId, onClose, className 
           placeholder={t.placeholder}
           maxLength={2000}
           autoComplete="off"
-          className="min-w-0 flex-1 rounded-full border border-border bg-background px-4 py-3"
+          className="h-13 min-w-0 flex-1 border-[1.5px] border-line-strong bg-background px-3 text-base text-text placeholder:text-text-muted"
         />
-        <button
-          type="submit"
-          disabled={busy || !input.trim()}
-          className="rounded-full bg-foreground px-5 py-3 font-medium text-background disabled:opacity-40"
-        >
+        <Button type="submit" disabled={busy || !input.trim()}>
           {t.send}
-        </button>
+        </Button>
       </form>
     </div>
   );

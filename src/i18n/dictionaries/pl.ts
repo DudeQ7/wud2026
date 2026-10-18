@@ -120,6 +120,9 @@ export const pl = {
     buyTicket: "Kup bilet",
     see: "Zobacz",
     photoAlt: (name: string) => `${name} – zdjęcie artysty`,
+    listen: "Posłuchaj fragmentu · 1 min",
+    listenPause: "Zatrzymaj fragment",
+    listenDemo: "Próbka demonstracyjna",
     facts: { when: "Kiedy", where: "Gdzie", lineup: "Skład", series: "Cykl" },
     /** Łącznik godzin: „17:00 i 19:00” */
     timesJoin: " i ",
@@ -137,6 +140,56 @@ export const pl = {
     venues: {} as Record<string, string>,
     /** Nazwy cykli (bez sezonu, po formatSeries) → tłumaczenie; brak klucza = nazwa z danych */
     series: {} as Record<string, string>,
+
+    /** Karta wydarzenia (§6.11) – etykiety sekcji i akcji */
+    details: {
+      loading: "Wczytywanie wydarzenia",
+      price: "Za ile",
+      pricesOnline: "Ceny w kasie online",
+      forWhom: "Dla kogo",
+      series: (name: string) => `Cykl: ${name}`,
+      why: "Dlaczego warto przyjść",
+      whyExhibition: "Dlaczego warto zajrzeć",
+      descriptionNote: "",
+      readMore: "Przeczytaj cały opis",
+      collapse: "Zwiń opis",
+      artists: "Kto występuje",
+      program: "Co zagramy",
+      durationTitle: "Ile to potrwa",
+      durationApprox: (duration: string) => `Ok. ${duration}`,
+      durationEnd: (time: string) => `koniec ok. ${time}`,
+      intermission: { "z przerwą": "z przerwą", "bez przerwy": "bez przerwy" } as Record<string, string>,
+      accessibility: "Dostępność i informacje sensoryczne",
+      boxOffice: (phone: string) => `Kasa: ${phone}`,
+      firstTime: "Pierwszy raz w Filharmonii?",
+      plan: "Zaplanuj",
+      similar: "Podobne wydarzenia",
+      otherDates: "Kolejne terminy",
+      past: "wydarzenie się odbyło",
+      moreDays: (count: number, last: string) =>
+        `i ${count} ${plural(count, "kolejny dzień", "kolejne dni", "kolejnych dni")}, ostatni ${last}`,
+      ageFrom: (age: number) => `od ${age} lat`,
+      eventTitle: (title: string) => `${title} – Filharmonia w Szczecinie`,
+    },
+
+    actions: {
+      addToCalendar: "Dodaj do kalendarza",
+      share: "Udostępnij",
+      navigate: "Nawiguj do Filharmonii",
+      call: "Zadzwoń do kasy",
+      calendarReady: "Plik wydarzenia jest gotowy – otwórz go, żeby dodać termin do kalendarza.",
+      linkCopied: "Skopiowano link do wydarzenia.",
+    },
+
+    player: {
+      play: "Odtwórz",
+      pause: "Zatrzymaj",
+      excerpt: "fragment",
+      progress: "Postęp fragmentu",
+      of: "z",
+      full: "Pełne nagranie",
+      demo: "Próbka demonstracyjna. Docelowo fragment nagrania FS.",
+    },
   },
 
   home: {
@@ -202,6 +255,17 @@ export const pl = {
     discover: {
       title: "Odkryj Filharmonię",
       lead: "Wejdź nie tylko na koncert: orkiestra, budynek, wystawy i 78 lat historii.",
+      route: {
+        eyebrow: "Pierwsza wizyta",
+        title: "Pierwsza wizyta w trzech krokach",
+        steps: {
+          foyer: { title: "Hol i kręcone schody", text: "Wejście główne jest bez barier, z poziomu chodnika. W holu działa Symfonia Cafe, a stąd zaczynają się kręcone schody.", link: "O budynku" },
+          hall: { title: "Sala Symfoniczna", text: "Serce Filharmonii: sala, w której gra orkiestra. Sprawdź, co będzie tu grane w najbliższych dniach.", link: "Repertuar" },
+          gallery: { title: "Galeria Poziom 4.", text: "Na górze jest galeria wystaw. Dojedziesz do niej windą.", link: "Wystawy" },
+        },
+        tour: "Wszystkie trzy miejsca zobaczysz na zwiedzaniu z przewodnikiem: piątki, PL, EN, DE, ok. 40 minut.",
+        tourLink: "Terminy zwiedzania →",
+      },
       tiles: {
         orchestra: { title: "Orkiestra", description: "Muzycy, dyrygenci, nagrania" },
         building: { title: "Budynek", description: "Architektura i nagrody" },

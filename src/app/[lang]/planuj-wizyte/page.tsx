@@ -13,12 +13,18 @@ import { buildingAccess, firstVisit } from "@/content/event"
 import { address, boxOffice } from "@/content/home"
 import { venueInfo } from "@/lib/events"
 import visit from "@/data/visit.json"
-import { getDictionary } from "@/i18n"
+import { getDictionary, hasLocale } from "@/i18n"
 import { getLang } from "@/i18n/server"
+import { visitorRouteCopy } from "@/i18n/visitor-routes"
 
-export const metadata: Metadata = {
-  title: "Planuj wizytę – Filharmonia w Szczecinie",
-  description: "Bilety, dojazd, parking, kasa, kiedy przyjść, sale i dostępność. Krótkie odpowiedzi w jednym miejscu.",
+export async function generateMetadata({ params }: PageProps<"/[lang]/planuj-wizyte">): Promise<Metadata> {
+  const { lang } = await params
+  return (
+    (hasLocale(lang) ? visitorRouteCopy(lang)?.meta.visit : undefined) ?? {
+      title: "Planuj wizytę – Filharmonia w Szczecinie",
+      description: "Bilety, dojazd, parking, kasa, kiedy przyjść, sale i dostępność. Krótkie odpowiedzi w jednym miejscu.",
+    }
+  )
 }
 
 const phone = boxOffice.phone.replaceAll(" ", "")
@@ -42,6 +48,7 @@ function Answer({ title, open, children }: { title: string; open?: boolean; chil
 /** Planuj wizytę (design.md §7.3): odpowiedzi w akordeonach w stałej kolejności */
 export default async function PlanVisitPage() {
   const lang = await getLang()
+  const copy = visitorRouteCopy(lang)?.visit
   return (
     <>
       <a
@@ -53,106 +60,109 @@ export default async function PlanVisitPage() {
       <SiteHeader lang={lang} />
       <main id="tresc" className="pt-8 pb-16 lg:pt-12 lg:pb-24">
         <Container className="max-w-3xl">
-          <Eyebrow>Zanim przyjdziesz</Eyebrow>
-          <h1 className="mt-1 type-h1 text-gold">Planuj wizytę</h1>
+          <Eyebrow>{copy?.eyebrow ?? "Zanim przyjdziesz"}</Eyebrow>
+          <h1 className="mt-1 type-h1 text-gold">{copy?.title ?? "Planuj wizytę"}</h1>
           <p className="mt-2 type-body text-text">
-            Wszystko, co warto wiedzieć przed pierwszym koncertem. Nie musisz znać muzyki klasycznej.
+            {copy?.lead ?? "Wszystko, co warto wiedzieć przed pierwszym koncertem. Nie musisz znać muzyki klasycznej."}
           </p>
 
           <div className="mt-6 grid gap-3 sm:grid-cols-2">
             <a href={mapsUrl} className={buttonVariants({ variant: "primary" })}>
               <MapPin {...iconProps} />
-              Nawiguj
+              {copy?.navigate ?? "Nawiguj"}
             </a>
             <a href={`tel:${phone}`} className={buttonVariants({ variant: "secondary" })}>
               <Phone {...iconProps} />
-              Zadzwoń do kasy
+              {copy?.call ?? "Zadzwoń do kasy"}
             </a>
           </div>
           <p className="mt-3 type-meta text-text-muted">{address}</p>
 
           <div className="mt-8 border-t border-line">
-            <Answer title="Jak kupić bilet" open>
+            <Answer title={copy?.ticketTitle ?? "Jak kupić bilet"} open>
               <p>
-                Bilety kupisz online lub w kasie. Przy każdym wydarzeniu znajdziesz przycisk „Kup bilet”.
+                {copy?.ticket ?? "Bilety kupisz online lub w kasie. Przy każdym wydarzeniu znajdziesz przycisk „Kup bilet”."}
               </p>
-              <p>{venueInfo.discounts}</p>
+              <p>{copy?.discounts ?? venueInfo.discounts}</p>
               <a href="https://filharmonia.szczecin.pl/bilety" className={link}>
-                Zasady sprzedaży biletów
+                {copy?.sales ?? "Zasady sprzedaży biletów"}
               </a>
             </Answer>
 
-            <Answer title="Jak dojechać">
-              <p>{visit.publicTransport.bus}</p>
-              <p>{visit.publicTransport.tram}</p>
+            <Answer title={copy?.transport ?? "Jak dojechać"}>
+              <p>{copy?.bus ?? visit.publicTransport.bus}</p>
+              <p>{copy?.tram ?? visit.publicTransport.tram}</p>
               <a href="https://zditm.szczecin.pl/" className={link}>
-                Rozkłady jazdy ZDiTM
+                {copy?.timetables ?? "Rozkłady jazdy ZDiTM"}
               </a>
               <a href={mapsUrl} className={link}>
-                Nawiguj do Filharmonii ({address})
+                {copy?.navigate ?? "Nawiguj do Filharmonii"} ({address})
               </a>
             </Answer>
 
-            <Answer title="Parking">
-              <p>{visit.parking}</p>
+            <Answer title={copy?.parkingTitle ?? "Parking"}>
+              <p>{copy?.parking ?? visit.parking}</p>
             </Answer>
 
-            <Answer title="Kasa">
+            <Answer title={copy?.box ?? "Kasa"}>
               <p className="whitespace-pre-line">{getDictionary(lang).footer.boxOfficeHours}</p>
               <div className="flex flex-col">
                 <a href={`tel:${phone}`} className={link}>
-                  Telefon: {boxOffice.phone}
+                  {copy?.phone ?? "Telefon:"} {boxOffice.phone}
                 </a>
                 <a href={`mailto:${boxOffice.email}`} className={link}>
-                  E-mail: {boxOffice.email}
+                  {copy?.email ?? "E-mail:"} {boxOffice.email}
                 </a>
               </div>
-              <p>Infolinia: {visit.infoline}</p>
+              <p>{copy?.infoline ?? "Infolinia:"} {copy?.infolineText ?? visit.infoline}</p>
             </Answer>
 
-            <Answer title="Kiedy przyjść">
-              <p>{firstVisit.find((c) => c.title === "Kiedy przyjść?")?.text}</p>
-              <p>Godziny otwarcia budynku: {venueInfo.building_hours}.</p>
-              <p>{firstVisit.find((c) => c.title === "Co na siebie włożyć?")?.text}</p>
+            <Answer title={copy?.arrival ?? "Kiedy przyjść"}>
+              <p>{copy?.opens ?? firstVisit.find((c) => c.title === "Kiedy przyjść?")?.text}</p>
+              <p>{copy?.buildingHours ?? "Godziny otwarcia budynku:"} {copy?.buildingHoursText ?? venueInfo.building_hours}.</p>
+              <p>{copy?.outfit ?? firstVisit.find((c) => c.title === "Co na siebie włożyć?")?.text}</p>
             </Answer>
 
-            <Answer title="Wejście i dostępność">
+            <Answer title={copy?.accessTitle ?? "Wejście i dostępność"}>
               <ul className="flex flex-col gap-2">
-                {buildingAccess.map((item) => (
-                  <li key={item}>{item}</li>
+                {buildingAccess.map((item, index) => (
+                  <li key={item}>{copy?.accessItems[index] ?? item}</li>
                 ))}
               </ul>
-              <p>{visit.accessibility}</p>
-              <p>{visit.accessibilityTickets}</p>
+              <p>{copy?.access ?? visit.accessibility}</p>
+              <p>{copy?.accessTickets ?? visit.accessibilityTickets}</p>
               <a href={`tel:${phone}`} className={link}>
-                Zadzwoń do kasy: {boxOffice.phone}
+                {copy?.callBox ?? "Zadzwoń do kasy:"} {boxOffice.phone}
               </a>
             </Answer>
 
-            {guide.map((item) => (
-              <Answer key={item.q} title={item.q}>
-                <p>{item.a}</p>
+            {guide.map((item, index) => {
+              const translated = copy?.guide[index]
+              return (
+              <Answer key={item.q} title={translated?.[0] ?? item.q}>
+                <p>{translated?.[1] ?? item.a}</p>
               </Answer>
-            ))}
+              )
+            })}
 
-            <Answer title="Sale i przestrzenie">
+            <Answer title={copy?.hallsTitle ?? "Sale i przestrzenie"}>
               <ul className="flex flex-col gap-1">
-                {venueInfo.halls.map((hall) => (
-                  <li key={hall}>{hall}</li>
+                {venueInfo.halls.map((hall, index) => (
+                  <li key={hall}>{copy?.hallNames[index] ?? hall}</li>
                 ))}
               </ul>
-              <p>{visit.cafes}</p>
+              <p>{copy?.cafes ?? visit.cafes}</p>
             </Answer>
 
-            <Answer title="Zwiedzanie budynku">
-              <p>{visit.tours}</p>
+            <Answer title={copy?.toursTitle ?? "Zwiedzanie budynku"}>
+              <p>{copy?.tours ?? visit.tours}</p>
             </Answer>
           </div>
 
           <p className="mt-8 type-meta text-text-muted">
-            Źródło:{" "}
+            {copy?.source ?? "Źródło:"}{" "}
             <a href={visit.source} className="underline underline-offset-[3px]">
-              strona Filharmonii „Zaplanuj swoją wizytę”
+              {copy?.sourceLink ?? "strona Filharmonii „Zaplanuj swoją wizytę”"}
             </a>
           </p>
         </Container>

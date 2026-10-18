@@ -16,7 +16,7 @@ export function LinkTile({ title, description, href, className }: LinkTileProps)
   return (
     <article
       className={cn(
-        "group relative flex min-h-34 flex-col gap-1 border-[1.5px] border-line-strong p-4 transition-colors hover:bg-bg-subtle",
+        "group press enter relative flex min-h-34 flex-col gap-1 border-[1.5px] border-line-strong p-4 hover:bg-bg-subtle",
         className
       )}
     >
@@ -41,7 +41,7 @@ type CtaTileProps = {
 /** Czarny kafel z jedną akcją – „Pomóż mi wybrać” (§6.18). Złoto „on dark”, przycisk odwrócony. */
 export function CtaTile({ eyebrow, title, description, action, className }: CtaTileProps) {
   return (
-    <article className={cn("on-dark flex flex-col gap-3 bg-ink px-5 py-6 lg:p-8", className)}>
+    <article className={cn("on-dark enter-scale flex flex-col gap-3 bg-ink px-5 py-6 lg:p-8", className)}>
       <Eyebrow tone="dark">{eyebrow}</Eyebrow>
       <h3 className="type-h2 text-on-dark">{title}</h3>
       <p className="type-body max-w-[52ch] text-on-dark-muted">{description}</p>
@@ -65,7 +65,7 @@ type DiscoverTileProps = {
 /** Kafel „Odkryj Filharmonię” (§6.18): zdjęcie 3:2 + nazwa (h3) + 1 linia opisu */
 export function DiscoverTile({ title, description, href, image, placeholder, className }: DiscoverTileProps) {
   return (
-    <article className={cn("group relative flex flex-col gap-2", className)}>
+    <article className={cn("group press enter relative flex flex-col gap-2", className)}>
       <Photo
         src={image}
         alt=""

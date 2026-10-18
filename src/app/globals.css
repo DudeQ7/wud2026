@@ -217,6 +217,108 @@
   }
 }
 
+/*
+ * Warstwa ruchu (design.md §8): tylko opacity i transform, 150–250 ms, ease-out, bez sprężyn
+ * i bez animacji sterowanych przewijaniem. Wejścia odpalają się raz przy wyrenderowaniu elementu.
+ * prefers-reduced-motion skraca wszystko do 1 ms (blok na końcu @layer base).
+ */
+:root {
+  --ease-out: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --dur-fast: 150ms;
+  --dur-base: 200ms;
+  --dur-slow: 250ms;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+@keyframes fade-down {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+}
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+}
+@keyframes hint-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.97);
+  }
+}
+@keyframes tail-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+}
+@keyframes poster-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+}
+@keyframes line-in {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+/* Wejście elementu: .enter (fade-up), z opóźnieniem kroku przez style="--i: n" (maks. 8 kroków × 50 ms) */
+@utility enter {
+  animation: fade-up var(--dur-slow) var(--ease-out) both;
+  animation-delay: calc(min(var(--i, 0), 8) * 50ms);
+}
+@utility enter-fade {
+  animation: fade-in var(--dur-slow) var(--ease-out) both;
+  animation-delay: calc(min(var(--i, 0), 8) * 50ms);
+}
+@utility enter-scale {
+  animation: scale-in var(--dur-slow) var(--ease-out) both;
+  animation-delay: calc(min(var(--i, 0), 8) * 50ms);
+}
+
+/* Zdjęcie w karcie: lekkie powiększenie po najechaniu na całą kartę (.group). Tylko skalowanie – plik bez zmian (§5.6) */
+@utility photo-zoom {
+  transition: transform var(--dur-slow) var(--ease-out);
+  @media (hover: hover) {
+    :is(.group):hover & {
+      transform: scale(1.04);
+    }
+  }
+}
+
+/* Dociśnięcie po kliknięciu: przyciski, kafle, wiersze */
+@utility press {
+  transition: transform var(--dur-fast) var(--ease-out), background-color var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out);
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+/* Strzałka / ikona przesuwa się o 3 px po najechaniu na rodzica .group */
+@utility nudge {
+  transition: transform var(--dur-base) var(--ease-out);
+  @media (hover: hover) {
+    :is(.group):hover & {
+      transform: translateX(3px);
+    }
+  }
+}
+
 @layer base {
   * {
     @apply border-border;
@@ -254,6 +356,31 @@
   }
   dialog.assistant-dialog[open] {
     animation: assistant-in 200ms ease-out;
+  }
+  dialog.assistant-dialog[open]::backdrop,
+  dialog.site-menu[open]::backdrop,
+  dialog.filter-sheet[open]::backdrop {
+    animation: fade-in var(--dur-base) var(--ease-out);
+  }
+  dialog.site-menu[open] {
+    animation: fade-down var(--dur-base) var(--ease-out);
+  }
+  /* Przejście między stronami: treść wjeżdża łagodnie (template.tsx) */
+  .page-enter {
+    /* Tylko opacity: transform na przodku zmieniłby punkt odniesienia dla position: fixed (dolna nawigacja) */
+    animation: fade-in var(--dur-slow) var(--ease-out) backwards;
+  }
+  /* Wspólne dociśnięcie dla wszystkich przycisków i linków-przycisków */
+  [data-slot="button"] {
+    transition: transform var(--dur-fast) var(--ease-out), background-color var(--dur-fast) var(--ease-out),
+      color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out);
+  }
+  [data-slot="button"]:active:not(:disabled):not([aria-disabled="true"]) {
+    transform: scale(0.97);
+  }
+  /* Rozwijane <details> (filtry, FAQ): treść wsuwa się po otwarciu */
+  details[open] > :not(summary) {
+    animation: fade-down var(--dur-base) var(--ease-out);
   }
   @keyframes assistant-in {
     from {

@@ -55,7 +55,7 @@ export function Photo({
           fill
           sizes={sizes}
           priority={priority}
-          className="object-cover"
+          className="object-cover photo-zoom"
           style={{ objectPosition: position }}
         />
       ) : (

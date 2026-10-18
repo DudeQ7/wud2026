@@ -23,7 +23,7 @@ export function EventRow({ event, times, lang, className }: EventRowProps) {
   const until = exhibition ? `–${galleryInfo.closes}` : times.slice(1).map(formatTime).join(", ")
 
   return (
-    <article className={cn("group relative flex gap-3 border-b border-line py-4 lg:py-5", className)}>
+    <article className={cn("group press enter-fade relative flex gap-3 border-b border-line py-4 lg:py-5", className)}>
       <div className="w-14 shrink-0">
         <p className="font-heading text-lg leading-tight font-semibold text-text tabular-nums">{formatTime(start)}</p>
         {until && <p className="type-meta text-text-muted tabular-nums">{until}</p>}

@@ -3,10 +3,11 @@ import Link from "next/link"
 
 import visit from "@/data/visit.json"
 import { iconProps } from "@/components/fs/icons"
+import { FooterLanguageLinks } from "@/components/fs/footer-language-links"
 import { Container, Eyebrow } from "@/components/fs/layout"
 import { Logo } from "@/components/fs/wordmark"
 import { address, footerLinks } from "@/content/home"
-import { type Locale, getDictionary, localizedPath, locales, languageNames } from "@/i18n"
+import { type Locale, getDictionary, localizedPath } from "@/i18n"
 
 /**
  * Stopka (§6.18): czerń, logo białe. Kontakt z kasą zawsze w tym samym miejscu (WCAG 3.2.6).
@@ -55,13 +56,7 @@ export function SiteFooter({ lang }: { lang: Locale }) {
           </ul>
         </nav>
 
-        <nav aria-label={t.common.language} className="flex gap-3 lg:col-span-3">
-          {locales.map((code) => (
-            <Link key={code} href={localizedPath(code, "/")} lang={code} hrefLang={code} aria-label={languageNames[code]} aria-current={code === lang ? "true" : undefined} className="flex min-h-11 min-w-11 cursor-pointer items-center justify-center font-semibold hover:underline hover:underline-offset-4 focus-visible:underline">
-              {code.toUpperCase()}
-            </Link>
-          ))}
-        </nav>
+        <FooterLanguageLinks lang={lang} label={t.common.language} />
         <p className="type-meta text-on-dark-muted lg:col-span-3">
           {t.footer.copyright}
         </p>

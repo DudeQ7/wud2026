@@ -55,7 +55,7 @@ async function HomeContent({ lang }: { lang: Locale }) {
       </a>
       <SiteHeader lang={lang} overlay={Boolean(hero)} />
       <main id="tresc">
-        {hero && <Hero event={hero.event} date={hero.date} lang={lang} />}
+        {hero && <Hero event={hero.event} date={hero.date} today={today} lang={lang} />}
         <StairsSection today={today} lang={lang} />
         <RecommendedSection today={today} lang={lang} />
         <ForYouSection lang={lang} />

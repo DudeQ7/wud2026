@@ -30,12 +30,18 @@ import {
   wizardHref,
 } from "@/lib/wizard"
 import { cn } from "@/lib/utils"
-import { getDictionary, localizedPath } from "@/i18n"
+import { getDictionary, hasLocale, localizedPath } from "@/i18n"
 import { getLang } from "@/i18n/server"
+import { visitorRouteCopy } from "@/i18n/visitor-routes"
 
-export const metadata: Metadata = {
-  title: "Pomóż mi wybrać – Filharmonia w Szczecinie",
-  description: "Pięć krótkich pytań i kilka propozycji koncertów dla Ciebie. Każde pytanie możesz pominąć.",
+export async function generateMetadata({ params }: PageProps<"/[lang]/pomoz-mi-wybrac">): Promise<Metadata> {
+  const { lang } = await params
+  return (
+    (hasLocale(lang) ? visitorRouteCopy(lang)?.meta.wizard : undefined) ?? {
+      title: "Pomóż mi wybrać – Filharmonia w Szczecinie",
+      description: "Pięć krótkich pytań i kilka propozycji koncertów dla Ciebie. Każde pytanie możesz pominąć.",
+    }
+  )
 }
 
 const calendarEvents = events.map((event) => toCalendarEvent(event, calendarEditorial))
@@ -57,7 +63,7 @@ export default async function WizardPage({ searchParams }: PageProps<"/[lang]/po
       <main id="tresc" className="pt-8 pb-16 lg:pt-12 lg:pb-24">
         <Container className="max-w-3xl">
           {/* Odpowiedzi (searchParams) czytamy w granicy Suspense – powłoka strony od nich nie zależy */}
-          <Suspense fallback={<div className="h-96 bg-surface-muted" role="status" aria-busy="true" aria-label="Wczytywanie" />}>
+          <Suspense fallback={<div className="h-96 bg-surface-muted" role="status" aria-busy="true" aria-label={visitorRouteCopy(lang)?.ui.loading ?? "Wczytywanie"} />}>
             <Wizard searchParams={searchParams} />
           </Suspense>
         </Container>
@@ -69,24 +75,29 @@ export default async function WizardPage({ searchParams }: PageProps<"/[lang]/po
 }
 
 async function Wizard({ searchParams }: Pick<PageProps<"/[lang]/pomoz-mi-wybrac">, "searchParams">) {
+  const lang = await getLang()
   const params = await searchParams
   // „Dziś” zmienia się z dnia na dzień – liczymy je dopiero przy żądaniu
   await connection()
   const answers = parseAnswers(params)
   const step = parseStep(params)
-  return step === "wynik" ? <Results answers={answers} today={todayKey(new Date())} /> : <Step answers={answers} step={step} />
+  return step === "wynik" ? <Results answers={answers} today={todayKey(new Date())} lang={lang} /> : <Step answers={answers} step={step} lang={lang} />
 }
 
-function Step({ answers, step }: { answers: Answers; step: number }) {
+function Step({ answers, step, lang }: { answers: Answers; step: Awaited<ReturnType<typeof parseStep>> & number; lang: Awaited<ReturnType<typeof getLang>> }) {
   const question = QUESTIONS[step - 1]
+  const route = visitorRouteCopy(lang)
+  const copy = route?.wizard
+  const ui = route?.ui
+  const translatedQuestion = copy?.questions[step - 1]
   const current = answers[question.key]
   const total = QUESTIONS.length
 
   return (
     <>
-      <p className="type-meta text-text-muted">Pomóż mi wybrać</p>
+      <p className="type-meta text-text-muted">{copy?.title ?? "Pomóż mi wybrać"}</p>
       <p className="mt-1 type-eyebrow text-gold">
-        Krok {step} z {total}
+        {copy?.step(step, total) ?? `Krok ${step} z ${total}`}
       </p>
       <ol className="mt-3 grid grid-cols-5 gap-1" aria-hidden>
         {QUESTIONS.map((q, i) => (
@@ -94,15 +105,16 @@ function Step({ answers, step }: { answers: Answers; step: number }) {
         ))}
       </ol>
 
-      <h1 className="mt-6 type-h2 text-gold">{question.title}</h1>
+      <h1 className="mt-6 type-h2 text-gold">{translatedQuestion?.title ?? question.title}</h1>
 
       <ul className="mt-6 grid gap-3">
         {question.options.map((option) => {
           const selected = current === option.value
+          const translated = translatedQuestion?.options.find(([value]) => value === option.value)
           return (
             <li key={option.value}>
               <Link
-                href={wizardHref({ ...answers, [question.key]: option.value }, nextStep(step))}
+                href={localizedPath(lang, wizardHref({ ...answers, [question.key]: option.value }, nextStep(step)))}
                 aria-current={selected ? "true" : undefined}
                 className={cn(
                   "flex min-h-14 items-center justify-between gap-3 border-[1.5px] border-line-strong px-4 py-3 transition-colors",
@@ -110,10 +122,10 @@ function Step({ answers, step }: { answers: Answers; step: number }) {
                 )}
               >
                 <span>
-                  <span className="type-ui block">{option.label}</span>
+                  <span className="type-ui block">{translated?.[1] ?? option.label}</span>
                   {option.hint && (
                     <span className={cn("type-meta block", selected ? "text-on-dark-muted" : "text-text-muted")}>
-                      {option.hint}
+                      {translated?.[2] ?? option.hint}
                     </span>
                   )}
                 </span>
@@ -124,44 +136,48 @@ function Step({ answers, step }: { answers: Answers; step: number }) {
         })}
       </ul>
 
-      <nav aria-label="Kroki kreatora" className="mt-6 flex items-center justify-between">
+      <nav aria-label={ui?.stepsLabel ?? "Kroki kreatora"} className="mt-6 flex items-center justify-between">
         {step > 1 ? (
-          <Link href={wizardHref(answers, step - 1)} className={linkText}>
-            Wstecz
+          <Link href={localizedPath(lang, wizardHref(answers, step - 1))} className={linkText}>
+            {copy?.back ?? "Wstecz"}
           </Link>
         ) : (
           <span />
         )}
         {/* „Pomiń” usuwa odpowiedź na to pytanie i idzie dalej */}
-        <Link href={wizardHref(withoutKey(answers, question.key), nextStep(step))} className={linkText}>
-          Pomiń
+        <Link href={localizedPath(lang, wizardHref(withoutKey(answers, question.key), nextStep(step)))} className={linkText}>
+          {copy?.skip ?? "Pomiń"}
         </Link>
       </nav>
     </>
   )
 }
 
-function Results({ answers, today }: { answers: Answers; today: string }) {
+function Results({ answers, today, lang }: { answers: Answers; today: string; lang: Awaited<ReturnType<typeof getLang>> }) {
+  const route = visitorRouteCopy(lang)
+  const copy = route?.wizard
+  const ui = route?.ui
+  const label = (key: AnswerKey, value: string) => copy?.questions[ANSWER_KEYS.indexOf(key)].options.find(([optionValue]) => optionValue === value)?.[1]
   const { matches, near } = suggest(calendarEvents, answers, today)
   const chosen = ANSWER_KEYS.filter((k) => answers[k])
 
   return (
     <>
-      <Eyebrow>Twoje propozycje</Eyebrow>
+      <Eyebrow>{copy?.suggestions ?? "Twoje propozycje"}</Eyebrow>
       <h1 className="mt-1 type-h2 text-gold">
-        {matches.length ? "To może Ci się spodobać" : "Nie ma dokładnego dopasowania"}
+        {matches.length ? (copy?.heading ?? "To może Ci się spodobać") : (copy?.noMatch ?? "Nie ma dokładnego dopasowania")}
       </h1>
 
       {chosen.length > 0 && (
-        <ul className="mt-4 flex flex-wrap gap-2" aria-label="Twoje odpowiedzi">
+        <ul className="mt-4 flex flex-wrap gap-2" aria-label={ui?.answersLabel ?? "Twoje odpowiedzi"}>
           {chosen.map((key) => (
             <li key={key}>
               <Link
-                href={wizardHref(answers, ANSWER_KEYS.indexOf(key) + 1)}
+                href={localizedPath(lang, wizardHref(answers, ANSWER_KEYS.indexOf(key) + 1))}
                 className="inline-flex min-h-11 items-center border-[1.5px] border-line-strong px-3 text-[0.9375rem] font-semibold text-text hover:bg-bg-subtle"
               >
-                <span className="sr-only">Zmień odpowiedź: </span>
-                {optionLabel(key, answers[key]!)}
+                <span className="sr-only">{ui?.changeAnswer ?? "Zmień odpowiedź: "}</span>
+                {label(key, answers[key]!) ?? optionLabel(key, answers[key]!)}
               </Link>
             </li>
           ))}
@@ -170,61 +186,74 @@ function Results({ answers, today }: { answers: Answers; today: string }) {
 
       {matches.length > 0 && (
         <>
-          <h2 className="sr-only">Propozycje</h2>
-          <ResultList answers={answers} matches={matches} />
+          <h2 className="sr-only">{ui?.suggestionsLabel ?? "Propozycje"}</h2>
+          <ResultList answers={answers} matches={matches} lang={lang} />
         </>
       )}
 
       {matches.length === 0 && (
         <p className="mt-4 type-body text-text">
           {chosen.length
-            ? "Przy tych odpowiedziach nic nie zostało w repertuarze."
-            : "W repertuarze nic nie zostało."}{" "}
-          {near && <>Najbliższe propozycje poniżej.</>}
+            ? (copy?.emptyChosen ?? "Przy tych odpowiedziach nic nie zostało w repertuarze.")
+            : (copy?.empty ?? "W repertuarze nic nie zostało.")}{" "}
+          {near && <>{copy?.near ?? "Najbliższe propozycje poniżej."}</>}
         </p>
       )}
 
       {near && (
         <section aria-labelledby="blisko" className="mt-10">
           <h2 id="blisko" className="type-h3 text-gold">
-            Blisko Twojego wyboru
+            {copy?.near ?? "Blisko Twojego wyboru"}
           </h2>
           <p className="mt-2 type-body text-text">
-            Bez odpowiedzi „{DROPPED_LABEL[near.dropped]}” pasuje więcej wydarzeń. To one:
+            {copy?.nearLead(label(near.dropped, answers[near.dropped] ?? "") ?? DROPPED_LABEL[near.dropped]) ?? `Bez odpowiedzi „${DROPPED_LABEL[near.dropped]}” pasuje więcej wydarzeń. To one:`}
           </p>
-          <ResultList answers={withoutKey(answers, near.dropped)} matches={near.matches} />
+          <ResultList answers={withoutKey(answers, near.dropped)} matches={near.matches} lang={lang} />
         </section>
       )}
 
       <div className="mt-10 flex flex-col gap-2 border-t border-line pt-4 sm:flex-row sm:items-center sm:justify-between">
-        <Link href={calendarHref(answers)} className={linkText}>
-          Pokaż wszystkie w kalendarzu →
+        <Link href={localizedPath(lang, calendarHref(answers))} className={linkText}>
+          {copy?.calendar ?? "Pokaż wszystkie w kalendarzu →"}
         </Link>
-        <Link href={wizardHref({}, 1)} className={linkText}>
-          Zacznij od nowa
+        <Link href={localizedPath(lang, wizardHref({}, 1))} className={linkText}>
+          {copy?.restart ?? "Zacznij od nowa"}
         </Link>
       </div>
     </>
   )
 }
 
-async function ResultList({ answers, matches }: { answers: Answers; matches: ReturnType<typeof suggest>["matches"] }) {
-  const lang = await getLang()
+async function ResultList({ answers, matches, lang }: { answers: Answers; matches: ReturnType<typeof suggest>["matches"]; lang: Awaited<ReturnType<typeof getLang>> }) {
   return (
     <ul className="mt-6 grid gap-10">
       {matches.map((match) => {
         const m = { ...match, event: localizeEvent(match.event, lang) }
-        const reason = reasonLine(answers, m)
+        const route = visitorRouteCopy(lang)
+        const copy = route?.wizard
+        const ui = route?.ui
+        const getLabel = (key: AnswerKey) => {
+          const value = answers[key]
+          return value ? copy?.questions[ANSWER_KEYS.indexOf(key)].options.find(([optionValue]) => optionValue === value)?.[1] : undefined
+        }
+        const reasonParts = [
+          getLabel("kiedy"),
+          getLabel("dla"),
+          getLabel("rodzaj"),
+          getLabel("klimat"),
+          answers.budzet && answers.budzet !== "bez-limitu" ? (ui?.budgetUpTo(answers.budzet) ?? `do ${answers.budzet} zł`) : undefined,
+        ].filter(Boolean)
+        const reason = reasonParts.length ? `${copy?.reason ?? "Pasuje do wyboru: "}${reasonParts.join(" · ")}` : lang === "pl" ? reasonLine(answers, m) : undefined
         return (
           <li key={m.event.id} className="flex flex-col gap-4">
             <EventCard lang={lang} event={m.event} date={m.date} showAccess />
             {reason && <p className="type-meta text-text-muted">{reason}</p>}
             <div className="grid grid-cols-2 gap-3">
               <Link href={localizedPath(lang, eventHref(m.event))} className={buttonVariants({ variant: "secondary" })}>
-                Zobacz
+                {copy?.show ?? "Zobacz"}
               </Link>
               <a href={m.event.ticketsUrl} className={buttonVariants({ variant: "primary" })}>
-                Kup bilet
+                {copy?.buy ?? "Kup bilet"}
               </a>
             </div>
           </li>

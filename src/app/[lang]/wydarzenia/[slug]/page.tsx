@@ -40,8 +40,9 @@ import {
   similarEvents,
 } from "@/lib/events"
 import { cn } from "@/lib/utils"
-import { type Dictionary, getDictionary, kindLabel, localizedPath, seriesLabel, venueLabel } from "@/i18n"
+import { type Dictionary, getDictionary, hasLocale, kindLabel, localizedPath, seriesLabel, venueLabel } from "@/i18n"
 import { getLang } from "@/i18n/server"
+import { visitorRouteCopy } from "@/i18n/visitor-routes"
 
 export function generateStaticParams() {
   return events.map((event) => ({ slug: eventSlug(event) }))
@@ -53,11 +54,15 @@ function findEvent(slug: string) {
 }
 
 export async function generateMetadata({ params }: PageProps<"/[lang]/wydarzenia/[slug]">): Promise<Metadata> {
-  const event = findEvent((await params).slug)
-  if (!event) return {}
+  const { lang, slug } = await params
+  const found = findEvent(slug)
+  if (!found || !hasLocale(lang)) return {}
+  const t = getDictionary(lang)
+  const event = localizeEvent(found, lang)
   return {
-    title: `${event.title} – Filharmonia w Szczecinie`,
-    description: event.lead ?? `${event.kind} · ${event.venue}`,
+    title: t.event.details.eventTitle(event.title),
+    // Opisy wydarzeń w danych FS są tylko po polsku – w innych językach podajemy przetłumaczony rodzaj i salę.
+    description: lang === "pl" ? (event.lead ?? `${event.kind} · ${event.venue}`) : `${kindLabel(t, event.kind)} · ${venueLabel(t, event.venue)}`,
     openGraph: event.image ? { images: [event.image.large] } : undefined,
   }
 }
@@ -80,7 +85,7 @@ export default async function EventPage({ params }: PageProps<"/[lang]/wydarzeni
           <BackLink lang={lang} />
         </Container>
         {/* Adres (params) czytamy w granicy Suspense – wspólna powłoka strony nie zależy od wydarzenia */}
-        <Suspense fallback={<EventSkeleton />}>
+        <Suspense fallback={<EventSkeleton label={getDictionary(lang).event.details.loading} />}>
           <EventContent params={params} />
         </Suspense>
       </main>
@@ -101,9 +106,9 @@ async function EventContent({ params }: Pick<PageProps<"/[lang]/wydarzenia/[slug
   return <EventView id={event.id} />
 }
 
-function EventSkeleton() {
+function EventSkeleton({ label }: { label: string }) {
   return (
-    <Container className="max-w-3xl" role="status" aria-busy="true" aria-label="Wczytywanie wydarzenia">
+    <Container className="max-w-3xl" role="status" aria-busy="true" aria-label={label}>
       <div className="-mx-4 aspect-[3/2] bg-surface-muted sm:mx-0" />
       <div className="mt-5 h-4 w-40 bg-surface-muted" />
       <div className="mt-3 h-10 w-3/4 bg-surface-muted" />
@@ -125,6 +130,10 @@ async function EventView({ id }: { id: number }) {
   const date = upcoming[0] ?? event.dates.at(-1)!
   const past = upcoming.length === 0
   const details = eventDetails(id)
+  const copy = t.event.details
+  const visitor = visitorRouteCopy(lang)
+  const accessItems = visitor?.visit.accessItems ?? buildingAccess
+  const firstVisitCards = visitor?.start.cards ?? firstVisit.map((card) => [card.title, card.text] as const)
   const similar = similarEvents(event, now, [recommended.featuredId, ...recommended.otherIds]).map((s) => ({
     ...s,
     event: localizeEvent(s.event, lang),
@@ -133,6 +142,12 @@ async function EventView({ id }: { id: number }) {
   const price = eventPrice(event, t)
   const series = seriesLabel(t, event.series)
   const ageMin = toCalendarEvent(event, calendarEditorial).facets.ageMin
+  const audience =
+    event.kindLabel && / dla /.test(event.kindLabel)
+      ? lang === "pl"
+        ? forWhom(event.kindLabel, ageMin)
+        : `${kindLabel(t, event.kind)}${ageMin ? `, ${copy.ageFrom(ageMin)}` : ""}`
+      : undefined
   const why = event.lead ?? details.paragraphs[0]
   const moreText = details.paragraphs.filter((p) => !why || !why.startsWith(p.slice(0, 40)))
 
@@ -162,19 +177,17 @@ async function EventView({ id }: { id: number }) {
         <FactList
           className="mt-5"
           facts={[
-            { label: t.event.facts.when, value: past ? `${when} · wydarzenie się odbyło` : when },
+            { label: t.event.facts.when, value: past ? `${when} · ${copy.past}` : when },
             { label: t.event.facts.where, value: venueLabel(t, event.venue) },
             {
-              label: "Za ile",
+              label: copy.price,
               value: price ?? (
                 <a href={event.ticketsUrl} className="inline-flex min-h-11 items-center underline underline-offset-4">
-                  Ceny w kasie online
+                  {copy.pricesOnline}
                 </a>
               ),
             },
-            ...(event.kindLabel && / dla /.test(event.kindLabel)
-              ? [{ label: "Dla kogo", value: forWhom(event.kindLabel, ageMin) }]
-              : []),
+            ...(audience ? [{ label: copy.forWhom, value: audience }] : []),
           ]}
         />
 
@@ -183,22 +196,25 @@ async function EventView({ id }: { id: number }) {
             href={localizedPath(lang, `/cykl/${seriesKey(event.series)}`)}
             className={cn(buttonVariants({ variant: "link" }), "mt-2 whitespace-normal")}
           >
-            Cykl: {series} →
+            {copy.series(series)} →
           </Link>
         )}
 
         <OtherDates dates={upcoming.slice(1)} t={t} />
 
         {why && (
-          <Block id="dlaczego" title={exhibition ? "Dlaczego warto zajrzeć" : "Dlaczego warto przyjść"}>
-            <p className="type-body-lg max-w-[68ch] text-text">{why}</p>
+          <Block id="dlaczego" title={exhibition ? copy.whyExhibition : copy.why}>
+            {lang !== "pl" && <p className="mb-3 type-meta text-text-muted">{copy.descriptionNote}</p>}
+            <p className="type-body-lg max-w-[68ch] text-text" lang={lang === "pl" ? undefined : "pl"}>
+              {why}
+            </p>
             {moreText.length > 0 && (
               <details className="group mt-4">
                 <summary className="flex min-h-11 w-fit cursor-pointer list-none items-center font-semibold text-text underline decoration-[1.5px] underline-offset-[3px] [&::-webkit-details-marker]:hidden">
-                  <span className="group-open:hidden">Przeczytaj cały opis</span>
-                  <span className="hidden group-open:inline">Zwiń opis</span>
+                  <span className="group-open:hidden">{copy.readMore}</span>
+                  <span className="hidden group-open:inline">{copy.collapse}</span>
                 </summary>
-                <div className="mt-3 flex max-w-[68ch] flex-col gap-4 type-body text-text">
+                <div className="mt-3 flex max-w-[68ch] flex-col gap-4 type-body text-text" lang={lang === "pl" ? undefined : "pl"}>
                   {moreText.map((p, i) => (
                     <p key={i}>{p}</p>
                   ))}
@@ -209,7 +225,7 @@ async function EventView({ id }: { id: number }) {
         )}
 
         {details.artists.length > 0 && (
-          <Block id="wykonawcy" title="Kto występuje">
+          <Block id="wykonawcy" title={copy.artists}>
             <ul className="border-t border-line">
               {details.artists.map((a) => (
                 <li key={a.name} className="flex flex-col border-b border-line py-3">
@@ -231,14 +247,18 @@ async function EventView({ id }: { id: number }) {
         )}
 
         {details.program.length > 0 && (
-          <Block id="program" title="Co zagramy">
+          <Block id="program" title={copy.program}>
             <ol className="border-t border-line">
               {details.program.map((p, i) => (
                 <li key={i} className="flex flex-col border-b border-line py-3">
                   {p.composer && <span className="font-semibold text-text">{p.composer}</span>}
                   <span className="text-text">{p.work}</span>
                   {fragments[id]?.[i] && (
-                    <FragmentPlayer fragment={fragments[id][i]} label={[p.composer, p.work].filter(Boolean).join(", ")} />
+                    <FragmentPlayer
+                      fragment={fragments[id][i]}
+                      label={[p.composer, p.work].filter(Boolean).join(", ")}
+                      lang={lang}
+                    />
                   )}
                 </li>
               ))}
@@ -247,12 +267,12 @@ async function EventView({ id }: { id: number }) {
         )}
 
         {!exhibition && (event.durationMin || details.intermission) && (
-          <Block id="czas" title="Ile to potrwa">
+          <Block id="czas" title={copy.durationTitle}>
             <p className="type-body text-text">
               {[
-                event.durationMin && `Ok. ${formatDuration(event.durationMin)}`,
-                event.durationMin && `koniec ok. ${formatTimeRange(date, event.durationMin).split("–")[1]}`,
-                details.intermission,
+                event.durationMin && copy.durationApprox(formatDuration(event.durationMin)!),
+                event.durationMin && copy.durationEnd(formatTimeRange(date, event.durationMin).split("–")[1]),
+                details.intermission && copy.intermission[details.intermission],
               ]
                 .filter(Boolean)
                 .join(", ")}
@@ -261,9 +281,9 @@ async function EventView({ id }: { id: number }) {
           </Block>
         )}
 
-        <Block id="dostepnosc" title="Dostępność i informacje sensoryczne">
+        <Block id="dostepnosc" title={copy.accessibility}>
           <ul className="flex flex-col gap-3">
-            {buildingAccess.map((item) => (
+            {accessItems.map((item) => (
               <li key={item} className="flex gap-3 type-body text-text">
                 <Check {...iconProps} className="mt-1 size-5 shrink-0" />
                 {item}
@@ -271,23 +291,23 @@ async function EventView({ id }: { id: number }) {
             ))}
           </ul>
           <p className="mt-4 max-w-[68ch] type-body text-text">
-            {accessAssistance} {accessTickets}
+            {visitor ? visitor.visit.access : `${accessAssistance} ${accessTickets}`}
           </p>
           <a
             href={`tel:${boxOffice.phone.replaceAll(" ", "")}`}
             className={cn(buttonVariants({ variant: "link" }), "mt-1")}
           >
-            Kasa: {boxOffice.phone}
+            {copy.boxOffice(boxOffice.phone)}
           </a>
         </Block>
 
         {!exhibition && (
-          <Block id="pierwszy-raz" title="Pierwszy raz w Filharmonii?">
+          <Block id="pierwszy-raz" title={copy.firstTime}>
             <ul className="grid gap-3 sm:grid-cols-2">
-              {firstVisit.map((card) => (
-                <li key={card.title} className="border-[1.5px] border-line-strong p-4">
-                  <h3 className="type-h4 text-text">{card.title}</h3>
-                  <p className="mt-1 type-body text-text">{card.text}</p>
+              {firstVisitCards.map(([title, text]) => (
+                <li key={title} className="border-[1.5px] border-line-strong p-4">
+                  <h3 className="type-h4 text-text">{title}</h3>
+                  <p className="mt-1 type-body text-text">{text}</p>
                 </li>
               ))}
             </ul>
@@ -295,7 +315,7 @@ async function EventView({ id }: { id: number }) {
         )}
 
         {!past && (
-          <Block id="zaplanuj" title="Zaplanuj">
+          <Block id="zaplanuj" title={copy.plan}>
             <EventActions
               title={event.title}
               date={date}
@@ -303,6 +323,7 @@ async function EventView({ id }: { id: number }) {
               venue={event.venue}
               address={address}
               phone={boxOffice.phone}
+              lang={lang}
             />
           </Block>
         )}
@@ -310,7 +331,7 @@ async function EventView({ id }: { id: number }) {
 
       {similar.length > 0 && (
         <Container>
-          <Block id="podobne" title="Podobne wydarzenia">
+          <Block id="podobne" title={copy.similar}>
             <div className="grid gap-10 sm:grid-cols-2 sm:gap-x-4 lg:grid-cols-3 lg:gap-x-6">
               {similar.map((s) => (
                 <EventCard lang={lang} key={s.event.id} event={s.event} date={s.date} />
@@ -351,6 +372,7 @@ const NOMINATIVE: Record<string, string> = { seniorów: "seniorzy", uczniów: "u
 /** Kolejne terminy (np. koncerty dla szkół, wystawy): do 5 dni, reszta jako licznik */
 function OtherDates({ dates, t }: { dates: string[]; t: Dictionary }) {
   if (dates.length === 0) return null
+  const copy = t.event.details
   const byDay = new Map<string, string[]>()
   for (const d of dates) byDay.set(d.slice(0, 10), [...(byDay.get(d.slice(0, 10)) ?? []), formatTime(d)])
   const days = [...byDay.entries()]
@@ -359,7 +381,7 @@ function OtherDates({ dates, t }: { dates: string[]; t: Dictionary }) {
 
   return (
     <div className="mt-6">
-      <h2 className="type-h4 text-gold">Kolejne terminy</h2>
+      <h2 className="type-h4 text-gold">{copy.otherDates}</h2>
       <ul className="mt-2 flex flex-col">
         {shown.map(([day, times]) => (
           <li key={day} className="type-meta text-text tabular-nums">
@@ -368,10 +390,7 @@ function OtherDates({ dates, t }: { dates: string[]; t: Dictionary }) {
         ))}
       </ul>
       {rest > 0 && (
-        <p className="mt-1 type-meta text-text-muted">
-          i {rest} {rest === 1 ? "kolejny dzień" : rest < 5 ? "kolejne dni" : "kolejnych dni"}, ostatni{" "}
-          {formatShortDate(days.at(-1)![0], t)}
-        </p>
+        <p className="mt-1 type-meta text-text-muted">{copy.moreDays(rest, formatShortDate(days.at(-1)![0], t))}</p>
       )}
     </div>
   )

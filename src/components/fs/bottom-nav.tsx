@@ -49,7 +49,7 @@ export function BottomNav({ lang, current }: { lang: Locale; current?: string })
         aria-label={t.nav.label}
         className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-background pb-[env(safe-area-inset-bottom)] lg:hidden"
       >
-        <ul className="mx-auto grid h-16 max-w-xl grid-cols-5">
+        <ul className="enter-fade mx-auto grid h-16 max-w-xl grid-cols-5">
           {items.map(({ key, href, icon: Icon }) => {
             const label = t.nav[key]
             if (!href) {
@@ -59,7 +59,7 @@ export function BottomNav({ lang, current }: { lang: Locale; current?: string })
                     lang={lang}
                     events={eventCards}
                     venue={venue}
-                    className="flex h-full w-full cursor-pointer flex-col items-center justify-end gap-1 pb-2 text-xs font-semibold text-text"
+                    className="press flex h-full w-full cursor-pointer flex-col items-center justify-end gap-1 pb-2 text-xs font-semibold text-text"
                   >
                     <AiHexagon className="-mt-4" />
                     {label}
@@ -74,7 +74,7 @@ export function BottomNav({ lang, current }: { lang: Locale; current?: string })
                   href={localizedPath(lang, href)}
                   aria-current={active ? "page" : undefined}
                   className={cn(
-                    "flex h-full flex-col items-center justify-end gap-1 pb-2 text-xs text-text",
+                    "press flex h-full flex-col items-center justify-end gap-1 pb-2 text-xs text-text",
                     active ? "border-t-2 border-ink font-bold" : "font-semibold"
                   )}
                 >
@@ -92,7 +92,7 @@ export function BottomNav({ lang, current }: { lang: Locale; current?: string })
         events={eventCards}
         venue={venue}
         label={t.nav.assistantAi}
-        className="fixed right-6 bottom-6 z-40 hidden cursor-pointer lg:flex"
+        className="press enter-scale fixed right-6 bottom-6 z-40 hidden cursor-pointer lg:flex"
       >
         <AiHexagon className="h-14 w-16" />
       </AssistantDialog>

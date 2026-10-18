@@ -11,17 +11,25 @@ import { SiteHeader } from "@/components/fs/site-header"
 import { buttonVariants } from "@/components/ui/button"
 import { firstVisit } from "@/content/event"
 import { todayKey, upcomingConcerts } from "@/lib/events"
-import { getDictionary, localizedPath } from "@/i18n"
+import { getDictionary, hasLocale, localizedPath } from "@/i18n"
 import { getLang } from "@/i18n/server"
+import { visitorRouteCopy } from "@/i18n/visitor-routes"
 
-export const metadata: Metadata = {
-  title: "Zacznij tutaj – Filharmonia w Szczecinie",
-  description: "Pierwszy raz w Filharmonii? Wybierz koncert w 5 pytań, sprawdź, jak dojechać i co na siebie włożyć.",
+export async function generateMetadata({ params }: PageProps<"/[lang]/zacznij-tutaj">): Promise<Metadata> {
+  const { lang } = await params
+  return (
+    (hasLocale(lang) ? visitorRouteCopy(lang)?.meta.start : undefined) ?? {
+      title: "Zacznij tutaj – Filharmonia w Szczecinie",
+      description: "Pierwszy raz w Filharmonii? Wybierz koncert w 5 pytań, sprawdź, jak dojechać i co na siebie włożyć.",
+    }
+  )
 }
 
 /** „Zacznij tutaj” (ścieżka A, brief): wybór koncertu → odpowiedzi na obawy debiutanta → planowanie wizyty */
 export default async function StartHerePage() {
   const lang = await getLang()
+  const route = visitorRouteCopy(lang)
+  const copy = route?.start
   return (
     <>
       <a
@@ -33,44 +41,46 @@ export default async function StartHerePage() {
       <SiteHeader lang={lang} />
       <main id="tresc" className="pt-8 pb-16 lg:pt-12 lg:pb-24">
         <Container className="max-w-3xl">
-          <Eyebrow>Pierwszy raz w Filharmonii</Eyebrow>
-          <h1 className="mt-1 type-h1 text-gold">Zacznij tutaj</h1>
+          <Eyebrow>{copy?.eyebrow ?? "Pierwszy raz w Filharmonii"}</Eyebrow>
+          <h1 className="mt-1 type-h1 text-gold">{copy?.title ?? "Zacznij tutaj"}</h1>
           <p className="mt-2 type-body-lg max-w-[68ch] text-text">
-            Nie musisz znać muzyki klasycznej. Wystarczy, że masz ochotę posłuchać. Pomożemy wybrać pierwszy koncert i
-            odpowiemy na pytania, które zwykle zadaje się przed wejściem.
+            {copy?.lead ?? "Nie musisz znać muzyki klasycznej. Wystarczy, że masz ochotę posłuchać. Pomożemy wybrać pierwszy koncert i odpowiemy na pytania, które zwykle zadaje się przed wejściem."}
           </p>
 
           <ol className="mt-10 flex flex-col gap-10">
             <li>
-              <h2 className="type-h3 text-gold">1. Wybierz koncert</h2>
-              <p className="mt-2 type-body text-text">Pięć krótkich pytań, każde możesz pominąć.</p>
+              <h2 className="type-h3 text-gold">{copy?.choose ?? "1. Wybierz koncert"}</h2>
+              <p className="mt-2 type-body text-text">{copy?.chooseLead ?? "Pięć krótkich pytań, każde możesz pominąć."}</p>
               <Link href={localizedPath(lang, "/pomoz-mi-wybrac")} className={`${buttonVariants({ variant: "primary", block: true })} mt-4 sm:w-fit`}>
-                Pomóż mi wybrać
+                {copy?.chooseAction ?? "Pomóż mi wybrać"}
               </Link>
               <Link href={localizedPath(lang, "/repertuar")} className="mt-2 inline-flex min-h-11 items-center font-semibold text-text underline decoration-[1.5px] underline-offset-[3px]">
-                Albo przejrzyj repertuar →
+                {copy?.browse ?? "Albo przejrzyj repertuar →"}
               </Link>
             </li>
 
             <li>
-              <h2 className="type-h3 text-gold">2. Najbliższe koncerty</h2>
-              <Suspense fallback={<div className="mt-4 h-48 bg-surface-muted" role="status" aria-busy="true" aria-label="Wczytywanie" />}>
+              <h2 className="type-h3 text-gold">{copy?.upcoming ?? "2. Najbliższe koncerty"}</h2>
+              <Suspense fallback={<div className="mt-4 h-48 bg-surface-muted" role="status" aria-busy="true" aria-label={route?.ui.loading ?? "Wczytywanie"} />}>
                 <Upcoming />
               </Suspense>
             </li>
 
             <li>
-              <h2 className="type-h3 text-gold">3. Zanim przyjdziesz</h2>
+              <h2 className="type-h3 text-gold">{copy?.before ?? "3. Zanim przyjdziesz"}</h2>
               <ul className="mt-4 grid gap-3 sm:grid-cols-2">
-                {firstVisit.map((card) => (
+                {firstVisit.map((card, index) => {
+                  const translated = copy?.cards[index]
+                  return (
                   <li key={card.title} className="border-[1.5px] border-line-strong p-4">
-                    <h3 className="type-h4 text-text">{card.title}</h3>
-                    <p className="mt-1 type-body text-text">{card.text}</p>
+                    <h3 className="type-h4 text-text">{translated?.[0] ?? card.title}</h3>
+                    <p className="mt-1 type-body text-text">{translated?.[1] ?? card.text}</p>
                   </li>
-                ))}
+                  )
+                })}
               </ul>
               <Link href={localizedPath(lang, "/planuj-wizyte")} className={`${buttonVariants({ variant: "secondary", block: true })} mt-4 sm:w-fit`}>
-                Planuj wizytę
+                {copy?.visit ?? "Planuj wizytę"}
               </Link>
             </li>
           </ol>

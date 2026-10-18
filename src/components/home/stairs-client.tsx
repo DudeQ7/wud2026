@@ -100,13 +100,13 @@ export function StairsClient({ items, access, outfit, text }: Props) {
                   aria-label={item.label}
                   aria-controls={expanded ? hintId : undefined}
                   onClick={() => setSelected(expanded ? null : i)}
-                  className="group absolute cursor-pointer"
-                  style={{ width, height, left: `calc(${(slot.cx / ART_WIDTH) * 100}% - ${width / 2}px)`, top: cy * scale - height / 2 }}
+                  className="group absolute cursor-pointer [animation:poster-in_var(--dur-slow)_var(--ease-out)_backwards] transition-[width,height,top,left,transform] duration-250 ease-out hover:-translate-y-1 active:scale-[0.97] motion-reduce:transition-none"
+                  style={{ animationDelay: `${Math.min(i, 8) * 50}ms`, width, height, left: `calc(${(slot.cx / ART_WIDTH) * 100}% - ${width / 2}px)`, top: cy * scale - height / 2 }}
                 >
                   {/* Obrys fokusu na wrapperze: clip-path obcinałby outline (design.md §5.2) */}
                   <span
                     className={cn(
-                      "absolute inset-0 block overflow-hidden bg-surface-muted",
+                      "absolute inset-0 block overflow-hidden bg-surface-muted transition-[outline-color] duration-150",
                       focused && "outline-2 outline-ink",
                       !focused && side === "left" && "[clip-path:polygon(0_8%,100%_0,100%_100%,0_92%)]",
                       !focused && side === "right" && "[clip-path:polygon(0_0,100%_8%,100%_92%,0_100%)]"
@@ -119,7 +119,7 @@ export function StairsClient({ items, access, outfit, text }: Props) {
                         fill
                         sizes="100px"
                         loading={i < 6 ? "eager" : "lazy"}
-                        className="object-cover"
+                        className="object-cover transition-transform duration-250 ease-out group-hover:scale-105"
                       />
                     )}
                   </span>
@@ -138,16 +138,18 @@ export function StairsClient({ items, access, outfit, text }: Props) {
         {/* Hint pod klikniętym plakatem; ogonek wskazuje jego środek */}
         {active && selected !== null && (
           <span
+            key={`tail-${active.id}`}
             aria-hidden="true"
-            className="absolute h-3 w-4 bg-ink [clip-path:polygon(0_100%,50%_0,100%_100%)]"
+            className="absolute h-3 w-4 bg-ink [animation:tail-in_var(--dur-base)_var(--ease-out)] [clip-path:polygon(0_100%,50%_0,100%_100%)]"
             style={{ top: hintTop - 12, left: `calc(${(slotCenterX(selected) / ART_WIDTH) * 100}% - 8px)` }}
           />
         )}
         {active && selected !== null && (
         <section
+          key={active.id}
           id={hintId}
           aria-label={active.title}
-          className="on-dark absolute w-[296px] bg-ink text-on-dark"
+          className="on-dark absolute w-[296px] origin-top bg-ink text-on-dark [animation:hint-in_var(--dur-base)_var(--ease-out)]"
           // Środek hintu pod plakatem, ale z marginesem 32 px od krawędzi ilustracji (przy 360 px wypada dokładnie 32 px)
           style={{
             top: hintTop,

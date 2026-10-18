@@ -19,6 +19,7 @@ import {
 } from "@/lib/events"
 import { cn } from "@/lib/utils"
 
+import { FirstVisitRoute } from "./first-visit-route"
 import { type DayGroup, type DayTab, DayFilter } from "./day-filter"
 
 const weekdayOf = (dayKey: string) => new Date(`${dayKey}T12:00:00Z`).getUTCDay()
@@ -165,6 +166,7 @@ export function DiscoverSection({ lang }: { lang: Locale }) {
   return (
     <Section aria-labelledby="odkryj">
       <SectionHeading id="odkryj" title={t.home.discover.title} lead={t.home.discover.lead} />
+      <FirstVisitRoute lang={lang} />
       <ul className="grid grid-cols-2 gap-x-4 gap-y-6 lg:grid-cols-3 lg:gap-x-6">
         {discoverTiles.map(({ key, href, imageFromEventId }) => (
           <li key={key}>

@@ -5,23 +5,37 @@ import { useEffect, useRef, useState } from "react"
 
 import { iconProps } from "@/components/fs/icons"
 import type { Fragment } from "@/content/audio"
+import { type Locale, getDictionary } from "@/i18n"
 
 type Props = {
   fragment: Fragment
   /** „Mahler, Adagietto” – do opisu przycisku */
   label: string
+  lang: Locale
 }
 
 // Jednocześnie gra tylko jeden fragment (§6.12): nowy odtwarzacz zatrzymuje poprzedni
 let current: HTMLAudioElement | null = null
 
-const clock = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`
+/** Zatrzymuje inny grający fragment i zapisuje ten jako aktualny – wołać tuż przed play() */
+export function claimPlayback(el: HTMLAudioElement) {
+  if (current && current !== el) current.pause()
+  current = el
+}
+
+/** Zwalnia miejsce po odmontowaniu odtwarzacza */
+export function releasePlayback(el: HTMLAudioElement | null) {
+  if (current === el) current = null
+}
+
+export const clock = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`
 
 /**
  * Odtwarzacz fragmentu (§6.12) na elemencie <audio>: bez autoodtwarzania, bez reklam i bez
  * osadzonego serwisu zewnętrznego. Pasek postępu to slider obsługiwany strzałkami.
  */
-export function FragmentPlayer({ fragment, label }: Props) {
+export function FragmentPlayer({ fragment, label, lang }: Props) {
+  const text = getDictionary(lang).event.player
   const audio = useRef<HTMLAudioElement>(null)
   const [playing, setPlaying] = useState(false)
   const [time, setTime] = useState(0)
@@ -31,7 +45,7 @@ export function FragmentPlayer({ fragment, label }: Props) {
     const el = audio.current
     return () => {
       el?.pause()
-      if (current === el) current = null
+      releasePlayback(el ?? null)
     }
   }, [])
 
@@ -39,8 +53,7 @@ export function FragmentPlayer({ fragment, label }: Props) {
     const el = audio.current
     if (!el) return
     if (el.paused) {
-      if (current && current !== el) current.pause()
-      current = el
+      claimPlayback(el)
       void el.play().catch(() => setPlaying(false))
     } else {
       el.pause()
@@ -75,7 +88,7 @@ export function FragmentPlayer({ fragment, label }: Props) {
         <button
           type="button"
           onClick={toggle}
-          aria-label={`${playing ? "Zatrzymaj" : "Odtwórz"} fragment: ${label} (1 min)`}
+          aria-label={`${playing ? text.pause : text.play} ${text.excerpt}: ${label} (1 min)`}
           className="flex size-11 shrink-0 cursor-pointer items-center justify-center border-[1.5px] border-line-strong text-text hover:bg-bg-subtle"
         >
           {playing ? <Pause {...iconProps} className="size-5" /> : <Play {...iconProps} className="size-5" />}
@@ -84,11 +97,11 @@ export function FragmentPlayer({ fragment, label }: Props) {
         <div
           role="slider"
           tabIndex={0}
-          aria-label={`Postęp fragmentu: ${label}`}
+          aria-label={`${text.progress}: ${label}`}
           aria-valuemin={0}
           aria-valuemax={Math.round(duration)}
           aria-valuenow={Math.round(time)}
-          aria-valuetext={`${clock(time)} z ${clock(duration)}`}
+          aria-valuetext={`${clock(time)} ${text.of} ${clock(duration)}`}
           onKeyDown={(e) => {
             const step = { ArrowRight: 5, ArrowUp: 5, ArrowLeft: -5, ArrowDown: -5, PageUp: 15, PageDown: -15 }[e.key]
             if (step !== undefined) {
@@ -119,12 +132,12 @@ export function FragmentPlayer({ fragment, label }: Props) {
             href={fragment.fullUrl}
             className="inline-flex min-h-11 items-center gap-1 font-semibold text-text underline decoration-[1.5px] underline-offset-[3px]"
           >
-            Pełne nagranie
+            {text.full}
             <ExternalLink {...iconProps} className="size-4" />
           </a>
         )}
         {fragment.demo && (
-          <p className="type-meta text-text-muted">Próbka demonstracyjna. Docelowo fragment nagrania FS.</p>
+          <p className="type-meta text-text-muted">{text.demo}</p>
         )}
       </div>
     </div>

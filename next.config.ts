@@ -1,6 +1,12 @@
 import type { NextConfig } from "next";
 
+/** Wersja testowa (preview / dev) – czerwony favicon i nagłówek; produkcja bez zmian */
+const isTestEnv = process.env.VERCEL_ENV
+  ? process.env.VERCEL_ENV !== "production"
+  : process.env.NODE_ENV !== "production";
+
 const nextConfig: NextConfig = {
+  env: { NEXT_PUBLIC_IS_TEST_ENV: isTestEnv ? "1" : "" },
   /* config options here */
   cacheComponents: true,
   partialPrefetching: true,

@@ -103,6 +103,14 @@ export function formatLongDate(dayKey: string, t: Dictionary) {
   return text.charAt(0).toUpperCase() + text.slice(1)
 }
 
+/** „dziś” / „jutro” dla terminu przypadającego dziś lub jutro, inaczej undefined (wtedy pokazujemy datę) */
+export function relativeDay(dateTime: string, today: string, t: Dictionary) {
+  const day = dateTime.slice(0, 10)
+  if (day === today) return t.home.today.tabs.today.when
+  if (day === addDays(today, 1)) return t.home.today.tabs.tomorrow.when
+  return undefined
+}
+
 /** „19:00” */
 export function formatTime(dateTime: string) {
   return dateTime.slice(11, 16)

@@ -56,7 +56,8 @@ export function SiteHeader({ lang, overlay = false }: SiteHeaderProps) {
       className={cn(
         "sticky top-0 z-40 h-[var(--header-h)] transition-colors",
         overlay && "-mb-[var(--header-h)]",
-        solid ? "border-b border-line bg-background" : "border-b border-transparent bg-transparent"
+        solid
+          ? cn("border-b border-line", process.env.NEXT_PUBLIC_IS_TEST_ENV ? "bg-[#fbe3e3]" : "bg-background") : "border-b border-transparent bg-transparent"
       )}
     >
       <Container className="flex h-full items-center justify-between gap-4">

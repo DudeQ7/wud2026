@@ -69,6 +69,30 @@ Uwaga metodyczna: strony z Suspense podmieniają treść dopiero, gdy karta prze
 
 Nadal niesprawdzone: czytniki ekranu (VoiceOver, TalkBack), wtyczka WAVE (wymaga przeglądarki użytkownika) i zoom 200% w prawdziwej przeglądarce.
 
+## 7. Uzupełnienie kontroli P0 (18.10.2026)
+
+- Porównanie struktury słowników: EN, DE i UK mają ten sam zestaw kluczy interfejsu co PL, bez brakujących i dodatkowych kluczy. Osobne mapy rodzajów, sal i cykli są celowo zależne od danych wydarzeń.
+- `pomoz-mi-wybrac`, `planuj-wizyte`, `zacznij-tutaj` i karta wydarzenia nie mają już tekstów interfejsu wpisanych po polsku: korzystają ze słowników oraz z `src/i18n/visitor-routes.ts` (EN/DE/UK). Metadane stron i etykiety ARIA są zależne od języka, a akcje karty wydarzenia i odtwarzacz fragmentu też mają tłumaczenia.
+- Nadal nieprzetłumaczone są **opisy wydarzeń** pochodzące z polskiego `koncerty.json`. W EN/DE/UK są oznaczone `lang="pl"` i poprzedzone notą o języku; to świadome ograniczenie prototypu, nie pełna lokalizacja treści.
+- Pierwszy adres podglądu (`:3000`) odmówił połączenia. Później dostępny był lokalny podgląd na `:3100`; ręczne przejścia opisano w sekcji 8.
+- Nie sprawdzono VoiceOver ani TalkBack. Poprzednie wyniki axe z sekcji 1–6 pozostają wcześniejszym audytem, a nie ponownym skanem obecnego stanu.
+
+## 8. Weryfikacja tras P0 (18.10.2026, podgląd `:3100`)
+
+| Sprawdzenie | Wynik |
+|---|---|
+| „Zacznij tutaj” przy 360 px | EN działa; najbliższe wydarzenia i informacje dla debiutanta są widoczne. |
+| Kreator EN | Pytania i odpowiedzi są po angielsku; przejście do kolejnego kroku zachowuje `/en/` i odpowiedzi w URL. |
+| „Planuj wizytę” DE | Nagłówki, sekcje, opis dojazdu i FAQ są po niemiecku. Adres pozostaje nazwą własną. |
+| Zmiana języka w stopce | Z PL na EN zostaje na tej samej trasie (`/planuj-wizyte` → `/en/planuj-wizyte`). |
+| Widok o szerokości 640 px | Na „Planuj wizytę” `clientWidth` i `scrollWidth` wynoszą 640 px; nie ma przewijania poziomego. To nie potwierdza testu zoomu 200% w przeglądarce. |
+| Kreator → wydarzenie | Pięć kroków kończy się rekomendacją; karta wydarzenia pokazuje opis i informacje o dostępności. W szczegółach nie znaleziono odsłuchu audio; przycisk zakupu i dodania do kalendarza są obecne. Nie otwierano zewnętrznego zakupu. |
+| Filtr rodzinny | `weekend` + `dla-kogo=dzieci` + `wiek=5` zwraca jedno wydarzenie: „Jak w baroku brzmiały pory roku?” (5+). |
+| Asystent AI | Nakładka nie otworzyła się po kliknięciu. Na `/asystent` wpisana treść nie aktywowała przycisku „Wyślij”; rozmowy nie udało się zweryfikować. |
+| Panel | `/en/panel` przekierowuje do logowania. Nie wpisywano danych logowania. |
+
+To ręczna próba tras, nie pełny audyt axe. Drzewo dostępności potwierdza etykiety i strukturę, ale nie zastępuje testu na VoiceOver/TalkBack. EN/DE nadal zawierają polskie opisy części wydarzeń i niektóre teksty z danych źródłowych.
+
 ## 5. Jak powtórzyć
 
 1. `pnpm add -D axe-core` (jest w `devDependencies`), skopiować `node_modules/axe-core/axe.min.js` do `public/`.

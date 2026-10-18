@@ -49,7 +49,7 @@ export function EventCard({
   const sentence = compact ? undefined : (lead ?? (lang === "pl" ? event.lead : undefined))
 
   return (
-    <article className={cn("group relative flex flex-col", compact ? "gap-3" : "gap-4", className)}>
+    <article className={cn("group press relative flex flex-col enter", compact ? "gap-3" : "gap-4", className)}>
       <Photo
         src={event.image?.card}
         alt={event.headline}

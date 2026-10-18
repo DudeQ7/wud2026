@@ -6,6 +6,7 @@ import posthog from "posthog-js"
 
 import { iconProps } from "@/components/fs/icons"
 import { Button, buttonVariants } from "@/components/ui/button"
+import { type Locale, getDictionary } from "@/i18n"
 import { cn } from "@/lib/utils"
 
 type EventActionsProps = {
@@ -16,6 +17,7 @@ type EventActionsProps = {
   venue: string
   address: string
   phone: string
+  lang: Locale
 }
 
 const MAPS_URL = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(
@@ -26,8 +28,9 @@ const MAPS_URL = `https://www.google.com/maps/dir/?api=1&destination=${encodeURI
  * Akcje natywne (§6.11 pkt 8): dodaj do kalendarza (.ics), udostępnij (Web Share API),
  * nawiguj (natywna aplikacja map), zadzwoń do kasy (tel:).
  */
-export function EventActions({ title, date, durationMin, venue, address, phone }: EventActionsProps) {
+export function EventActions({ title, date, durationMin, venue, address, phone, lang }: EventActionsProps) {
   const [status, setStatus] = useState("")
+  const text = getDictionary(lang).event.actions
 
   function addToCalendar() {
     const file = icsFile({ title, date, durationMin, location: `${venue}, ${address}`, url: window.location.href })
@@ -37,7 +40,7 @@ export function EventActions({ title, date, durationMin, venue, address, phone }
     link.click()
     URL.revokeObjectURL(link.href)
     posthog.capture("event_added_to_calendar", { has_duration: Boolean(durationMin) })
-    setStatus("Plik wydarzenia jest gotowy – otwórz go, żeby dodać termin do kalendarza.")
+    setStatus(text.calendarReady)
   }
 
   async function share() {
@@ -53,7 +56,7 @@ export function EventActions({ title, date, durationMin, venue, address, phone }
     }
     await navigator.clipboard.writeText(data.url)
     posthog.capture("event_shared", { share_method: "clipboard" })
-    setStatus("Skopiowano link do wydarzenia.")
+    setStatus(text.linkCopied)
   }
 
   const item = cn(buttonVariants({ variant: "secondary", block: true }), "justify-start px-4")
@@ -64,25 +67,25 @@ export function EventActions({ title, date, durationMin, venue, address, phone }
         <li>
           <Button variant="secondary" block className="justify-start px-4" onClick={addToCalendar}>
             <CalendarPlus {...iconProps} />
-            Dodaj do kalendarza
+            {text.addToCalendar}
           </Button>
         </li>
         <li>
           <Button variant="secondary" block className="justify-start px-4" onClick={share}>
             <Share2 {...iconProps} />
-            Udostępnij
+            {text.share}
           </Button>
         </li>
         <li>
           <a href={MAPS_URL} className={item}>
             <Navigation {...iconProps} />
-            Nawiguj do Filharmonii
+            {text.navigate}
           </a>
         </li>
         <li>
           <a href={`tel:${phone.replaceAll(" ", "")}`} className={item}>
             <Phone {...iconProps} />
-            Zadzwoń do kasy
+            {text.call}
           </a>
         </li>
       </ul>
