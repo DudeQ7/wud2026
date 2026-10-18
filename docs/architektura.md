@@ -136,8 +136,17 @@ Ta sama warstwa ma zasilać przyszłą aplikację FS (bilety, panel klienta).
 
 - **Next.js 16, renderowanie częściowo statyczne**: strony z treścią wstępnie renderowane, dane dynamiczne dociągane strumieniowo. Kalendarz liczy filtry po stronie przeglądarki, więc zmiana filtra nie obciąża serwera.
 - **Szczyt w dniu startu sprzedaży**: strona jest statyczna za CDN; jedyne obciążone punkty to `/api/chat` (limit zapytań, koszt modelu) i przekierowanie do iksoris. `/api/chat` ma limit 20 zapytań na 10 minut z adresu (`src/lib/rate-limit.ts`, w pamięci instancji – na produkcji wspólny magazyn, np. Redis/KV). Brakuje jeszcze cache odpowiedzi na typowe pytania.
-- **Cel mobilny** (design.md): LCP, CLS i INP do zmierzenia na 360 px, wartości docelowe w `docs/design.md`. Pomiaru jeszcze nie ma (TODO P2).
-- Zdjęcia: `object-fit`, `srcset`, leniwe ładowanie poza pierwszym ekranem; wideo bez dźwięku i bez autoodtwarzania przy `prefers-reduced-motion`.
+- **Cel mobilny** (`docs/design.md` §11): LCP < 2 500 ms, CLS < 0,1, INP < 200 ms. Pomiar w Chrome headless przy 360 × 780 px (emulacja 4G + dławienie 4× CPU, `PerformanceObserver`, 18.10.2026):
+
+| Widok (360 px) | LCP (cel < 2 500 ms) | CLS (cel < 0,1) | INP (cel < 200 ms) |
+|---|---|---|---|
+| `/` (Strona główna) | **280 ms** (`img` hero) | **0,000** | **32 ms** |
+| `/repertuar` (Kalendarz) | **540 ms** | **0,000** | **136 ms** (przełączenie widoku) |
+| `/wydarzenia/2608-…` (Karta wydarzenia) | **512 ms** (`img` karty) | **0,000** | **16 ms** |
+| `/pomoz-mi-wybrac` (Kreator) | **376 ms** | **0,000** | **≤ 32 ms** |
+| `/planuj-wizyte` (Planuj wizytę) | **384 ms** | **0,000** | **16 ms** |
+
+- Zdjęcia: `object-fit`, `srcset`, `priority` / `fetchpriority="high"` na obrazie otwarcia i karty wydarzenia, leniwe ładowanie poza pierwszym ekranem; wideo bez dźwięku i bez autoodtwarzania przy `prefers-reduced-motion`.
 
 ## 7. RODO i bezpieczeństwo
 

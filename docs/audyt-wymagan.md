@@ -33,7 +33,7 @@ Legenda: ✅ zrobione · 🟡 częściowo · ❌ brak
 | 23 | RODO i analityka | ✅ | Baner zgód + RODO w asystencie |
 | 24 | CMS i iksoris | 🟡 | Mock statusów biletów (`content/availability.ts`); brak CMS |
 | 25 | API i model treści | 🟡 | Tylko API wydarzeń |
-| 26 | Wydajność | 🟡 | Brak pomiarów |
+| 26 | Wydajność | ✅ | LCP 280–540 ms, CLS 0,000, INP 16–136 ms na 360 px (`docs/architektura.md` §6) |
 | 27 | Dostępność | 🟡 | Brak testów manualnych |
 | 28 | Design system | ✅ | Panel i logowanie w ramie serwisu, bez emoji, zaokrągleń i kolorów |
 | 29 | Prezentacja | ✅ | Scenariusze A–D zweryfikowane (`docs/prezentacja-scenariusze.md`) |
