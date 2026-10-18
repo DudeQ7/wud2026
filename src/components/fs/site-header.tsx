@@ -9,6 +9,7 @@ import { iconProps } from "@/components/fs/icons"
 import { LanguageSwitcher } from "@/components/fs/language-switcher"
 import { Container } from "@/components/fs/layout"
 import { Logo } from "@/components/fs/wordmark"
+import { buttonVariants } from "@/components/ui/button"
 import { type Locale, getDictionary, localizedPath, stripLocale } from "@/i18n"
 import { cn } from "@/lib/utils"
 
@@ -50,6 +51,9 @@ export function SiteHeader({ lang, overlay = false }: SiteHeaderProps) {
   const isActive = (href: string) => page === href || page.startsWith(`${href}/`)
   const mainLinks = [
     { label: t.calendar.title, href: "/repertuar" },
+    // Od 1280 px więcej pozycji (§6.3); przy 1024 px zostają dwie, a reszta jest w menu – nic się nie ściska
+    { label: t.home.forYou.title, href: "/zacznij-tutaj", wide: true },
+    { label: t.home.discover.tiles.edu.title, href: "/edu", wide: true },
     { label: t.nav.planVisit, href: "/planuj-wizyte" },
   ]
 
@@ -68,8 +72,8 @@ export function SiteHeader({ lang, overlay = false }: SiteHeaderProps) {
           <Logo lang={lang} className="h-14" priority />
           <nav aria-label={t.nav.mainLabel} className="hidden lg:block">
             <ul className="flex items-center gap-0.5 2xl:gap-1">
-              {mainLinks.map(({ label, href }) => (
-                <li key={href}>
+              {mainLinks.map(({ label, href, wide }) => (
+                <li key={href} className={wide ? "hidden xl:block" : undefined}>
                   <HeaderLink href={localizedPath(lang, href)} active={isActive(href)}>
                     {label}
                   </HeaderLink>
@@ -88,6 +92,14 @@ export function SiteHeader({ lang, overlay = false }: SiteHeaderProps) {
             {t.nav.account}
           </HeaderLink>
           <LanguageSwitcher lang={lang} />
+          {/* „Kup bilet” zawsze widoczny na desktopie (brief §5, design §6.3) – prowadzi do repertuaru.
+              Na telefonie zakup jest w otwarciu strony i w pasku zakupu na karcie wydarzenia. */}
+          <Link
+            href={localizedPath(lang, "/repertuar")}
+            className={cn(buttonVariants({ variant: "primary", size: "sm" }), "mx-1 hidden whitespace-nowrap lg:inline-flex")}
+          >
+            {t.event.buyTicket}
+          </Link>
           <button
             type="button"
             aria-label={t.common.menu}
