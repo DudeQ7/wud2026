@@ -4,6 +4,7 @@
 // przyjmujemy przykładowe progi według rodzaju. Moduł jest czysty (bez danych), więc działa też w przeglądarce.
 // Dane strukturalne schema.org (lib/structured-data.ts) celowo NIE korzystają z mocka – tylko z prawdziwych cen.
 
+import { getOverride } from "@/content/overrides-store"
 import type { FsEvent } from "@/lib/event-format"
 
 export type PriceInfo = { free: true } | { free: false; min: number; max: number }
@@ -34,7 +35,11 @@ function parse(prices: string[]): PriceInfo | undefined {
 }
 
 /** Cena wydarzenia: prawdziwa z danych, a gdy jej brak – z mocka cennika */
-export function priceInfo(event: Pick<FsEvent, "prices" | "type" | "kind" | "kindLabel">): PriceInfo | undefined {
+export function priceInfo(event: Pick<FsEvent, "id" | "prices" | "type" | "kind" | "kindLabel">): PriceInfo | undefined {
+  // Nadpisanie z mini-CMS (Supabase) ma pierwszeństwo przed danymi i mockiem cennika
+  const o = getOverride(event.id)
+  if (o?.priceFree) return { free: true }
+  if (o?.priceMin != null) return range(o.priceMin, o.priceMax ?? o.priceMin)
   const real = parse(event.prices)
   if (real) return real
   const kind = (event.kindLabel ?? event.kind).toLowerCase()
@@ -43,7 +48,7 @@ export function priceInfo(event: Pick<FsEvent, "prices" | "type" | "kind" | "kin
 }
 
 /** Najniższa cena w zł (0 = wstęp wolny) albo undefined, gdy nie wiadomo */
-export function minPrice(event: Pick<FsEvent, "prices" | "type" | "kind" | "kindLabel">) {
+export function minPrice(event: Pick<FsEvent, "id" | "prices" | "type" | "kind" | "kindLabel">) {
   const info = priceInfo(event)
   return info ? (info.free ? 0 : info.min) : undefined
 }

@@ -4,7 +4,7 @@ import { updateSession } from "@/lib/supabase/middleware";
 
 // Ścieżki poza wersjami językowymi: API, powrót z Supabase (adres w konfiguracji Supabase), wewnętrzna analityka
 // (app/analityka, tylko PL) i pliki (sitemap.xml…)
-const UNLOCALIZED = /^\/(api|auth\/callback|analityka)(\/|$)|\.[a-z0-9]+$/i;
+const UNLOCALIZED = /^\/(api|auth\/callback|analityka|admin)(\/|$)|\.[a-z0-9]+$/i;
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;

@@ -2,6 +2,8 @@
 // Nie zapisujemy go w koncerty.json, bo ten plik jest generowany przez scraper i zostałby nadpisany.
 // Brak wpisu = „Dostępne”.
 
+import { getOverride } from "@/content/overrides-store";
+
 export type TicketStatus = "available" | "last" | "soldout";
 
 const mock: Record<number, TicketStatus> = {
@@ -23,5 +25,5 @@ const mock: Record<number, TicketStatus> = {
 };
 
 export function ticketStatus(eventId: number): TicketStatus {
-  return mock[eventId] ?? "available";
+  return getOverride(eventId)?.ticketStatus ?? mock[eventId] ?? "available";
 }

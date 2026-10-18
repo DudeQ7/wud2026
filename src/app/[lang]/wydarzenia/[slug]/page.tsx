@@ -21,6 +21,8 @@ import { SiteHeader } from "@/components/fs/site-header"
 import { buttonVariants } from "@/components/ui/button"
 import { fragments, heroFragment } from "@/content/audio"
 import { ticketStatus } from "@/content/availability"
+import { getOverride } from "@/content/overrides-store"
+import { loadOverrides } from "@/lib/overrides"
 import { calendarEditorial } from "@/content/calendar"
 import { accessAssistance, accessTickets, buildingAccess, firstVisit } from "@/content/event"
 import { faqPage } from "@/content/faq"
@@ -129,10 +131,12 @@ function EventSkeleton({ label }: { label: string }) {
 async function EventView({ id }: { id: number }) {
   "use cache"
   cacheLife("hours")
+  await loadOverrides()
 
   const lang = await getLang()
   const t = getDictionary(lang)
   const event = localizeEvent(events.find((e) => e.id === id)!, lang)
+  const programPdf = getOverride(event.id)?.programPdf ?? event.programPdf
   const now = nowKey(new Date())
   const upcoming = event.dates.filter((d) => d >= now.slice(0, 10))
   const date = upcoming[0] ?? event.dates.at(-1)!
@@ -311,11 +315,11 @@ async function EventView({ id }: { id: number }) {
           </Block>
         )}
 
-        {!exhibition && (details.program.length > 0 || event.programPdf) && (
+        {!exhibition && (details.program.length > 0 || programPdf) && (
           <Block id="program-koncertu" title={copy.programTitle}>
-            {event.programPdf ? (
+            {programPdf ? (
               <a
-                href={event.programPdf}
+                href={programPdf}
                 target="_blank"
                 rel="noopener noreferrer"
                 className={buttonVariants({ variant: "secondary" })}

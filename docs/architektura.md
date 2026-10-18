@@ -47,7 +47,7 @@ flowchart LR
 |---|---|---|---|
 | Wydarzenia, artyści, cykle | **działa** na `src/data/koncerty.json` (90 wydarzeń, scraper `ScrappedData/scraper/build-json.mjs`) | CMS headless (Strapi/Sanity/Payload/Directus) | `src/lib/events.ts`, `src/lib/artists.ts` |
 | API wydarzeń | **działa**: `GET /api/events` (te same filtry co URL), `/api/events/[id]`, `/api/events/[id]/ics` | rozszerzenie o artystów, utwory, wystawy, FAQ | `src/app/api/events/**` |
-| Status biletów, ceny | **mock** (`src/content/availability.ts`) | API iksoris: status, cena od–do, plan sali | `src/content/availability.ts` → klient iksoris |
+| Status biletów, ceny, program PDF | **mini-CMS** `/admin` (Supabase `event_overrides` + bucket `programs`) nadpisuje mock z `content/availability.ts` i `content/prices.ts`; zapis otwarty, tylko demo | API iksoris: status, cena od–do, plan sali; CMS headless | `src/lib/overrides.ts` (odczyt, cache + `updateTag`), `src/app/admin/**` |
 | Zakup biletu | **link** do sklepu FS (`tickets_url`), bez płatności | iksoris, koszyk w 2 krokach | przyciski „Kup bilet” |
 | Odsłuch fragmentów | **mock** (`src/content/audio.ts`, próbka demo) | pliki FS lub platforma streamingowa, interfejs niezależny od dostawcy | `src/components/event/fragment-player.tsx` |
 | Asystent AI | **działa**: model LLM z gotowym `briefing` wydarzeń, odpowiedź strukturalna (tekst + karty + źródło), brak wiedzy → kasa | RAG po indeksie (FAQ, treści, archiwum) | `src/app/api/chat/route.ts`, `src/lib/assistant.ts` |

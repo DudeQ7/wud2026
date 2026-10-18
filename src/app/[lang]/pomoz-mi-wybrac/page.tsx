@@ -33,6 +33,7 @@ import {
 import { cn } from "@/lib/utils"
 import { getDictionary, hasLocale, localizedPath } from "@/i18n"
 import { getLang } from "@/i18n/server"
+import { loadOverrides } from "@/lib/overrides"
 import { visitorRouteCopy } from "@/i18n/visitor-routes"
 
 export async function generateMetadata({ params }: PageProps<"/[lang]/pomoz-mi-wybrac">): Promise<Metadata> {
@@ -80,6 +81,7 @@ async function Wizard({ searchParams }: Pick<PageProps<"/[lang]/pomoz-mi-wybrac"
   const params = await searchParams
   // „Dziś” zmienia się z dnia na dzień – liczymy je dopiero przy żądaniu
   await connection()
+  await loadOverrides()
   const answers = parseAnswers(params)
   const step = parseStep(params)
   return step === "wynik" ? <Results answers={answers} today={todayKey(new Date())} lang={lang} /> : <Step answers={answers} step={step} lang={lang} />
